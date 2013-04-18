@@ -1,5 +1,5 @@
 import numpy as np
-import pdb
+
 
 class all_folds:
     # a class containing leftout and retained indices for cross validation
@@ -34,5 +34,3 @@ class all_folds:
         self.leftout.append(currinds[0:inds_per_fold+dingleberry].copy())
         self.retained.append(np.setdiff1d(np.arange(n),self.leftout[i]))
 
-folds = all_folds()
-folds.k_fold_maker(100,3)
