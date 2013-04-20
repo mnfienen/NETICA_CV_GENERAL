@@ -3,14 +3,42 @@ import os
 import re
 import ctypes as ct
 import platform
+import pythonNeticaConstants as pnC
 
 
 class pynetica:
-    def __init__(self):
+    def __init__(self,licfile):
         self.casdata = None
         self.n = None #this is the netica environment
         self.mesg = ct.create_string_buffer('\000' * 1024)
-   
+        # read in the license file information
+        self.licensefile = licfile
+        if os.path.exists(self.licensefile):
+            self.license = open(self.licensefile,'r').readlines()[0].strip().split()[0]
+        else:
+            print "Warning: License File [%s] not found." %(self.licensefile)
+            self.license = None 
+    #####
+    # Helper functions that drive Netica functions
+    def compile_net(self,NetName,newCaseFile,voodoPar,outfilename):
+        '''
+         compile_net(NetName,newCaseFilename,voodoPar,outfilename)
+         a m!ke@usgs joint <mnfienen@usgs.gov>
+         function to build the CPT tables for a new CAS file on an existing NET
+         (be existing, meaning that the nodes, edges, and bins are dialed)
+         INPUT:
+               NetName --> a filename, including '.neta' extension
+               newCaseFilename --> new case file including '.cas' extension
+               voodoPar --> the voodoo tuning parameter for building CPTs
+               outfilename --> netica file for newly build net (including '.neta')
+         '''   
+         # create a Netica environment
+        self.NewNeticaEnviron()
+        streamer = n.NewFileStream_ns (NetName, self.env,None)
+        cnet = n.ReadNet_bn(streamer,pnC.netica_const.NO_VISUAL_INFO)
+        # check for errors
+        while error=n.GetError_ns(self.env,pnC.errseverity_ns_const.XXX_ERROR,)
+    
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -32,14 +60,13 @@ class pynetica:
         self.casdata = np.genfromtxt('###tmp###',names=True,
                             dtype=None,missing_values = '*,?')
         os.remove('###tmp###')
-    
-    def read_lic_file(self,licfile):
-        self.licensefile = licfile
-        if os.path.exists(self.licensefile):
-            self.license = open(self.licensefile,'r').readlines()[0].strip().split()[0]
-        else:
-            print "Warning: License File [%s] not found." %(self.licensefile)
-            self.license = None         
+    def chkerr():
+        if self.GetError(NE.ERROR_ERR):
+	   exceptionMsg = "PyNetica: Error in " + 
+	   str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(NE.ERROR_ERR))), ct.c_char_p).value)
+	   raise NeticaException(exceptionMsg)
+    #############
+    # Key uber functions for Netica    
         
     def NewNeticaEnviron(self):
         '''
@@ -70,7 +97,12 @@ class pynetica:
             print self.mesg.value
         else:
             raise(NeticaCloseFail(res.value))    
-
+    
+    ###############
+    # Small definitions and little functions
+    def ErrorMessage(self, error):
+	return self.n.ErrorMessage_ns(error)
+    
 ###################
 # Error Classes
 ###################
