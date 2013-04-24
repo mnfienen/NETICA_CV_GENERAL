@@ -20,9 +20,9 @@ class pynetica:
             self.license = None 
     #####
     # Helper functions that drive Netica functions
-    def compile_net(self,NetName,newCaseFile,voodoPar,outfilename):
+    def rebuild_net(self,NetName,newCaseFile,voodoPar,outfilename):
         '''
-         compile_net(NetName,newCaseFilename,voodoPar,outfilename)
+         rebuild_net(NetName,newCaseFilename,voodoPar,outfilename)
          a m!ke@usgs joint <mnfienen@usgs.gov>
          function to build the CPT tables for a new CAS file on an existing NET
          (be existing, meaning that the nodes, edges, and bins are dialed)
@@ -34,10 +34,16 @@ class pynetica:
          '''   
          # create a Netica environment
         self.NewNeticaEnviron()
-        streamer = n.NewFileStream_ns (NetName, self.env,None)
-        cnet = n.ReadNet_bn(streamer,pnC.netica_const.NO_VISUAL_INFO)
-        # check for errors
-        while error=n.GetError_ns(self.env,pnC.errseverity_ns_const.XXX_ERROR,)
+        # meke a streamer to the Net file
+        streamer = self.NewFileStreamer(NetName)
+        # read in the net using the streamer        
+        cnet = self.ReadNet(streamer)
+        # compile the net
+        self.CompileNet(cnet)
+        #find the names of the nodes
+        allnodes = self.GetNetNodes(cnet)
+        numnodes = self.LengthNodeList(allnodes)
+        print numnodes
     
     def read_cas_file(self,casfilename):
         '''
@@ -60,11 +66,14 @@ class pynetica:
         self.casdata = np.genfromtxt('###tmp###',names=True,
                             dtype=None,missing_values = '*,?')
         os.remove('###tmp###')
-    def chkerr():
-        if self.GetError(NE.ERROR_ERR):
-	   exceptionMsg = "PyNetica: Error in " + 
-	   str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(NE.ERROR_ERR))), ct.c_char_p).value)
+
+    # general error-checking function    
+    def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
+        if self.GetError(err_severity):
+	   exceptionMsg = ("PyNetica: Error in " + 
+	   str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
 	   raise NeticaException(exceptionMsg)
+
     #############
     # Key uber functions for Netica    
         
@@ -100,9 +109,38 @@ class pynetica:
     
     ###############
     # Small definitions and little functions
+    def GetError(self, severity = pnC.errseverity_ns_const.ERROR_ERR, after = None):
+		res = self.n.GetError_ns(self.env, severity, after)
+		if res: return ct.c_void_p(res)
+		else:   return None
+		
     def ErrorMessage(self, error):
 	return self.n.ErrorMessage_ns(error)
-    
+    def LengthNodeList(self,nodelist):
+        res = self.n.LengthNodeList_bn(nodelist)
+        self.chkerr()
+        return res
+        
+    def NewFileStreamer(self,infile):
+        streamer =  self.n.NewFileStream_ns (infile, self.env,None)
+        self.chkerr()
+        return streamer
+        
+    def CompileNet(self, net):
+        self.n.CompileNet_bn(net)
+        self.chkerr()
+
+    def ReadNet(self,streamer):
+        cnet = self.n.ReadNet_bn(streamer,pnC.netica_const.NO_VISUAL_INFO)
+        # check for errors
+        self.chkerr()
+        return cnet
+
+    def GetNetNodes(self,cnet):
+        allnodes = self.n.GetNetNodes2_bn(cnet,None)
+        self.chkerr()
+        return allnodes
+
 ###################
 # Error Classes
 ###################
@@ -129,3 +167,9 @@ class NeticaCloseFail(Exception):
     def __str__(self):
         return("\n\nCannot properly close Netica. Netica message is:\n%s\n" 
             %(self.msg))
+# -- General Netica Exception
+class NeticaException(Exception):
+	def __init__(self, msg):
+		self.msg = msg
+	def __str__(self):
+		return self.msg

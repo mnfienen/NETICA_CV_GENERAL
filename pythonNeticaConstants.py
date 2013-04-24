@@ -87,5 +87,5 @@ class sampling_bn_const:
 class learn_method_bn_const:
     COUNTING_LEARNING=1
     EM_LEARNING=3
-    GRADIENT_DESCENT_LEARNING4
+    GRADIENT_DESCENT_LEARNING=4
 
