@@ -20,9 +20,9 @@ class pynetica:
             self.license = None 
     #####
     # Helper functions that drive Netica functions
-    def rebuild_net(self,NetName,newCaseFile,voodoPar,outfilename):
+    def rebuild_net(self,NetName,newCaseFile,voodooPar,outfilename):
         '''
-         rebuild_net(NetName,newCaseFilename,voodoPar,outfilename)
+         rebuild_net(NetName,newCaseFilename,voodooPar,outfilename)
          a m!ke@usgs joint <mnfienen@usgs.gov>
          function to build the CPT tables for a new CAS file on an existing NET
          (be existing, meaning that the nodes, edges, and bins are dialed)
@@ -35,16 +35,27 @@ class pynetica:
          # create a Netica environment
         self.NewNeticaEnviron()
         # meke a streamer to the Net file
-        streamer = self.NewFileStreamer(NetName)
+        net_streamer = self.NewFileStreamer(NetName)
         # read in the net using the streamer        
-        cnet = self.ReadNet(streamer)
+        cnet = self.ReadNet(net_streamer)
         # compile the net
         self.CompileNet(cnet)
         #find the names of the nodes
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
-        print numnodes
-    
+        
+        for cn in np.arange(numnodes):
+            cnode = self.NthNode(allnodes,ct.c_int(cn))
+            self.DeleteNodeTables(cnode)
+        # make a streamer to the new cas file
+        new_cas_streamer = self.NewFileStreamer(newCaseFile)
+        self.ReviseCPTsByCaseFile(new_cas_streamer,allnodes,voodooPar)
+        outfile_streamer = self.NewFileStreamer(outfilename)
+        self.CompileNet(cnet)
+        self.WriteNet(cnet,outfile_streamer)
+        
+        
+            
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -70,7 +81,7 @@ class pynetica:
     # general error-checking function    
     def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
         if self.GetError(err_severity):
-	   exceptionMsg = ("PyNetica: Error in " + 
+	   exceptionMsg = ("pythonNeticaUtils: Error in " + 
 	   str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
 	   raise NeticaException(exceptionMsg)
 
@@ -135,12 +146,29 @@ class pynetica:
         # check for errors
         self.chkerr()
         return cnet
-
+    def NthNode(self,nodelist,index_n):
+        cnode = self.n.NthNode_bn(nodelist,index_n)
+        self.chkerr()
+        return cnode
+        
+    def DeleteNodeTables(self,node):
+        self.n.DeleteNodeTables_bn(node)
+        self.chkerr()
+        
     def GetNetNodes(self,cnet):
         allnodes = self.n.GetNetNodes2_bn(cnet,None)
         self.chkerr()
         return allnodes
-
+        
+    def ReviseCPTsByCaseFile(self,casStreamer,cnodes,voodooPar):
+        self.n.ReviseCPTsByCaseFile_bn(casStreamer,cnodes,ct.c_int(0),
+                                                ct.c_float(voodooPar))
+        self.chkerr()
+    
+    def WriteNet(self,cnet,filename_streamer):
+        self.n.WriteNet_bn(cnet,filename_streamer)
+        self.chkerr()
+        
 ###################
 # Error Classes
 ###################
