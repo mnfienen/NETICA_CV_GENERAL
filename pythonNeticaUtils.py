@@ -38,8 +38,19 @@ class pynetica:
         net_streamer = self.NewFileStreamer(NetName)
         # read in the net using the streamer        
         cnet = self.ReadNet(net_streamer)
-        # compile the net
-        self.CompileNet(cnet)
+        # remove the input net streamer
+        self.DeleteStream(net_streamer)
+        # make a copy of the Net for output
+
+        newnet = self.CopyNet(cnet,outfilename[:-5],"no_tables")
+        self.CompileNet(newnet)
+        # find the nodes
+        newnodes = self.GetNetNodes(newnet)
+        # make a streamer to the new cas file
+        new_cas_streamer = self.NewFileStreamer(newCaseFile)
+        self.ReviseCPTsByCaseFile(new_cas_streamer,newnodes,voodooPar)
+
+        '''
         #find the names of the nodes
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
@@ -52,8 +63,12 @@ class pynetica:
         self.ReviseCPTsByCaseFile(new_cas_streamer,allnodes,voodooPar)
         outfile_streamer = self.NewFileStreamer(outfilename)
         self.CompileNet(cnet)
-        self.WriteNet(cnet,outfile_streamer)
-        
+        '''
+
+        outfile_streamer = self.NewFileStreamer(outfilename)
+        self.WriteNet(newnet,outfile_streamer)
+        self.DeleteNet(cnet)
+        self.DeleteNet(newnet)
         
             
     def read_cas_file(self,casfilename):
@@ -137,15 +152,36 @@ class pynetica:
         self.chkerr()
         return streamer
         
+    def DeleteNet(self,cnet):
+        self.n.DeleteNet_bn(cnet)
+        self.chkerr()
+        
+    def DeleteStream(self,cstream):
+        self.n.DeleteStream_ns(cstream)
+        self.chkerr()
+        
+    def SetNetAutoUpdate(self,cnet,belief_value):
+        self.n.SetNetAutoUpdate_bn(cnet,belief_value)
+        self.chkerr()
+        
     def CompileNet(self, net):
         self.n.CompileNet_bn(net)
         self.chkerr()
-
+        
+    def CopyNet(self,oldnet, newnetname,options):
+        newnet = self.n.CopyNet_bn(oldnet,newnetname,self.env,options)
+        self.chkerr()
+        return newnet
+        
     def ReadNet(self,streamer):
-        cnet = self.n.ReadNet_bn(streamer,pnC.netica_const.NO_VISUAL_INFO)
+        cnet = self.n.ReadNet_bn(streamer,pnC.netica_const.NO_WINDOW)
         # check for errors
         self.chkerr()
+        # reset the findings
+        self.n.RetractNetFindings_bn(cnet)
+        self.chkerr()
         return cnet
+        
     def NthNode(self,nodelist,index_n):
         cnode = self.n.NthNode_bn(nodelist,index_n)
         self.chkerr()
@@ -164,7 +200,11 @@ class pynetica:
         self.n.ReviseCPTsByCaseFile_bn(casStreamer,cnodes,ct.c_int(0),
                                                 ct.c_float(voodooPar))
         self.chkerr()
-    
+        
+    def NewNet(self, netname):
+        self.n.NewNet_bn(netname,self.env)
+        self.chkerr()
+        
     def WriteNet(self,cnet,filename_streamer):
         self.n.WriteNet_bn(cnet,filename_streamer)
         self.chkerr()
