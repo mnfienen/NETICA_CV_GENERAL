@@ -5,6 +5,13 @@ import ctypes as ct
 import platform
 import pythonNeticaConstants as pnC
 
+class nodestruct:
+    def __init__(self):
+        self.name = None
+        self.title = None
+        self.beliefs = None
+        self.Nbeliefs = None
+
 class pynetica:
     def __init__(self,licfile):
         self.casdata = None
@@ -17,8 +24,9 @@ class pynetica:
         else:
             print "Warning: License File [%s] not found." %(self.licensefile)
             self.license = None 
-    #####
-    # Helper functions that drive Netica functions
+      #############################################
+     # Major validation and prediction functions #
+    #############################################
     def rebuild_net(self,NetName,newCaseFile,voodooPar,outfilename,EMflag=False):
         '''
          rebuild_net(NetName,newCaseFilename,voodooPar,outfilename)
@@ -40,8 +48,8 @@ class pynetica:
         # read in the net using the streamer        
         cnet = self.ReadNet(net_streamer)
         # remove the input net streamer
-        self.DeleteStream(net_streamer)
-        
+        self.DeleteStream(net_streamer)  
+        self.CompileNet(cnet)      
         #get the nodes and their number
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
@@ -62,7 +70,8 @@ class pynetica:
             newcaseset = self.NewCaseset('currcases')
             self.AddFileToCaseset(newcaseset,new_cas_streamer,1.0)
             self.LearnCPTs(newlearner,allnodes,newcaseset,voodooPar)
-            
+            self.DeleteCaseset(newcaseset)
+            self.DeleteLearner(newlearner)
             
         else:
             self.ReviseCPTsByCaseFile(new_cas_streamer,allnodes,voodooPar)
@@ -71,11 +80,30 @@ class pynetica:
         
 
         outfile_streamer = self.NewFileStreamer(outfilename)
- #       self.WriteNet(newnet,outfile_streamer)
         self.WriteNet(cnet,outfile_streamer)
         self.DeleteNet(cnet)
-#        self.DeleteNet(newnet)
         
+    def predictBayes(self,netName,nodeNamesIn,nodeNamesOut,dataIn,dataOut):
+                 # create a Netica environment
+        self.NewNeticaEnviron()
+        # meke a streamer to the Net file
+        net_streamer = self.NewFileStreamer(netName)
+        # read in the net using the streamer        
+        cnet = self.ReadNet(net_streamer)
+        # remove the input net streamer
+        self.DeleteStream(net_streamer)  
+        self.CompileNet(cnet)      
+        #get the nodes and their number
+        allnodes = self.GetNetNodes(cnet)
+        numnodes = self.LengthNodeList(allnodes)
+        NETNODES = []
+        for cn in np.arange(numnodes):
+            cnode = self.NthNode(allnodes,ct.c_int(cn))
+            NETNODES.append(nodestruct)
+            NETNODES[-1].name = self.GetNodeName(cnode)
+            NETNODES[-1].title = self.GetNodeTitle(cnode)
+            
+            
             
     def read_cas_file(self,casfilename):
         '''
@@ -106,8 +134,9 @@ class pynetica:
 	   str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
 	   raise NeticaException(exceptionMsg)
 
-    #############
-    # Key uber functions for Netica    
+     ###################################
+    # Key helper functions for Netica #   
+   ###################################
         
     def NewNeticaEnviron(self):
         '''
@@ -138,19 +167,19 @@ class pynetica:
             print self.mesg.value
         else:
             raise(NeticaCloseFail(res.value))    
-    
-    ###############
-    # Small definitions and little functions    
-    ### error handling    
+
     def GetError(self, severity = pnC.errseverity_ns_const.ERROR_ERR, after = None):
-		res = self.n.GetError_ns(self.env, severity, after)
-		if res: return ct.c_void_p(res)
-		else:   return None
+	res = self.n.GetError_ns(self.env, severity, after)
+	if res: return ct.c_void_p(res)
+	else:   return None
 		
     def ErrorMessage(self, error):
 	return self.n.ErrorMessage_ns(error)
 
-    ### The rest alphabetical
+        
+     ################################################################
+    # Small definitions and little functions in alphabetical order #  
+   ################################################################   
     def AddFileToCaseset(self,caseset,streamer,degree):
         self.n.AddFileToCaseset_cs(caseset,streamer,ct.c_double(degree))
         self.chkerr()
@@ -173,6 +202,10 @@ class pynetica:
         self.n.DeleteCaseset_cs(caseset)
         self.chkerr()
         
+    def DeleteLearner(self,newlearner):
+        self.n.DeleteLearner_bn(newlearner)
+        self.chkerr()
+        
     def DeleteNet(self,cnet):
         self.n.DeleteNet_bn(cnet)
         self.chkerr()
@@ -190,6 +223,16 @@ class pynetica:
         self.chkerr()
         return allnodes
     
+    def GetNodeName(self,cnode):
+        cname = self.n.GetNodeName_bn(cnode)
+        self.chkerr()
+        return cname
+    
+    def GetNodeTitle(self,cnode):
+        ctitle = self.n.GetNodeTitle_bn(cnode)
+        self.chkerr()
+        return ctitle
+                
     def LearnCPTs(self,learner,nodes,caseset,voodooPar):
         self.n.LearnCPTs_bn(learner,nodes,caseset,ct.c_double(voodooPar))
         self.chkerr()
@@ -248,17 +291,15 @@ class pynetica:
     
     def SetLearnerMaxTol(self,learner,tol):
         self.n.SetLearnerMaxTol_bn(learner,ct.c_double(tol))
-        self.chkerr()
-    
-            
+        self.chkerr()         
         
     def WriteNet(self,cnet,filename_streamer):
         self.n.WriteNet_bn(cnet,filename_streamer)
         self.chkerr()
         
-###################
-# Error Classes
-###################
+  #################
+ # Error Classes #
+#################
 # -- can't open external file
 class dllFail(Exception):
     def __init__(self,cplat):
