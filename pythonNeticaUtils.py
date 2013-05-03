@@ -4,6 +4,7 @@ import re
 import ctypes as ct
 import platform
 import pythonNeticaConstants as pnC
+import cthelper as cth
 
 class nodestruct:
     def __init__(self):
@@ -11,7 +12,15 @@ class nodestruct:
         self.title = None
         self.beliefs = None
         self.Nbeliefs = None
+        self.Likelihood = None
+        self.state = []
 
+class statestruct:
+    def __init__(self):
+        self.obj = None
+        self.name = None
+        self.numeric = None
+        
 class pynetica:
     def __init__(self,licfile):
         self.casdata = None
@@ -87,7 +96,7 @@ class pynetica:
                  # create a Netica environment
         self.NewNeticaEnviron()
         # meke a streamer to the Net file
-        net_streamer = self.NewFileStreamer(netName)
+        net_streamer = self.NewFileStreamer(netName + '.neta')
         # read in the net using the streamer        
         cnet = self.ReadNet(net_streamer)
         # remove the input net streamer
@@ -96,14 +105,23 @@ class pynetica:
         #get the nodes and their number
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
-        NETNODES = []
+        self.NETNODES = []
+        # loop over the nodes
         for cn in np.arange(numnodes):
             cnode = self.NthNode(allnodes,ct.c_int(cn))
-            NETNODES.append(nodestruct)
-            NETNODES[-1].name = self.GetNodeName(cnode)
-            NETNODES[-1].title = self.GetNodeTitle(cnode)
-            
-            
+            self.NETNODES.append(nodestruct())
+            self.NETNODES[-1].name = cth.c_char_p2str(self.GetNodeName(cnode))
+            self.NETNODES[-1].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
+            self.NETNODES[-1].levels = self.GetNodeLevels(cnode)
+            self.NETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
+            self.NETNODES[-1].beliefs = cth.c_float_p2str(
+                                    self.GetNodeBeliefs(cnode))[0:self.NETNODES[-1].Nbeliefs]
+            self.NETNODES[-1].likelihood = cth.c_float_p2str(
+                                    self.GetNodeLikelihood(cnode))[0:self.NETNODES[-1].Nbeliefs]
+            # loop over the states in each node
+            for cs in range(self.NETNODES[-1].Nbeliefs):
+                self.NETNODES[-1].state.append(statestruct())
+                self.NETNODES[-1].state[-1].name = self.GetNodeStateName(cnode,cs)            
             
     def read_cas_file(self,casfilename):
         '''
@@ -222,12 +240,38 @@ class pynetica:
         allnodes = self.n.GetNetNodes2_bn(cnet,None)
         self.chkerr()
         return allnodes
+
+    def GetNodeBeliefs(self,cnode):
+        beliefs = self.n.GetNodeBeliefs_bn(cnode)
+        self.chkerr()
+        return beliefs
+    
+    def GetNodeLevels(self,cnode):
+        nodelevels = self.n.GetNodeLevels_bn(cnode)
+        self.chkerr()
+        return nodelevels
+
+    def GetNodeLikelihood(self,cnode):
+        nodelikelihood = self.n.GetNodeLikelihood_bn(cnode)
+        self.chkerr()
+        return nodelikelihood
+        
     
     def GetNodeName(self,cnode):
         cname = self.n.GetNodeName_bn(cnode)
         self.chkerr()
         return cname
+        
+    def GetNodeNumberStates(self,cnode):
+        numstates = self.n.GetNodeNumberStates_bn(cnode)
+        self.chkerr()
+        return numstates
     
+    def GetNodeStateName(self,cnode,cstate):
+        stname = self.n.GetNodeStateName_bn(cnode,ct.c_int(cstate))
+        self.chkerr()
+        return stname
+        
     def GetNodeTitle(self,cnode):
         ctitle = self.n.GetNodeTitle_bn(cnode)
         self.chkerr()

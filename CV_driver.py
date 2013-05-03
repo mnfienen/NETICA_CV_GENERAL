@@ -11,4 +11,8 @@ a m!ke@usgs joint
 # Initialize a pynetica instance/env using password in a text file
 cdat = pyn.pynetica('mikeppwd.txt')
 
-cas_dat_root = 
+
+cdat.predictBayes('SLR',None,None,None,None)
+
+
+#cas_dat_root = 
