@@ -1,0 +1,23 @@
+<data>
+<input_files>
+	<baseNET>SLR.neta</baseNET>
+	<baseCAS>SEAWAT2NETICA_SLR_00.cas</baseCAS>
+	<pwdfile>mikeppwd.txt</pwdfile>
+</input_files>
+<kfold_data>
+	<numfolds>3</numfolds>
+</kfold_data>
+
+<scenarios>
+<!-- NOTE! Can only handle a single scenario for now/ -->
+	<scenario>
+		<name>updateALL_predWT</name>
+		<input>islandwidth</input>
+		<input>islandelev</input>
+		<input>mean_rch</input>
+		<input>maxWT</input>
+		<response>mean_DTW</response>
+	</scenario>
+</scenarios>
+
+</data>

@@ -22,17 +22,19 @@ class statestruct:
         self.numeric = None
         
 class pynetica:
-    def __init__(self,licfile):
+    def __init__(self):
         self.casdata = None
         self.n = None #this is the netica environment
         self.mesg = ct.create_string_buffer('\000' * 1024)
+
+    def start_environment(self,licfile):
         # read in the license file information
         self.licensefile = licfile
         if os.path.exists(self.licensefile):
             self.license = open(self.licensefile,'r').readlines()[0].strip().split()[0]
         else:
             print "Warning: License File [%s] not found." %(self.licensefile)
-            self.license = None 
+            self.license = None         
       #############################################
      # Major validation and prediction functions #
     #############################################
@@ -91,20 +93,39 @@ class pynetica:
         outfile_streamer = self.NewFileStreamer(outfilename)
         self.WriteNet(cnet,outfile_streamer)
         self.DeleteNet(cnet)
+        self.CloseNetica()
         
-    def predictBayes(self,netName,nodeNamesIn,nodeNamesOut,dataIn,dataOut):
-                 # create a Netica environment
+    def OpenNeticaNet(self,netName):
+        '''
+        Start a Netica environment and open a net identified by
+        netName.
+        Returns a pointed to the opened net after it is compiled
+        '''
+        # create a Netica environment
         self.NewNeticaEnviron()
         # meke a streamer to the Net file
-        net_streamer = self.NewFileStreamer(netName + '.neta')
+        cname = netName
+        if '.neta' not in netName:
+            cname += '.neta'
+        net_streamer = self.NewFileStreamer(cname)
         # read in the net using the streamer        
         cnet = self.ReadNet(net_streamer)
         # remove the input net streamer
         self.DeleteStream(net_streamer)  
         self.CompileNet(cnet)      
+        return cnet
+                
+    def ReadNodeInfo(self,netName):
+        '''
+        Read in all information on beliefs, states, and likelihoods for all 
+        nodes in the net called netName
+        '''
+        # open the net stored in netName
+        cnet = self.OpenNeticaNet(netName)
         #get the nodes and their number
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
+        print 'Reading Node information from net --> %s' %(netName)
         self.NETNODES = []
         # loop over the nodes
         for cn in np.arange(numnodes):
@@ -112,17 +133,34 @@ class pynetica:
             self.NETNODES.append(nodestruct())
             self.NETNODES[-1].name = cth.c_char_p2str(self.GetNodeName(cnode))
             self.NETNODES[-1].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
-            self.NETNODES[-1].levels = self.GetNodeLevels(cnode)
+            print '   Parsing node --> %s' %(self.NETNODES[-1].title)
             self.NETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
             self.NETNODES[-1].beliefs = cth.c_float_p2str(
-                                    self.GetNodeBeliefs(cnode))[0:self.NETNODES[-1].Nbeliefs]
+                                    self.GetNodeBeliefs(cnode),
+                                    self.NETNODES[-1].Nbeliefs)
             self.NETNODES[-1].likelihood = cth.c_float_p2str(
-                                    self.GetNodeLikelihood(cnode))[0:self.NETNODES[-1].Nbeliefs]
+                                    self.GetNodeLikelihood(cnode),
+                                    self.NETNODES[-1].Nbeliefs)
+            self.NETNODES[-1].levels =  cth.c_double_p2str(
+                                    self.GetNodeLevels(cnode),
+                                    self.NETNODES[-1].Nbeliefs + 1)
+                                    
             # loop over the states in each node
             for cs in range(self.NETNODES[-1].Nbeliefs):
                 self.NETNODES[-1].state.append(statestruct())
                 self.NETNODES[-1].state[-1].name = self.GetNodeStateName(cnode,cs)            
-            
+        self.CloseNetica()
+        
+    def predictBayes(self,netName,nodeNamesIn,nodeNamesOut,dataIn,dataOut):
+        # first read in the information about a Net's nodes
+        self.ReadNodeInfo(netName)
+        
+        cnet = self.OpenNeticaNet(netName)
+        #retract all the findings
+        self.RetractNetFindings(cnet)
+        
+        
+        
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -319,7 +357,11 @@ class pynetica:
         self.n.RetractNetFindings_bn(cnet)
         self.chkerr()
         return cnet
-
+        
+    def RetractNetFindings(self,cnet):
+        self.n.RetractNetFindings_bn(cnet)
+        self.chkerr()
+        
     def ReviseCPTsByCaseFile(self,casStreamer,cnodes,voodooPar):
         self.n.ReviseCPTsByCaseFile_bn(casStreamer,cnodes,ct.c_int(0),
                                                 ct.c_double(voodooPar))
