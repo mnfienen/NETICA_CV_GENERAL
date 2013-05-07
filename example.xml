@@ -9,7 +9,6 @@
 </kfold_data>
 
 <scenarios>
-<!-- NOTE! Can only handle a single scenario for now/ -->
 	<scenario>
 		<name>updateALL_predWT</name>
 		<input>islandwidth</input>
@@ -17,7 +16,8 @@
 		<input>mean_rch</input>
 		<input>maxWT</input>
 		<response>mean_DTW</response>
-	</scenario>
+	</scenario>	
+
 </scenarios>
 
 </data>

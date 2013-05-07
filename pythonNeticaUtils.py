@@ -13,7 +13,16 @@ class nodestruct:
         self.beliefs = None
         self.Nbeliefs = None
         self.Likelihood = None
+        self.continuous = False
         self.state = []
+
+class predictions:
+    def __init__(self):
+        self.pdf = None
+        self.pdfIn = None
+        self.ranges = None
+        self.rangesplt = None
+        self.priorPDF = None
 
 class statestruct:
     def __init__(self):
@@ -154,13 +163,56 @@ class pynetica:
     def predictBayes(self,netName,nodeNamesIn,nodeNamesOut,dataIn,dataOut):
         # first read in the information about a Net's nodes
         self.ReadNodeInfo(netName)
-        
+        '''
+        Initialize output 
+        '''       
+        # initialize dictionary of predictions objects
+        self.pred = dict()
         cnet = self.OpenNeticaNet(netName)
         #retract all the findings
         self.RetractNetFindings(cnet)
-        
-        
-        
+        for CNODES in self.NETNODES:
+            Cname = CNODES.name
+            self.pred[Cname] = predictions()
+            Nbins = CNODES.Nbeliefs
+            self.pred[Cname].pdf = np.zeros((self.N,Nbins))
+            self.pred[Cname].ranges = CNODES.levels
+            # get plottable ranges
+            if Nbins < len(CNODES.levels):
+                # continuos, so plot bin centers
+                CNODES.continuous = True
+                self.pred[Cname].rangesplt = self.pred[Cname].ranges[1:]-0.5*np.diff(self.pred[Cname].ranges)
+            else:
+                #discrete so just use the bin values
+                self.pred[Cname].rangesplt = self.pred[Cname].ranges.copy()
+
+            self.pred[Cname].priorpdf = CNODES.beliefs
+            
+            #
+            # Now loop over each input and get the Netica predictions
+            #
+            for i in np.arange(self.N):
+                # first have to enter the values for each node
+                # retract all the findings again
+                self.RetractNetFindings(cnet)
+                allnodes = self.GetNetNodes(cnet)
+                numnodes = self.LengthNodeList(allnodes)
+                for cn in np.arange(numnodes):
+                    cnode = self.NthNode(allnodes,ct.c_int(cn))
+                    cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
+                    # set the current node values
+                    if cnodename in self.probpars.scenario.nodesIn:
+                        self.EnterNodeValue(cnode,self.casdata[cnodename][i])
+                    # obtain the updated beliefs 
+                    self.pred[cnodename].pdf[i,:] = cth.c_float_p2str(
+                                        self.GetNodeBeliefs(cnode),
+                                        self.GetNodeNumberStates(cnode))
+            #
+        # Do some postprocessing
+        #
+#        for i in self.probpars.scenario.response:
+#            pdfRanges = 
+
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -273,7 +325,15 @@ class pynetica:
     def DeleteStream(self,cstream):
         self.n.DeleteStream_ns(cstream)
         self.chkerr()
-
+        
+    def EnterFinding(self,cnode,cval):
+        self.n.EnterFinding_bn(cnode,ct.c_double(cval))
+        self.chkerr()
+        
+    def EnterNodeValue(self,cnode,cval):
+        self.n.EnterNodeValue_bn(cnode,ct.c_double(cval))
+        self.chkerr()
+        
     def GetNetNodes(self,cnet):
         allnodes = self.n.GetNetNodes2_bn(cnet,None)
         self.chkerr()
