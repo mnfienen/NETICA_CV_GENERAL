@@ -28,8 +28,10 @@ class input_parameters:
         self.scenario.name =  inpars.findall('.//scenario/name')[0].text
         self.scenario.nodesIn = []
         for cv in inpars.findall('.//scenario/input'):
-            self.scenario.nodesIn.append(cv.text.lower())
-        self.scenario.response = inpars.findall('.//scenario/response')[0].text
+            self.scenario.nodesIn.append(cv.text)
+        self.scenario.response = []
+        for cr in  inpars.findall('.//scenario/response'):
+            self.scenario.response.append(cr.text)
 
 
 

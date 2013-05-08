@@ -5,6 +5,7 @@ import ctypes as ct
 import platform
 import pythonNeticaConstants as pnC
 import cthelper as cth
+import stats_functions as statfuns
 
 class nodestruct:
     def __init__(self):
@@ -23,6 +24,9 @@ class predictions:
         self.ranges = None
         self.rangesplt = None
         self.priorPDF = None
+        self.probModelPrior = None
+        self.probModelUpdate = None
+        self.dataPDF = None
 
 class statestruct:
     def __init__(self):
@@ -186,33 +190,57 @@ class pynetica:
                 #discrete so just use the bin values
                 self.pred[Cname].rangesplt = self.pred[Cname].ranges.copy()
 
-            self.pred[Cname].priorpdf = CNODES.beliefs
+            self.pred[Cname].priorPDF = CNODES.beliefs
             
-            #
-            # Now loop over each input and get the Netica predictions
-            #
-            for i in np.arange(self.N):
-                # first have to enter the values for each node
-                # retract all the findings again
-                self.RetractNetFindings(cnet)
-                allnodes = self.GetNetNodes(cnet)
-                numnodes = self.LengthNodeList(allnodes)
-                for cn in np.arange(numnodes):
-                    cnode = self.NthNode(allnodes,ct.c_int(cn))
-                    cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
-                    # set the current node values
-                    if cnodename in self.probpars.scenario.nodesIn:
-                        self.EnterNodeValue(cnode,self.casdata[cnodename][i])
-                    # obtain the updated beliefs 
-                    self.pred[cnodename].pdf[i,:] = cth.c_float_p2str(
-                                        self.GetNodeBeliefs(cnode),
-                                        self.GetNodeNumberStates(cnode))
-            #
+            allnodes = self.GetNetNodes(cnet)
+            numnodes = self.LengthNodeList(allnodes)
+        #
+        # Now loop over each input and get the Netica predictions
+        #
+        for i in np.arange(self.N):
+            # first have to enter the values for each node
+            # retract all the findings again
+            self.RetractNetFindings(cnet)
+            for cn in np.arange(numnodes):
+                cnode = self.NthNode(allnodes,ct.c_int(cn))
+                cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
+                # set the current node values
+                if cnodename in self.probpars.scenario.nodesIn:
+                    self.EnterNodeValue(cnode,self.casdata[cnodename][i])
+            for cn in np.arange(numnodes):
+            # obtain the updated beliefs from ALL nodes including input and output
+                cnode = self.NthNode(allnodes,ct.c_int(cn))
+                cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
+                # set the current node values
+                self.pred[cnodename].pdf[i,:] = cth.c_float_p2str(
+                                self.GetNodeBeliefs(cnode),
+                                self.GetNodeNumberStates(cnode))
+        #
         # Do some postprocessing
         #
-#        for i in self.probpars.scenario.response:
-#            pdfRanges = 
-
+        currstds = np.ones((self.N,1))*1.0e-16
+        for i in self.probpars.scenario.response:
+            print i
+            # record whether the node is continuous or discrete
+            for kk in np.arange(len(self.NETNODES)):
+                if self.NETNODES[kk].name == i:
+                    if self.NETNODES[kk].continuous:
+                        curr_continuous='continuous'
+                    else:
+                        curr_continuous = 'discrete'
+            pdfRanges = self.pred[i].ranges
+            pdfParam = np.hstack((np.atleast_2d(self.casdata[i]).T,currstds))
+            pdfData = statfuns.makeInputPdf(pdfRanges,pdfParam,'norm',curr_continuous)
+            
+            self.pred[i].probModelUpdate = np.nansum(pdfData * self.pred[i].pdf,1)
+            self.pred[i].probModelPrior = np.nansum(pdfData * np.tile(self.pred[i].priorPDF,
+                                                                (self.N,1)),1)
+            self.pred[i].logLikelihoodRatio = (np.log10(self.pred[i].probModelUpdate + np.spacing(1)) - 
+                                  np.log10(self.pred[i].probModelPrior + np.spacing(1)))
+            self.pred[i].dataPDF = pdfData.copy()
+            
+            # note --> np.spacing(1) is like eps in MATLAB
+            
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
