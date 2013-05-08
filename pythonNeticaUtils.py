@@ -6,6 +6,8 @@ import platform
 import pythonNeticaConstants as pnC
 import cthelper as cth
 import stats_functions as statfuns
+import matplotlib.pyplot as plt
+
 
 class nodestruct:
     def __init__(self):
@@ -164,7 +166,11 @@ class pynetica:
                 self.NETNODES[-1].state[-1].name = self.GetNodeStateName(cnode,cs)            
         self.CloseNetica()
         
-    def predictBayes(self,netName,nodeNamesIn,nodeNamesOut,dataIn,dataOut):
+    def predictBayes(self,netName,plotflag):
+        '''
+        netName --> name of the built net to make predictions on
+        plotflag --> if True, make the suite of plots
+        '''
         # first read in the information about a Net's nodes
         self.ReadNodeInfo(netName)
         '''
@@ -172,6 +178,7 @@ class pynetica:
         '''       
         # initialize dictionary of predictions objects
         self.pred = dict()
+        print 'Making predictions for net named --> %s' %(netName)
         cnet = self.OpenNeticaNet(netName)
         #retract all the findings
         self.RetractNetFindings(cnet)
@@ -220,7 +227,7 @@ class pynetica:
         #
         currstds = np.ones((self.N,1))*1.0e-16
         for i in self.probpars.scenario.response:
-            print i
+            print 'postprocessing output node --> %s' %(i)
             # record whether the node is continuous or discrete
             for kk in np.arange(len(self.NETNODES)):
                 if self.NETNODES[kk].name == i:
@@ -238,9 +245,14 @@ class pynetica:
             self.pred[i].logLikelihoodRatio = (np.log10(self.pred[i].probModelUpdate + np.spacing(1)) - 
                                   np.log10(self.pred[i].probModelPrior + np.spacing(1)))
             self.pred[i].dataPDF = pdfData.copy()
-            
             # note --> np.spacing(1) is like eps in MATLAB
-            
+        #
+        # Make plots if the user requests it
+        #
+        if plotflag:
+            print 'making plots for     output node --> %s' %(i)
+        
+        self.CloseNetica()
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.

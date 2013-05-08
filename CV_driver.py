@@ -1,5 +1,3 @@
-import numpy as np
-import os
 import pythonNeticaUtils as pyn
 import CV_tools as CVT
 '''
@@ -32,5 +30,5 @@ cdat.numfolds = cdat.probpars.numfolds
 cdat.allfolds = CVT.all_folds()
 cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
-cdat.predictBayes(cdat.probpars.baseNET,None,None,None,None)
-
+# run the predictions using the current net --> this will need to get looped...
+cdat.predictBayes(cdat.probpars.baseNET,True)
