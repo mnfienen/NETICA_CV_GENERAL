@@ -7,7 +7,7 @@ def c_char_p2str(cp):
 # convert a ctypes float pointer to a float
 # N.B. one can inadvertantly reference off the end of the resulting list!!\
 # it is best to trim based on the known length of the returned array!
-def c_float_p2str(cp,numels):
+def c_float_p2float(cp,numels):
     '''
     cp --> is a pointer to the start of a float array
     numel --> is the number of elements of the array to return
@@ -17,7 +17,7 @@ def c_float_p2str(cp,numels):
 # convert a ctypes double pointer to a float
 # N.B. one can inadvertantly reference off the end of the resulting list!!\
 # it is best to trim based on the known length of the returned array!
-def c_double_p2str(cp,numels):
+def c_double_p2float(cp,numels):
     '''
     cp --> is a pointer to the start of a double array
     numel --> is the number of elements of the array to return

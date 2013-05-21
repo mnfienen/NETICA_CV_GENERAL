@@ -19,6 +19,22 @@ class nodestruct:
         self.continuous = False
         self.state = []
 
+class pred_stats:
+    def __init__(self):
+        self.alpha = None
+        self.palpha = None
+        self.mean = None
+        self.std = None
+        self.median = None
+        self.p025 = None
+        self.p05 = None
+        self.p25 = None
+        self.p75 = None
+        self.p95 = None
+        self.p975 = None
+        self.palphaPlus = None
+        self.pAlphaMinus = None
+        
 class predictions:
     def __init__(self):
         self.pdf = None
@@ -29,6 +45,8 @@ class predictions:
         self.probModelPrior = None
         self.probModelUpdate = None
         self.dataPDF = None
+        # statistics go here
+        self.stats = None
 
 class statestruct:
     def __init__(self):
@@ -48,7 +66,7 @@ class pynetica:
         if os.path.exists(self.licensefile):
             self.license = open(self.licensefile,'r').readlines()[0].strip().split()[0]
         else:
-            print "Warning: License File [%s] not found." %(self.licensefile)
+            print "Warning: License File [%s] not found.\n Opening Netica without licence, which will limit size of nets that can be used." %(self.licensefile)
             self.license = None         
       #############################################
      # Major validation and prediction functions #
@@ -150,13 +168,13 @@ class pynetica:
             self.NETNODES[-1].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
             print '   Parsing node --> %s' %(self.NETNODES[-1].title)
             self.NETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
-            self.NETNODES[-1].beliefs = cth.c_float_p2str(
+            self.NETNODES[-1].beliefs = cth.c_float_p2float(
                                     self.GetNodeBeliefs(cnode),
                                     self.NETNODES[-1].Nbeliefs)
-            self.NETNODES[-1].likelihood = cth.c_float_p2str(
+            self.NETNODES[-1].likelihood = cth.c_float_p2float(
                                     self.GetNodeLikelihood(cnode),
                                     self.NETNODES[-1].Nbeliefs)
-            self.NETNODES[-1].levels =  cth.c_double_p2str(
+            self.NETNODES[-1].levels =  cth.c_double_p2float(
                                     self.GetNodeLevels(cnode),
                                     self.NETNODES[-1].Nbeliefs + 1)
                                     
@@ -178,6 +196,7 @@ class pynetica:
         '''       
         # initialize dictionary of predictions objects
         self.pred = dict()
+
         print 'Making predictions for net named --> %s' %(netName)
         cnet = self.OpenNeticaNet(netName)
         #retract all the findings
@@ -185,6 +204,7 @@ class pynetica:
         for CNODES in self.NETNODES:
             Cname = CNODES.name
             self.pred[Cname] = predictions()
+            self.pred[Cname].stats = pred_stats()
             Nbins = CNODES.Nbeliefs
             self.pred[Cname].pdf = np.zeros((self.N,Nbins))
             self.pred[Cname].ranges = CNODES.levels
@@ -192,6 +212,7 @@ class pynetica:
             if Nbins < len(CNODES.levels):
                 # continuos, so plot bin centers
                 CNODES.continuous = True
+                self.pred[Cname].continuous = True
                 self.pred[Cname].rangesplt = self.pred[Cname].ranges[1:]-0.5*np.diff(self.pred[Cname].ranges)
             else:
                 #discrete so just use the bin values
@@ -218,23 +239,22 @@ class pynetica:
             # obtain the updated beliefs from ALL nodes including input and output
                 cnode = self.NthNode(allnodes,ct.c_int(cn))
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
-                # set the current node values
-                self.pred[cnodename].pdf[i,:] = cth.c_float_p2str(
+                # get the current belief values
+                self.pred[cnodename].pdf[i,:] = cth.c_float_p2float(
                                 self.GetNodeBeliefs(cnode),
                                 self.GetNodeNumberStates(cnode))
+
         #
-        # Do some postprocessing
+        # Do some postprocessing 
         #
         currstds = np.ones((self.N,1))*1.0e-16
         for i in self.probpars.scenario.response:
             print 'postprocessing output node --> %s' %(i)
             # record whether the node is continuous or discrete
-            for kk in np.arange(len(self.NETNODES)):
-                if self.NETNODES[kk].name == i:
-                    if self.NETNODES[kk].continuous:
-                        curr_continuous='continuous'
-                    else:
-                        curr_continuous = 'discrete'
+            if self.pred[i].continuous:
+                curr_continuous='continuous'
+            else:
+                curr_continuous = 'discrete'
             pdfRanges = self.pred[i].ranges
             pdfParam = np.hstack((np.atleast_2d(self.casdata[i]).T,currstds))
             pdfData = statfuns.makeInputPdf(pdfRanges,pdfParam,'norm',curr_continuous)
@@ -246,6 +266,10 @@ class pynetica:
                                   np.log10(self.pred[i].probModelPrior + np.spacing(1)))
             self.pred[i].dataPDF = pdfData.copy()
             # note --> np.spacing(1) is like eps in MATLAB
+            # get the PDF stats here
+            print 'getting stats'
+            self.PDF2Stats(i,alpha=0.1)
+            
         #
         # Make plots if the user requests it
         #
@@ -253,6 +277,79 @@ class pynetica:
             print 'making plots for     output node --> %s' %(i)
         
         self.CloseNetica()
+    
+    def PDF2Stats(self,nodename, alpha = None):
+        '''
+        extract statistics from the PDF informed by a Bayesian Net
+        
+        most information is contained in self which is a pynetica object
+        however, the nodename indicates which node to calculate stats for
+        '''
+        # first broadcast onto an even range
+        interpValues = np.linspace(0,1,101) * (self.pred[nodename].ranges[-1]
+                                                -self.pred[nodename].ranges[0])
+        probInterpValues = np.linspace(0,1,41)
+        # normalize the PDF in case it doesn't sum to unity        
+        pdf = np.atleast_2d(self.pred[nodename].pdf).copy()
+        pdf /= np.tile(np.atleast_2d(np.sum(pdf,1)).T,(1, pdf.shape[1]))
+        
+        # Start computing the statistics
+        [Nlocs,Npdf] = pdf.shape
+        blank = 0.0 + ~np.isnan(pdf[:,0])
+        blank[blank==0]=np.nan
+        blank = np.atleast_2d(blank).T
+
+        id1 = np.arange(Npdf)
+        if self.pred[nodename].continuous:
+            id2  = np.arange(Npdf)+1
+        else:
+            id2 = np.arange(Npdf)
+        
+        # handle the specific case of a user-specified percentile range
+        if alpha:
+            self.alpha = alpha
+            dalpha = (1.0 - alpha)/2.0
+            # first return the percentile requested in bAlpha
+            self.pred[nodename].stats.palpha = blank*statfuns.getPy(
+                                                alpha,pdf,
+                                                self.pred[nodename].ranges)
+
+            # now get the tails from requested bAlpha
+            # upper tail
+            self.pred[nodename].stats.palphaPlus = blank*statfuns.getPy(
+                                                1.0-dalpha,pdf,
+                                                self.pred[nodename].ranges)
+                                                
+            # lower tail
+            self.pred[nodename].stats.palphaMinus = blank*statfuns.getPy(
+                                                dalpha,pdf,
+                                                self.pred[nodename].ranges)
+        # now handle the p75,p95, and p975 cases
+        # 75th percentiles
+        self.pred[nodename].stats.p25 = blank*statfuns.getPy(0.25,pdf,
+                                                self.pred[nodename].ranges)    
+        self.pred[nodename].stats.p75 = blank*statfuns.getPy(0.75,pdf,
+                                                self.pred[nodename].ranges)    
+        # 95th percentiles
+        self.pred[nodename].stats.p05 = blank*statfuns.getPy(0.05,pdf, 
+                                                self.pred[nodename].ranges)    
+        self.pred[nodename].stats.p95 = blank*statfuns.getPy(0.95,pdf,
+                                                self.pred[nodename].ranges)    
+        # 97.5th percentiles
+        self.pred[nodename].stats.p025 = blank*statfuns.getPy(0.025,pdf, 
+                                                self.pred[nodename].ranges)    
+        self.pred[nodename].stats.p975 = blank*statfuns.getPy(0.975,pdf,
+                                                self.pred[nodename].ranges)    
+            
+            
+            
+            
+            
+            
+            
+    def PredictBayesPostProc(self,netName):
+        aaa=1
+        print aaa
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -378,11 +475,24 @@ class pynetica:
         allnodes = self.n.GetNetNodes2_bn(cnet,None)
         self.chkerr()
         return allnodes
-
+        
     def GetNodeBeliefs(self,cnode):
         beliefs = self.n.GetNodeBeliefs_bn(cnode)
         self.chkerr()
         return beliefs
+
+    def GetNodeExpectedValue(self,cnode):
+        std_dev = ct.c_double()
+        # make a temporary function variable to be able to set the
+        # return value
+        tmpNeticaFun = self.n.GetNodeExpectedValue_bn
+        tmpNeticaFun.restype=ct.c_double
+        expected_val = tmpNeticaFun(cnode,ct.byref(std_dev),
+                                        None,None)
+        print expected_val
+        print std_dev.value
+        self.chkerr()
+        return expected_val, std_dev.value
     
     def GetNodeLevels(self,cnode):
         nodelevels = self.n.GetNodeLevels_bn(cnode)
