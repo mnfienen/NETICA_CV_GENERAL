@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.stats import norm
 from scipy.interpolate import interp1d
+from numpy.linalg import lstsq as nplstsq
+from scipy.stats import nanmean
 
 def makeInputPdf(pdfRanges, pdfParam,pdfType='norm',cont_discrete='continuous'):
     '''
@@ -27,7 +29,6 @@ def getPy(p,pdf,ranges):
     return the value of y with probability p from the PDF supplied
     this is the percentile (p)
     '''
-    ranges = np.array(ranges)
     M = len(ranges)
     N,Nbins = pdf.shape
     f = np.cumsum(pdf,1)
@@ -52,3 +53,78 @@ def getPy(p,pdf,ranges):
             # a function that then performs the interpolation
             py[i] = interp1d(funique,ranges[uniqueid])(p)
     return py
+
+def getMeanStdMostProb(pdf,ranges,continuous,blank):
+    '''
+    return the Mean, StdDev, and MostProbably value from a pdf
+    '''
+    [Nlocs,Npdf] = pdf.shape
+    id1 = np.arange(Npdf)
+    if continuous:
+        id2  = np.arange(Npdf)+1
+    else:
+        id2 = np.arange(Npdf)
+    # MOST PROBABLE FIRST
+    # preallocate output
+    mostProb = np.nan * np.ones((Nlocs,1))
+    for i in np.arange(Nlocs):
+        cid = np.where(pdf[i,:]==np.max(pdf[i,:]))
+        if len(cid)>1:
+            cid = cid[-1]
+        else:
+            cid = cid[0]
+        mostProb[i] = 0.5*(ranges[id1[cid]]+ranges[id2[cid]])[0]
+    # NEXT, DO THE MEAN and STDDEV
+    
+    retMean = np.atleast_2d(np.dot(pdf,(ranges[id1]+ranges[id2])/2.0)).T*blank
+    retStd = np.zeros((Nlocs,1))
+    # set up the sub-bin variance
+    binWidthVariance = 0.5*np.atleast_2d(np.dot(pdf,(ranges[id2]-ranges[id1])/np.sqrt(3.0))).T
+    for i in np.arange(Nlocs):
+        retStd[i] = np.dot(pdf[i,:],(((ranges[id1]+ranges[id2])/2.0)-retMean[i])**2.0)
+        retStd[i] = np.sqrt(binWidthVariance[i] + retStd[i])
+        
+    return retMean, retStd,mostProb,      
+    
+def LSQR_skill(x,z,w=None):
+    '''
+    function to calculate skill of a model. Performs (optionally) weighted
+    regression to get the coefficients.
+    input:
+    x --> vector of expected values (ML or mean)
+    z --> observations
+    w --> optional vector of weights to go on the diagonal
+    output:
+    b   --> mx1 estimated parameters: z^ = X*b;
+    sk  --> the model skill
+    n   --> the effective dof =(sum(w)/max(w))
+    msz --> variance of data
+    msr --> variance of residuals
+    nmse --> percent of white error input variance passed by weights
+    '''
+    m = 2
+    n = len(x)
+    X = np.hstack((np.ones((n,1)),x))
+    
+    # handle the weights - assuming uncorrelated errors for now
+    if w:
+        Q = np.diag(w)
+    else:
+        Q = np.diag(np.ones(n))
+        
+    # form the normal equations including weights
+    XtX = np.dot(np.dot(X.T,Q),X)
+    
+    # solve for b
+    b = nplstsq(X,z)[0]
+    
+    # calculate the variance of the data
+    obsresid = z-np.mean(z)
+    msz = np.dot(obsresid.T,obsresid)/n
+    # calculate the variance of the residuals
+    modresid = np.dot(X,b) - z
+    msr = np.dot(modresid.T,modresid)/n
+    # calculate the skill
+    sk = 1-msr/msz
+    
+    return sk

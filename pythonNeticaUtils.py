@@ -7,7 +7,7 @@ import pythonNeticaConstants as pnC
 import cthelper as cth
 import stats_functions as statfuns
 import matplotlib.pyplot as plt
-
+from scipy.stats import nanmean
 
 class nodestruct:
     def __init__(self):
@@ -24,6 +24,7 @@ class pred_stats:
         self.alpha = None
         self.palpha = None
         self.mean = None
+        self.mostProb = None
         self.std = None
         self.median = None
         self.p025 = None
@@ -34,9 +35,15 @@ class pred_stats:
         self.p975 = None
         self.palphaPlus = None
         self.pAlphaMinus = None
+        self.rmseM = None
+        self.meaneM = None
+        self.rmseML = None
+        self.meaneML = None
+
         
 class predictions:
     def __init__(self):
+        self.z = None
         self.pdf = None
         self.pdfIn = None
         self.ranges = None
@@ -207,7 +214,7 @@ class pynetica:
             self.pred[Cname].stats = pred_stats()
             Nbins = CNODES.Nbeliefs
             self.pred[Cname].pdf = np.zeros((self.N,Nbins))
-            self.pred[Cname].ranges = CNODES.levels
+            self.pred[Cname].ranges = np.array(CNODES.levels)
             # get plottable ranges
             if Nbins < len(CNODES.levels):
                 # continuos, so plot bin centers
@@ -256,7 +263,8 @@ class pynetica:
             else:
                 curr_continuous = 'discrete'
             pdfRanges = self.pred[i].ranges
-            pdfParam = np.hstack((np.atleast_2d(self.casdata[i]).T,currstds))
+            self.pred[i].z = np.atleast_2d(self.casdata[i]).T
+            pdfParam = np.hstack((self.pred[i].z,currstds))
             pdfData = statfuns.makeInputPdf(pdfRanges,pdfParam,'norm',curr_continuous)
             
             self.pred[i].probModelUpdate = np.nansum(pdfData * self.pred[i].pdf,1)
@@ -285,10 +293,7 @@ class pynetica:
         most information is contained in self which is a pynetica object
         however, the nodename indicates which node to calculate stats for
         '''
-        # first broadcast onto an even range
-        interpValues = np.linspace(0,1,101) * (self.pred[nodename].ranges[-1]
-                                                -self.pred[nodename].ranges[0])
-        probInterpValues = np.linspace(0,1,41)
+
         # normalize the PDF in case it doesn't sum to unity        
         pdf = np.atleast_2d(self.pred[nodename].pdf).copy()
         pdf /= np.tile(np.atleast_2d(np.sum(pdf,1)).T,(1, pdf.shape[1]))
@@ -299,11 +304,7 @@ class pynetica:
         blank[blank==0]=np.nan
         blank = np.atleast_2d(blank).T
 
-        id1 = np.arange(Npdf)
-        if self.pred[nodename].continuous:
-            id2  = np.arange(Npdf)+1
-        else:
-            id2 = np.arange(Npdf)
+
         
         # handle the specific case of a user-specified percentile range
         if alpha:
@@ -339,13 +340,36 @@ class pynetica:
         self.pred[nodename].stats.p025 = blank*statfuns.getPy(0.025,pdf, 
                                                 self.pred[nodename].ranges)    
         self.pred[nodename].stats.p975 = blank*statfuns.getPy(0.975,pdf,
-                                                self.pred[nodename].ranges)    
+                                                self.pred[nodename].ranges)  
+        # MEDIAN  
+        self.pred[nodename].stats.median = blank*statfuns.getPy(0.5,pdf,
+                                                self.pred[nodename].ranges)  
             
+        # now get the mean, ML, and std values
+        (self.pred[nodename].stats.mean,
+        self.pred[nodename].stats.std,
+        self.pred[nodename].stats.mostProb) = statfuns.getMeanStdMostProb(pdf,
+                                                self.pred[nodename].ranges,
+                                                self.pred[nodename].continuous,
+                                                blank)
             
+        self.pred[nodename].stats.skMean = statfuns.LSQR_skill(
+            self.pred[nodename].stats.mean,
+            self.pred[nodename].z)
             
-            
-            
-            
+        self.pred[nodename].stats.skML = statfuns.LSQR_skill(
+            self.pred[nodename].stats.mostProb,
+            self.pred[nodename].z)
+        Mresid = (self.pred[nodename].stats.mean -
+                            self.pred[nodename].z)
+        self.pred[nodename].stats.rmseM = (
+            np.sqrt(nanmean(np.dot(Mresid.T,Mresid))))  
+        self.pred[nodename].stats.meaneM = nanmean(Mresid)    
+        MLresid = (self.pred[nodename].stats.mostProb -
+                            self.pred[nodename].z)
+        self.pred[nodename].stats.rmseML = (
+            np.sqrt(nanmean(np.dot(MLresid.T,MLresid))))  
+        self.pred[nodename].stats.meaneML = nanmean(MLresid)            
             
     def PredictBayesPostProc(self,netName):
         aaa=1
