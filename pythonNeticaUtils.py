@@ -52,6 +52,7 @@ class predictions:
         self.probModelPrior = None
         self.probModelUpdate = None
         self.dataPDF = None
+        self.ofp = None
         # statistics go here
         self.stats = None
 
@@ -92,7 +93,8 @@ class pynetica:
                EMflag --> if True, use EM to learn from casefile, else (default)
                          incorporate the CPT table directly
          '''   
-            # create a Netica environment
+        # create a Netica environment
+        print 'Rebuilding net: %s using Casefile: %s' %(NetName,newCaseFile)
         self.NewNeticaEnviron()
         # meke a streamer to the Net file
         net_streamer = self.NewFileStreamer(NetName)
@@ -113,6 +115,7 @@ class pynetica:
         new_cas_streamer = self.NewFileStreamer(newCaseFile)
 
         if EMflag:
+            print 'Learning new CPTs using EM algorithm'
             # to use EM learning, must first make a learner and set a couple options
             newlearner = self.NewLearner(pnC.learn_method_bn_const.EM_LEARNING)
             self.SetLearnerMaxTol(newlearner,1.0e-6)
@@ -125,12 +128,14 @@ class pynetica:
             self.DeleteLearner(newlearner)
 
         else:
+            print 'Learning new CPTs using ReviseCPTsByCaseFile'
             self.ReviseCPTsByCaseFile(new_cas_streamer,allnodes,voodooPar)
         outfile_streamer = self.NewFileStreamer(outfilename)
         self.CompileNet(cnet)
 
 
         outfile_streamer = self.NewFileStreamer(outfilename)
+        print 'Writing new net to: %s' %(outfilename)
         self.WriteNet(cnet,outfile_streamer)
         self.DeleteNet(cnet)
         self.CloseNetica()
@@ -371,12 +376,29 @@ class pynetica:
         self.pred[nodename].stats.rmseML = (
             np.sqrt(nanmean(np.dot(MLresid.T,MLresid))))  
         self.pred[nodename].stats.meaneML = nanmean(MLresid)            
-
-    def PredictBayesPostProc(self):
+        
+        
+    def PredictBayesPostProc(self,CV_flag = False):
+        if CV_flag:
+            pass
+        else:
+            ofp = open(self.probpars.baseNET[:-4] + 'stats.dat','w')
+            ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
+                      %(self.probpars.baseNET,self.probpars.baseCAS))   
+            ofp.write('%14s '*7 
+                      %('Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
+                      + '\n')
         for i in self.probpars.scenario.response:
-            print i
-            print self.pred[i].stats.skML
-            print self.pred[i].stats.skMean
+            print 'writing output for --> %s' %(i)
+            ofp.write('%14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e'
+                      %(i,self.pred[i].stats.skMean,
+                        self.pred[i].stats.rmseM,
+                        self.pred[i].stats.meaneM,
+                        self.pred[i].stats.skML,
+                        self.pred[i].stats.rmseML,
+                        self.pred[i].stats.meaneML))
+        ofp.close()
+
 
     def read_cas_file(self,casfilename):
         '''

@@ -122,7 +122,7 @@ def LSQR_skill(x,z,w=None):
     msr = np.dot(modresid.T,modresid)/n
     # calculate the skill
     sk = 1-(msr/msz)
-    print 'sk  --> %f' %(sk)
+    #print 'sk  --> %f' %(sk)
     
     '''
     #special case if mean already off:
