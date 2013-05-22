@@ -10,7 +10,13 @@ class netica_scenario:
         self.name = None
         self.nodesIn = None
         self.response = None
-
+def tf2flag(intxt):
+    # converts text written in XML file to True or False flag
+    if intxt.lower()=='true':
+        return True
+    else:
+        return False
+    
 class input_parameters:
     # class and methods to read and parse XML input file
     def __init__(self,infile):
@@ -23,10 +29,7 @@ class input_parameters:
         self.baseNET = inpars.findall('.//input_files/baseNET')[0].text
         self.baseCAS = inpars.findall('.//input_files/baseCAS')[0].text
         self.pwdfile = inpars.findall('.//input_files/pwdfile')[0].text
-        self.CVflag = False
-        tmp = inpars.findall('.//kfold_data/CVflag')[0].text.lower()
-        if tmp == 'true':
-            self.CVflag = True
+        self.CVflag = tf2flag(inpars.findall('.//kfold_data/CVflag')[0].text)
         self.numfolds = int(inpars.findall('.//kfold_data/numfolds')[0].text)
         self.scenario = netica_scenario()
         self.scenario.name =  inpars.findall('.//scenario/name')[0].text
@@ -36,6 +39,10 @@ class input_parameters:
         self.scenario.response = []
         for cr in  inpars.findall('.//scenario/response'):
             self.scenario.response.append(cr.text)
+        self.CASheader = self.scenario.nodesIn
+        self.CASheader.extend(self.scenario.response)    
+        self.EMflag = tf2flag(inpars.findall('.//learnCPTdata/useEM')[0].text)
+        self.voodooPar = float(inpars.findall('.//learnCPTdata/voodooPar')[0].text)
 
 
 

@@ -30,14 +30,32 @@ cdat.allfolds = CVT.all_folds()
 cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
 # run the predictions using the base net --> 
-cdat.predictBayes(cdat.probpars.baseNET)
+cdat.pred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.casdata,cdat.N)
+# get the stats from the predictions
+print 'getting stats'
+cdat.pred = cdat.PDF2Stats(cdat.pred,cdat.probpars.scenario.response,False,-999,alpha=0.1)
 # write the results to a post-processing world
 cdat.PredictBayesPostProc()
-'''
+
+
+
 # rock the cross-validation work 
 if cdat.probpars.CVflag:
-    # now run for each fold with both retained and leftout indices
+    print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation'
+    # make the necessary case files
+    print '\nMaking the casefiles for all folds'
+    cdat.cross_val_make_cas_files()
+    # now build all the nets
     for cfold in np.arange(cdat.probpars.numfolds):
+        # rebuild the net
+        cname = cdat.allfolds.casfiles[cfold]
+        cdat.rebuild_net(cdat.probpars.baseNET,
+                         cname,
+                         cdat.probpars.voodooPar,
+                         cname[:-4] + '.neta',
+                         cdat.probpars.EMflag)
+        
+'''    
         for i in ['calibration','validation']:
             print i
 '''            
