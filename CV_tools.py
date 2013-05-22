@@ -23,6 +23,10 @@ class input_parameters:
         self.baseNET = inpars.findall('.//input_files/baseNET')[0].text
         self.baseCAS = inpars.findall('.//input_files/baseCAS')[0].text
         self.pwdfile = inpars.findall('.//input_files/pwdfile')[0].text
+        self.CVflag = False
+        tmp = inpars.findall('.//kfold_data/CVflag')[0].text.lower()
+        if tmp == 'true':
+            self.CVflag = True
         self.numfolds = int(inpars.findall('.//kfold_data/numfolds')[0].text)
         self.scenario = netica_scenario()
         self.scenario.name =  inpars.findall('.//scenario/name')[0].text

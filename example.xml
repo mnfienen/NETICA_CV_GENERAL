@@ -5,6 +5,7 @@
 	<pwdfile>mikeppwd.txt</pwdfile>
 </input_files>
 <kfold_data>
+	<CVflag>True</CVflag>
 	<numfolds>3</numfolds>
 </kfold_data>
 

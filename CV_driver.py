@@ -1,5 +1,7 @@
 import pythonNeticaUtils as pyn
 import CV_tools as CVT
+import numpy as np
+import pickle
 '''
 CV_driver.py
 
@@ -27,8 +29,19 @@ cdat.numfolds = cdat.probpars.numfolds
 cdat.allfolds = CVT.all_folds()
 cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
-# run the predictions using the current net --> this will need to get looped...
-cdat.predictBayes(cdat.probpars.baseNET,True)
-
+# run the predictions using the base net --> 
+cdat.predictBayes(cdat.probpars.baseNET)
 # write the results to a post-processing world
 cdat.PredictBayesPostProc()
+
+# rock the cross-validation work 
+if cdat.probpars.CVflag:
+    # now run for each fold with both retained and leftout indices
+    for cfold in np.arange(cdat.probpars.numfolds):
+        for i in ['calibration','validation']:
+            print i
+# dump results into a pickle file for later plotting
+# N.B. --> this file assume the same root as the parfile <example>.xml
+ofp = open(parfile[:-4] + '_cdat.pkl','wb')
+pickle.dump(cdat,ofp)
+ofp.close()

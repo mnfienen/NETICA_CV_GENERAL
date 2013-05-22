@@ -1,5 +1,6 @@
 import pythonNeticaUtils as pyn
 import CV_tools as CVT
+import pickle
 '''
 CV_driver.py
 
@@ -27,7 +28,19 @@ cdat.rebuild_net(cdat.probpars.baseNET,
                  'testnet2.neta',
                  True)
 # run the predictions using the current net --> this will need to get looped...
-cdat.predictBayes('testnet2.neta',True)
+cdat.predictBayes('testnet2.neta')
 
 # write the results to a post-processing world
 cdat.PredictBayesPostProc()
+
+# dump results into a pickle file for later plotting
+# N.B. --> this file assume the same root as the parfile <example>.xml
+
+# first need to sanitize away any ctypes/Netica pointers
+cdat.sanitize()
+# now dump into a pickle file
+outfilename = parfile[:-4] + '_cdat.pkl'
+print 'Dumping cdat to pickle file --> %s' %(outfilename)
+ofp = open(outfilename,'wb')
+pickle.dump(cdat,ofp)
+ofp.close()

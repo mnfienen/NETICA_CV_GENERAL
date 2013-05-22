@@ -67,7 +67,15 @@ class pynetica:
         self.casdata = None
         self.n = None #this is the netica environment
         self.mesg = ct.create_string_buffer('\000' * 1024)
-
+        
+    def sanitize(self):
+        print 'Sanitizing pynetica object to remove pointers'
+        # code to strip out all ctypes information from SELF to 
+        # allow for pickling
+        self.n = None
+        self.mesg = None
+        self.env = None
+        
     def start_environment(self,licfile):
         # read in the license file information
         self.licensefile = licfile
@@ -78,7 +86,7 @@ class pynetica:
             self.license = None         
         #############################################
         # Major validation and prediction functions #
-    #############################################
+        #############################################
     def rebuild_net(self,NetName,newCaseFile,voodooPar,outfilename,EMflag=False):
         '''
          rebuild_net(NetName,newCaseFilename,voodooPar,outfilename)
@@ -193,13 +201,13 @@ class pynetica:
             # loop over the states in each node
             for cs in range(self.NETNODES[-1].Nbeliefs):
                 self.NETNODES[-1].state.append(statestruct())
-                self.NETNODES[-1].state[-1].name = self.GetNodeStateName(cnode,cs)            
+                self.NETNODES[-1].state[-1].name = cth.c_char_p2str(
+                    self.GetNodeStateName(cnode,cs))            
         self.CloseNetica()
 
-    def predictBayes(self,netName,plotflag):
+    def predictBayes(self,netName):
         '''
         netName --> name of the built net to make predictions on
-        plotflag --> if True, make the suite of plots
         '''
         # first read in the information about a Net's nodes
         self.ReadNodeInfo(netName)
@@ -284,11 +292,6 @@ class pynetica:
             print 'getting stats'
             self.PDF2Stats(i,alpha=0.1)
 
-        #
-        # Make plots if the user requests it
-        #
-        if plotflag:
-            print 'making plots for     output node --> %s' %(i)
 
         self.CloseNetica()
 
@@ -369,12 +372,12 @@ class pynetica:
         Mresid = (self.pred[nodename].stats.mean -
                   self.pred[nodename].z)
         self.pred[nodename].stats.rmseM = (
-            np.sqrt(nanmean(np.dot(Mresid.T,Mresid))))  
+            np.sqrt(nanmean(Mresid**2)))  
         self.pred[nodename].stats.meaneM = nanmean(Mresid)    
         MLresid = (self.pred[nodename].stats.mostProb -
                    self.pred[nodename].z)
         self.pred[nodename].stats.rmseML = (
-            np.sqrt(nanmean(np.dot(MLresid.T,MLresid))))  
+            np.sqrt(nanmean(MLresid**2)))  
         self.pred[nodename].stats.meaneML = nanmean(MLresid)            
         
         
