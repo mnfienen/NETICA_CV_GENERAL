@@ -18,20 +18,16 @@ cdat.probpars = CVT.input_parameters(parfile)
 cdat.start_environment(cdat.probpars.pwdfile)
 # Initialize a pynetica instance/env using password in a text file
 
-
-
 # read in the data from a cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
 
-# determine the number of data points
-cdat.N = len(cdat.casdata)
-cdat.numfolds = cdat.probpars.numfolds
-# create the folds desired
-cdat.allfolds = CVT.all_folds()
-cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
-
+cdat.rebuild_net(cdat.probpars.baseNET,
+                 cdat.probpars.baseCAS,
+                 100,
+                 'testnet2.neta',
+                 True)
 # run the predictions using the current net --> this will need to get looped...
-cdat.predictBayes(cdat.probpars.baseNET,True)
+cdat.predictBayes('testnet2.neta',True)
 
 # write the results to a post-processing world
 cdat.PredictBayesPostProc()

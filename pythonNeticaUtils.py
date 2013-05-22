@@ -40,7 +40,7 @@ class pred_stats:
         self.rmseML = None
         self.meaneML = None
 
-        
+
 class predictions:
     def __init__(self):
         self.z = None
@@ -60,7 +60,7 @@ class statestruct:
         self.obj = None
         self.name = None
         self.numeric = None
-        
+
 class pynetica:
     def __init__(self):
         self.casdata = None
@@ -75,8 +75,8 @@ class pynetica:
         else:
             print "Warning: License File [%s] not found.\n Opening Netica without licence, which will limit size of nets that can be used." %(self.licensefile)
             self.license = None         
-      #############################################
-     # Major validation and prediction functions #
+        #############################################
+        # Major validation and prediction functions #
     #############################################
     def rebuild_net(self,NetName,newCaseFile,voodooPar,outfilename,EMflag=False):
         '''
@@ -92,7 +92,7 @@ class pynetica:
                EMflag --> if True, use EM to learn from casefile, else (default)
                          incorporate the CPT table directly
          '''   
-         # create a Netica environment
+            # create a Netica environment
         self.NewNeticaEnviron()
         # meke a streamer to the Net file
         net_streamer = self.NewFileStreamer(NetName)
@@ -104,7 +104,7 @@ class pynetica:
         #get the nodes and their number
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
-        
+
         # loop over the nodes deleting CPT
         for cn in np.arange(numnodes):
             cnode = self.NthNode(allnodes,ct.c_int(cn))
@@ -123,18 +123,18 @@ class pynetica:
             self.LearnCPTs(newlearner,allnodes,newcaseset,voodooPar)
             self.DeleteCaseset(newcaseset)
             self.DeleteLearner(newlearner)
-            
+
         else:
             self.ReviseCPTsByCaseFile(new_cas_streamer,allnodes,voodooPar)
         outfile_streamer = self.NewFileStreamer(outfilename)
         self.CompileNet(cnet)
-        
+
 
         outfile_streamer = self.NewFileStreamer(outfilename)
         self.WriteNet(cnet,outfile_streamer)
         self.DeleteNet(cnet)
         self.CloseNetica()
-        
+
     def OpenNeticaNet(self,netName):
         '''
         Start a Netica environment and open a net identified by
@@ -154,7 +154,7 @@ class pynetica:
         self.DeleteStream(net_streamer)  
         self.CompileNet(cnet)      
         return cnet
-                
+
     def ReadNodeInfo(self,netName):
         '''
         Read in all information on beliefs, states, and likelihoods for all 
@@ -176,21 +176,21 @@ class pynetica:
             print '   Parsing node --> %s' %(self.NETNODES[-1].title)
             self.NETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
             self.NETNODES[-1].beliefs = cth.c_float_p2float(
-                                    self.GetNodeBeliefs(cnode),
-                                    self.NETNODES[-1].Nbeliefs)
+                self.GetNodeBeliefs(cnode),
+                self.NETNODES[-1].Nbeliefs)
             self.NETNODES[-1].likelihood = cth.c_float_p2float(
-                                    self.GetNodeLikelihood(cnode),
-                                    self.NETNODES[-1].Nbeliefs)
+                self.GetNodeLikelihood(cnode),
+                self.NETNODES[-1].Nbeliefs)
             self.NETNODES[-1].levels =  cth.c_double_p2float(
-                                    self.GetNodeLevels(cnode),
-                                    self.NETNODES[-1].Nbeliefs + 1)
-                                    
+                self.GetNodeLevels(cnode),
+                self.NETNODES[-1].Nbeliefs + 1)
+
             # loop over the states in each node
             for cs in range(self.NETNODES[-1].Nbeliefs):
                 self.NETNODES[-1].state.append(statestruct())
                 self.NETNODES[-1].state[-1].name = self.GetNodeStateName(cnode,cs)            
         self.CloseNetica()
-        
+
     def predictBayes(self,netName,plotflag):
         '''
         netName --> name of the built net to make predictions on
@@ -220,13 +220,14 @@ class pynetica:
                 # continuos, so plot bin centers
                 CNODES.continuous = True
                 self.pred[Cname].continuous = True
-                self.pred[Cname].rangesplt = self.pred[Cname].ranges[1:]-0.5*np.diff(self.pred[Cname].ranges)
+                self.pred[Cname].rangesplt = (self.pred[Cname].ranges[1:]-
+                                              0.5*np.diff(self.pred[Cname].ranges))
             else:
                 #discrete so just use the bin values
                 self.pred[Cname].rangesplt = self.pred[Cname].ranges.copy()
 
             self.pred[Cname].priorPDF = CNODES.beliefs
-            
+
             allnodes = self.GetNetNodes(cnet)
             numnodes = self.LengthNodeList(allnodes)
         #
@@ -248,11 +249,11 @@ class pynetica:
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
                 # get the current belief values
                 self.pred[cnodename].pdf[i,:] = cth.c_float_p2float(
-                                self.GetNodeBeliefs(cnode),
-                                self.GetNodeNumberStates(cnode))
+                    self.GetNodeBeliefs(cnode),
+                    self.GetNodeNumberStates(cnode))
 
         #
-        # Do some postprocessing 
+        # Do some postprocessing for just the output nodes
         #
         currstds = np.ones((self.N,1))*1.0e-16
         for i in self.probpars.scenario.response:
@@ -266,30 +267,30 @@ class pynetica:
             self.pred[i].z = np.atleast_2d(self.casdata[i]).T
             pdfParam = np.hstack((self.pred[i].z,currstds))
             pdfData = statfuns.makeInputPdf(pdfRanges,pdfParam,'norm',curr_continuous)
-            
+
             self.pred[i].probModelUpdate = np.nansum(pdfData * self.pred[i].pdf,1)
             self.pred[i].probModelPrior = np.nansum(pdfData * np.tile(self.pred[i].priorPDF,
-                                                                (self.N,1)),1)
+                                                                      (self.N,1)),1)
             self.pred[i].logLikelihoodRatio = (np.log10(self.pred[i].probModelUpdate + np.spacing(1)) - 
-                                  np.log10(self.pred[i].probModelPrior + np.spacing(1)))
+                                               np.log10(self.pred[i].probModelPrior + np.spacing(1)))
             self.pred[i].dataPDF = pdfData.copy()
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
             print 'getting stats'
             self.PDF2Stats(i,alpha=0.1)
-            
+
         #
         # Make plots if the user requests it
         #
         if plotflag:
             print 'making plots for     output node --> %s' %(i)
-        
+
         self.CloseNetica()
-    
+
     def PDF2Stats(self,nodename, alpha = None):
         '''
         extract statistics from the PDF informed by a Bayesian Net
-        
+
         most information is contained in self which is a pynetica object
         however, the nodename indicates which node to calculate stats for
         '''
@@ -297,7 +298,7 @@ class pynetica:
         # normalize the PDF in case it doesn't sum to unity        
         pdf = np.atleast_2d(self.pred[nodename].pdf).copy()
         pdf /= np.tile(np.atleast_2d(np.sum(pdf,1)).T,(1, pdf.shape[1]))
-        
+
         # Start computing the statistics
         [Nlocs,Npdf] = pdf.shape
         blank = 0.0 + ~np.isnan(pdf[:,0])
@@ -305,75 +306,78 @@ class pynetica:
         blank = np.atleast_2d(blank).T
 
 
-        
+
         # handle the specific case of a user-specified percentile range
         if alpha:
             self.alpha = alpha
             dalpha = (1.0 - alpha)/2.0
             # first return the percentile requested in bAlpha
             self.pred[nodename].stats.palpha = blank*statfuns.getPy(
-                                                alpha,pdf,
-                                                self.pred[nodename].ranges)
+                alpha,pdf,
+                self.pred[nodename].ranges)
 
             # now get the tails from requested bAlpha
             # upper tail
             self.pred[nodename].stats.palphaPlus = blank*statfuns.getPy(
-                                                1.0-dalpha,pdf,
-                                                self.pred[nodename].ranges)
-                                                
+                1.0-dalpha,pdf,
+                self.pred[nodename].ranges)
+
             # lower tail
             self.pred[nodename].stats.palphaMinus = blank*statfuns.getPy(
-                                                dalpha,pdf,
-                                                self.pred[nodename].ranges)
+                dalpha,pdf,
+                self.pred[nodename].ranges)
         # now handle the p75,p95, and p975 cases
         # 75th percentiles
         self.pred[nodename].stats.p25 = blank*statfuns.getPy(0.25,pdf,
-                                                self.pred[nodename].ranges)    
+                                                             self.pred[nodename].ranges)    
         self.pred[nodename].stats.p75 = blank*statfuns.getPy(0.75,pdf,
-                                                self.pred[nodename].ranges)    
+                                                             self.pred[nodename].ranges)    
         # 95th percentiles
         self.pred[nodename].stats.p05 = blank*statfuns.getPy(0.05,pdf, 
-                                                self.pred[nodename].ranges)    
+                                                             self.pred[nodename].ranges)    
         self.pred[nodename].stats.p95 = blank*statfuns.getPy(0.95,pdf,
-                                                self.pred[nodename].ranges)    
+                                                             self.pred[nodename].ranges)    
         # 97.5th percentiles
         self.pred[nodename].stats.p025 = blank*statfuns.getPy(0.025,pdf, 
-                                                self.pred[nodename].ranges)    
+                                                              self.pred[nodename].ranges)    
         self.pred[nodename].stats.p975 = blank*statfuns.getPy(0.975,pdf,
-                                                self.pred[nodename].ranges)  
+                                                              self.pred[nodename].ranges)  
         # MEDIAN  
         self.pred[nodename].stats.median = blank*statfuns.getPy(0.5,pdf,
-                                                self.pred[nodename].ranges)  
-            
+                                                                self.pred[nodename].ranges)  
+
         # now get the mean, ML, and std values
         (self.pred[nodename].stats.mean,
-        self.pred[nodename].stats.std,
-        self.pred[nodename].stats.mostProb) = statfuns.getMeanStdMostProb(pdf,
-                                                self.pred[nodename].ranges,
-                                                self.pred[nodename].continuous,
-                                                blank)
-            
+         self.pred[nodename].stats.std,
+         self.pred[nodename].stats.mostProb) = statfuns.getMeanStdMostProb(pdf,
+                                                                           self.pred[nodename].ranges,
+                                                                           self.pred[nodename].continuous,
+                                                                           blank)
+
         self.pred[nodename].stats.skMean = statfuns.LSQR_skill(
             self.pred[nodename].stats.mean,
-            self.pred[nodename].z)
-            
+            self.pred[nodename].z-np.mean(self.pred[nodename].z))
+
         self.pred[nodename].stats.skML = statfuns.LSQR_skill(
             self.pred[nodename].stats.mostProb,
-            self.pred[nodename].z)
+            self.pred[nodename].z-np.mean(self.pred[nodename].z))
         Mresid = (self.pred[nodename].stats.mean -
-                            self.pred[nodename].z)
+                  self.pred[nodename].z)
         self.pred[nodename].stats.rmseM = (
             np.sqrt(nanmean(np.dot(Mresid.T,Mresid))))  
         self.pred[nodename].stats.meaneM = nanmean(Mresid)    
         MLresid = (self.pred[nodename].stats.mostProb -
-                            self.pred[nodename].z)
+                   self.pred[nodename].z)
         self.pred[nodename].stats.rmseML = (
             np.sqrt(nanmean(np.dot(MLresid.T,MLresid))))  
         self.pred[nodename].stats.meaneML = nanmean(MLresid)            
-            
-    def PredictBayesPostProc(self,netName):
-        aaa=1
-        print aaa
+
+    def PredictBayesPostProc(self):
+        for i in self.probpars.scenario.response:
+            print i
+            print self.pred[i].stats.skML
+            print self.pred[i].stats.skMean
+
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -390,23 +394,24 @@ class pynetica:
             elif '//' in line:
                 line = re.sub('//.*','',line)
                 if len(line.strip()) > 0:
-	           ofp.write(line)
+                    ofp.write(line)
         ofp.close()                
         self.casdata = np.genfromtxt('###tmp###',names=True,
-                            dtype=None,missing_values = '*,?')
+                                     dtype=None,missing_values = '*,?')
         os.remove('###tmp###')
+        self.N = len(self.casdata)
 
     # general error-checking function    
     def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
         if self.GetError(err_severity):
-	   exceptionMsg = ("pythonNeticaUtils: Error in " + 
-	   str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
-	   raise NeticaException(exceptionMsg)
+            exceptionMsg = ("pythonNeticaUtils: Error in " + 
+                            str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
+            raise NeticaException(exceptionMsg)
 
-     ###################################
+        ###################################
     # Key helper functions for Netica #   
-   ###################################
-        
+    ###################################
+
     def NewNeticaEnviron(self):
         '''
         create a new Netica environment based on operating system
@@ -428,7 +433,7 @@ class pynetica:
             print self.mesg.value
         else:
             raise(NeticaInitFail(res.value))    
-    
+
     def CloseNetica(self):
         res = self.n.CloseNetica_bn(self.env, ct.byref(self.mesg))    
         if res >= 0:
@@ -438,68 +443,68 @@ class pynetica:
             raise(NeticaCloseFail(res.value))    
 
     def GetError(self, severity = pnC.errseverity_ns_const.ERROR_ERR, after = None):
-	res = self.n.GetError_ns(self.env, severity, after)
-	if res: return ct.c_void_p(res)
-	else:   return None
-		
-    def ErrorMessage(self, error):
-	return self.n.ErrorMessage_ns(error)
+        res = self.n.GetError_ns(self.env, severity, after)
+        if res: return ct.c_void_p(res)
+        else:   return None
 
-        
-     ################################################################
+    def ErrorMessage(self, error):
+        return self.n.ErrorMessage_ns(error)
+
+
+        ################################################################
     # Small definitions and little functions in alphabetical order #  
-   ################################################################   
+    ################################################################   
     def AddFileToCaseset(self,caseset,streamer,degree):
         self.n.AddFileToCaseset_cs(caseset,streamer,ct.c_double(degree))
         self.chkerr()
-        
+
     def CompileNet(self, net):
         self.n.CompileNet_bn(net)
         self.chkerr()
-        
+
     def CopyNet(self,oldnet, newnetname,options):
         newnet = self.n.CopyNet_bn(oldnet,newnetname,self.env,options)
         self.chkerr()
         return newnet
-        
+
     def CopyNodes(self,oldnodes,newnet,options):
         newnodes = self.n.CopyNodes_bn(oldnodes,newnet,options)
         self.chkerr()
         return newnodes 
-    
+
     def DeleteCaseset(self,caseset):
         self.n.DeleteCaseset_cs(caseset)
         self.chkerr()
-        
+
     def DeleteLearner(self,newlearner):
         self.n.DeleteLearner_bn(newlearner)
         self.chkerr()
-        
+
     def DeleteNet(self,cnet):
         self.n.DeleteNet_bn(cnet)
         self.chkerr()
-        
+
     def DeleteNodeTables(self,node):
         self.n.DeleteNodeTables_bn(node)
         self.chkerr()
-              
+
     def DeleteStream(self,cstream):
         self.n.DeleteStream_ns(cstream)
         self.chkerr()
-        
+
     def EnterFinding(self,cnode,cval):
         self.n.EnterFinding_bn(cnode,ct.c_double(cval))
         self.chkerr()
-        
+
     def EnterNodeValue(self,cnode,cval):
         self.n.EnterNodeValue_bn(cnode,ct.c_double(cval))
         self.chkerr()
-        
+
     def GetNetNodes(self,cnet):
         allnodes = self.n.GetNetNodes2_bn(cnet,None)
         self.chkerr()
         return allnodes
-        
+
     def GetNodeBeliefs(self,cnode):
         beliefs = self.n.GetNodeBeliefs_bn(cnode)
         self.chkerr()
@@ -512,12 +517,12 @@ class pynetica:
         tmpNeticaFun = self.n.GetNodeExpectedValue_bn
         tmpNeticaFun.restype=ct.c_double
         expected_val = tmpNeticaFun(cnode,ct.byref(std_dev),
-                                        None,None)
+                                    None,None)
         print expected_val
         print std_dev.value
         self.chkerr()
         return expected_val, std_dev.value
-    
+
     def GetNodeLevels(self,cnode):
         nodelevels = self.n.GetNodeLevels_bn(cnode)
         self.chkerr()
@@ -527,28 +532,28 @@ class pynetica:
         nodelikelihood = self.n.GetNodeLikelihood_bn(cnode)
         self.chkerr()
         return nodelikelihood
-        
-    
+
+
     def GetNodeName(self,cnode):
         cname = self.n.GetNodeName_bn(cnode)
         self.chkerr()
         return cname
-        
+
     def GetNodeNumberStates(self,cnode):
         numstates = self.n.GetNodeNumberStates_bn(cnode)
         self.chkerr()
         return numstates
-    
+
     def GetNodeStateName(self,cnode,cstate):
         stname = self.n.GetNodeStateName_bn(cnode,ct.c_int(cstate))
         self.chkerr()
         return stname
-        
+
     def GetNodeTitle(self,cnode):
         ctitle = self.n.GetNodeTitle_bn(cnode)
         self.chkerr()
         return ctitle
-                
+
     def LearnCPTs(self,learner,nodes,caseset,voodooPar):
         self.n.LearnCPTs_bn(learner,nodes,caseset,ct.c_double(voodooPar))
         self.chkerr()
@@ -557,12 +562,12 @@ class pynetica:
         res = self.n.LengthNodeList_bn(nodelist)
         self.chkerr()
         return res    
-        
+
     def NewCaseset(self,name):
         newcaseset = self.n.NewCaseset_cs(name,self.env)
         self.chkerr()
         return newcaseset
-                
+
     def NewFileStreamer(self,infile):
         streamer =  self.n.NewFileStream_ns (infile, self.env,None)
         self.chkerr()
@@ -572,7 +577,7 @@ class pynetica:
         newlearner = self.n.NewLearner_bn(method,None,self.env)
         self.chkerr()
         return newlearner
-        
+
     def NewNet(self, netname):
         newnet = self.n.NewNet_bn(netname,self.env)
         self.chkerr()
@@ -591,34 +596,34 @@ class pynetica:
         self.n.RetractNetFindings_bn(cnet)
         self.chkerr()
         return cnet
-        
+
     def RetractNetFindings(self,cnet):
         self.n.RetractNetFindings_bn(cnet)
         self.chkerr()
-        
+
     def ReviseCPTsByCaseFile(self,casStreamer,cnodes,voodooPar):
         self.n.ReviseCPTsByCaseFile_bn(casStreamer,cnodes,ct.c_int(0),
-                                                ct.c_double(voodooPar))
+                                       ct.c_double(voodooPar))
         self.chkerr()
-        
+
     def SetNetAutoUpdate(self,cnet,belief_value):
         self.n.SetNetAutoUpdate_bn(cnet,belief_value)
         self.chkerr()     
-    
+
     def SetLearnerMaxIters(self,learner,maxiters):
         self.n.SetLearnerMaxIters_bn(learner,ct.c_int(maxiters))
         self.chkerr()    
-    
+
     def SetLearnerMaxTol(self,learner,tol):
         self.n.SetLearnerMaxTol_bn(learner,ct.c_double(tol))
         self.chkerr()         
-        
+
     def WriteNet(self,cnet,filename_streamer):
         self.n.WriteNet_bn(cnet,filename_streamer)
         self.chkerr()
-        
-  #################
- # Error Classes #
+
+    #################
+    # Error Classes #
 #################
 # -- can't open external file
 class dllFail(Exception):
@@ -635,17 +640,17 @@ class NeticaInitFail(Exception):
         self.msg = msg
     def __str__(self):
         return("\n\nCannot initialize Netica. Netica message is:\n%s\n" 
-            %(self.msg))
+               %(self.msg))
 # -- can't close Netica
 class NeticaCloseFail(Exception):
     def __init__(self,msg):
         self.msg = msg
     def __str__(self):
         return("\n\nCannot properly close Netica. Netica message is:\n%s\n" 
-            %(self.msg))
+               %(self.msg))
 # -- General Netica Exception
 class NeticaException(Exception):
-	def __init__(self, msg):
-		self.msg = msg
-	def __str__(self):
-		return self.msg
+    def __init__(self, msg):
+        self.msg = msg
+    def __str__(self):
+        return self.msg

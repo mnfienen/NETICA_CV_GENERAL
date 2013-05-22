@@ -93,22 +93,18 @@ def LSQR_skill(x,z,w=None):
     input:
     x --> vector of expected values (ML or mean)
     z --> observations
-    w --> optional vector of weights to go on the diagonal
+    w --> optional vector of std_dev weights to go on the diagonal
+      N.B. ==> these weights will be inverted as they are assumed to be in the
+                form of standard deviation
     output:
-    b   --> mx1 estimated parameters: z^ = X*b;
     sk  --> the model skill
-    n   --> the effective dof =(sum(w)/max(w))
-    msz --> variance of data
-    msr --> variance of residuals
-    nmse --> percent of white error input variance passed by weights
     '''
-    m = 2
     n = len(x)
     X = np.hstack((np.ones((n,1)),x))
     
     # handle the weights - assuming uncorrelated errors for now
     if w:
-        Q = np.diag(w)
+        Q = np.diag(1.0/w)
     else:
         Q = np.diag(np.ones(n))
         
@@ -125,6 +121,14 @@ def LSQR_skill(x,z,w=None):
     modresid = np.dot(X,b) - z
     msr = np.dot(modresid.T,modresid)/n
     # calculate the skill
-    sk = 1-msr/msz
+    sk = 1-(msr/msz)
+    print 'sk  --> %f' %(sk)
     
+    '''
+    #special case if mean already off:
+    msz2 = np.dot(z.T,z)/n
+    msr2 = msz2 - np.dot(np.dot(b.T,XtX),b)
+    sk2 = 1-(msr2/msz2)
+    print 'sk2 --> %f' %(sk2)
+    '''
     return sk
