@@ -18,13 +18,10 @@ cdat.probpars = CVT.input_parameters(parfile)
 cdat.start_environment(cdat.probpars.pwdfile)
 # Initialize a pynetica instance/env using password in a text file
 
-
-
 # read in the data from a cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
 
 # determine the number of data points
-cdat.N = len(cdat.casdata)
 cdat.numfolds = cdat.probpars.numfolds
 # create the folds desired
 cdat.allfolds = CVT.all_folds()
