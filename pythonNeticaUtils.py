@@ -9,6 +9,7 @@ import stats_functions as statfuns
 import matplotlib.pyplot as plt
 from scipy.stats import nanmean
 
+
 class nodestruct:
     def __init__(self):
         self.name = None
@@ -52,7 +53,6 @@ class predictions:
         self.probModelPrior = None
         self.probModelUpdate = None
         self.dataPDF = None
-        self.ofp = None
         # statistics go here
         self.stats = None
 
@@ -290,17 +290,21 @@ class pynetica:
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
             print 'getting stats'
-            self.PDF2Stats(i,alpha=0.1)
+            self.PDF2Stats(i,False,alpha=0.1)
 
 
         self.CloseNetica()
 
-    def PDF2Stats(self,nodename, alpha = None):
+    def PDF2Stats(self,nodename, CVflag, alpha = None):
         '''
         extract statistics from the PDF informed by a Bayesian Net
 
         most information is contained in self which is a pynetica object
         however, the nodename indicates which node to calculate stats for
+        
+        IF CVflag == False, then this is just returning stats for base case
+        
+        IF CVflag == True, then need to calculate retained and leftout separately
         '''
 
         # normalize the PDF in case it doesn't sum to unity        
@@ -426,6 +430,11 @@ class pynetica:
         os.remove('###tmp###')
         self.N = len(self.casdata)
 
+    # cross validation driver
+    def cross_val_make_cas_files(self,cfold):
+        cname = self.probpars.baseCAS[:-4]
+       # cinds = self.k
+    
     # general error-checking function    
     def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
         if self.GetError(err_severity):
@@ -433,7 +442,7 @@ class pynetica:
                             str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
             raise NeticaException(exceptionMsg)
 
-        ###################################
+    ###################################
     # Key helper functions for Netica #   
     ###################################
 

@@ -33,15 +33,22 @@ cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 cdat.predictBayes(cdat.probpars.baseNET)
 # write the results to a post-processing world
 cdat.PredictBayesPostProc()
-
+'''
 # rock the cross-validation work 
 if cdat.probpars.CVflag:
     # now run for each fold with both retained and leftout indices
     for cfold in np.arange(cdat.probpars.numfolds):
         for i in ['calibration','validation']:
             print i
-# dump results into a pickle file for later plotting
-# N.B. --> this file assume the same root as the parfile <example>.xml
-ofp = open(parfile[:-4] + '_cdat.pkl','wb')
+'''            
+            
+            
+            
+# first need to sanitize away any ctypes/Netica pointers
+cdat.sanitize()
+# now dump into a pickle file
+outfilename = parfile[:-4] + '_cdat.pkl'
+print 'Dumping cdat to pickle file --> %s' %(outfilename)
+ofp = open(outfilename,'wb')
 pickle.dump(cdat,ofp)
 ofp.close()
