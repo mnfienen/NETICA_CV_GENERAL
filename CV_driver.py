@@ -38,6 +38,15 @@ cdat.PredictBayesPostProc()
 if cdat.probpars.CVflag:
     # now run for each fold with both retained and leftout indices
     for cfold in np.arange(cdat.probpars.numfolds):
+        # rebuild the net
+        cname = cdat.allfolds.casfiles[cfold]
+        cdat.rebuild_net(cdat.probpars.baseNET,
+                         cname,
+                         cdat.probpars.voodooPar,
+                         cname[:-4] + '.neta',
+                         cdat.probpars.EMflag)
+        
+'''    
         for i in ['calibration','validation']:
             print i
 # first need to sanitize away any ctypes/Netica pointers
