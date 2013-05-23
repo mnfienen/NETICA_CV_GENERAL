@@ -10,6 +10,12 @@ class netica_scenario:
         self.name = None
         self.nodesIn = None
         self.response = None
+def tf2flag(intxt):
+    # converts text written in XML file to True or False flag
+    if intxt.lower()=='true':
+        return True
+    else:
+        return False
 
 class input_parameters:
     # class and methods to read and parse XML input file
@@ -23,57 +29,58 @@ class input_parameters:
         self.baseNET = inpars.findall('.//input_files/baseNET')[0].text
         self.baseCAS = inpars.findall('.//input_files/baseCAS')[0].text
         self.pwdfile = inpars.findall('.//input_files/pwdfile')[0].text
-        self.CVflag = False
-        tmp = inpars.findall('.//kfold_data/CVflag')[0].text.lower()
-        if tmp == 'true':
-            self.CVflag = True
+        self.CVflag = tf2flag(inpars.findall('.//kfold_data/CVflag')[0].text)
         self.numfolds = int(inpars.findall('.//kfold_data/numfolds')[0].text)
         self.scenario = netica_scenario()
         self.scenario.name =  inpars.findall('.//scenario/name')[0].text
         self.scenario.nodesIn = []
+        self.CASheader = []
         for cv in inpars.findall('.//scenario/input'):
             self.scenario.nodesIn.append(cv.text)
+            self.CASheader.append(cv.text)
         self.scenario.response = []
         for cr in  inpars.findall('.//scenario/response'):
-            self.scenario.response.append(cr.text)
-
-
+            self.scenario.response.append(cr.text)        
+        print self.CVflag
+        self.CASheader.extend(self.scenario.response)    
+        self.EMflag = tf2flag(inpars.findall('.//learnCPTdata/useEM')[0].text)
+        self.voodooPar = float(inpars.findall('.//learnCPTdata/voodooPar')[0].text)
 
 ###################
 # Tools for k-fold setup
 ###################
 class all_folds:
     # a class containing leftout and retained indices for cross validation
-    
+
     def __init__(self):
         self.leftout = list()
         self.retained = list()
+        self.numfolds = None
 
-    
     def k_fold_maker(self,n,k):
-    # k_fold index maker
-    # a m!ke@usgs joint
-    # mnfienen@usgs.gov
-    # k_fold_maker(n,k,allfolds)
-    # input:
-    #   n is the length of the sequence of indices
-    #   k is the number of folds to split it into
-    #   allfolds is an all_folds class
-    # returns an all_folds with each member having k elements
-    # allfolds.leftout[i] is the left out indices of fold i
-    # allfolds.retained[i] is the kept indices of fold i
+        # k_fold index maker
+        # a m!ke@usgs joint
+        # mnfienen@usgs.gov
+        # k_fold_maker(n,k,allfolds)
+        # input:
+        #   n is the length of the sequence of indices
+        #   k is the number of folds to split it into
+        #   allfolds is an all_folds class
+        # returns an all_folds with each member having k elements
+        # allfolds.leftout[i] is the left out indices of fold i
+        # allfolds.retained[i] is the kept indices of fold i
         currinds = np.arange(n)
         inds_per_fold = np.int(np.floor(n/k))
         dingleberry = np.remainder(n,k)
         for i in np.arange(k-1):
-            allinds = currinds.copy()
+            allinds = currinds.copy()    
             np.random.shuffle(currinds)
             self.leftout.append(currinds[0:inds_per_fold].copy())
-            currinds =  np.setdiff1d(allinds,self.leftout[i])
-            self.retained.append(currinds.copy())
-        
-        self.leftout.append(currinds[0:inds_per_fold+dingleberry].copy())
-        self.retained.append(np.setdiff1d(np.arange(n),self.leftout[i]))
+            self.retained.append(np.setdiff1d(np.arange(n),self.leftout[i]))
+            currinds = currinds[inds_per_fold:]
+        self.leftout.append(currinds)
+        self.retained.append(np.setdiff1d(np.arange(n),self.leftout[-1]))
+        self.numfolds = k
 
 #################
 # Error classes
