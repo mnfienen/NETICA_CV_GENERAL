@@ -290,8 +290,6 @@ class pynetica:
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
             print 'getting stats'
-            if 'mean_DTW' in self.pred.keys():
-                print self.pred['mean_DTW'].pdf[-1]
             self.PDF2Stats(i,alpha=0.1)
 
 
@@ -403,23 +401,7 @@ class pynetica:
                         self.pred[i].stats.rmseML,
                         self.pred[i].stats.meaneML))
         ofp.close()
-    # cross validation driver
-    def cross_val_make_cas_files(self):
-        self.allfolds.casfiles = []
-        for cfold in np.arange(self.probpars.numfolds):
-            cname = '%s_fold_%d.cas' %(self.probpars.scenario.name,cfold)
-            self.allfolds.casfiles.append(cname)
-            retinds = np.array(self.allfolds.retained[cfold],dtype=int)
-            outdat = np.atleast_2d(self.casdata[self.probpars.CASheader[0]][retinds]).T
-            for i,chead in enumerate(self.probpars.CASheader):
-                if i>0:
-                    outdat = np.hstack((outdat,np.atleast_2d(self.casdata[chead][retinds]).T))
-            ofp = open(cname,'w')
-            for cnode in self.probpars.CASheader:
-                ofp.write('%s ' %(cnode))
-            ofp.write('\n')
-            np.savetxt(ofp,outdat)
-            ofp.close()
+
 
     def read_cas_file(self,casfilename):
         '''

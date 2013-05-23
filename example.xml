@@ -20,8 +20,5 @@
 	</scenario>	
 
 </scenarios>
-<learnCPTdata>
-	<voodooPar>100</voodooPar>
-	<useEM>True</useEM>
-</learnCPTdata>
+
 </data>
