@@ -38,22 +38,10 @@ cdat.PredictBayesPostProc()
 if cdat.probpars.CVflag:
     # now run for each fold with both retained and leftout indices
     for cfold in np.arange(cdat.probpars.numfolds):
-        # rebuild the net
-        cname = cdat.allfolds.casfiles[cfold]
-        cdat.rebuild_net(cdat.probpars.baseNET,
-                         cname,
-                         cdat.probpars.voodooPar,
-                         cname[:-4] + '.neta',
-                         cdat.probpars.EMflag)
-        
-'''    
         for i in ['calibration','validation']:
             print i
-# first need to sanitize away any ctypes/Netica pointers
-cdat.sanitize()
-# now dump into a pickle file
-outfilename = parfile[:-4] + '_cdat.pkl'
-print 'Dumping cdat to pickle file --> %s' %(outfilename)
-ofp = open(outfilename,'wb')
+# dump results into a pickle file for later plotting
+# N.B. --> this file assume the same root as the parfile <example>.xml
+ofp = open(parfile[:-4] + '_cdat.pkl','wb')
 pickle.dump(cdat,ofp)
 ofp.close()

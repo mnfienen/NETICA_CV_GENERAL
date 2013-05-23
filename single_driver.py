@@ -27,7 +27,6 @@ cdat.rebuild_net(cdat.probpars.baseNET,
                  100,
                  'testnet2.neta',
                  True)
-
 # run the predictions using the current net --> this will need to get looped...
 cdat.predictBayes('testnet2.neta')
 

@@ -84,7 +84,7 @@ def getMeanStdMostProb(pdf,ranges,continuous,blank):
         retStd[i] = np.dot(pdf[i,:],(((ranges[id1]+ranges[id2])/2.0)-retMean[i])**2.0)
         retStd[i] = np.sqrt(binWidthVariance[i] + retStd[i])
         
-    return retMean, retStd,mostProb    
+    return retMean, retStd,mostProb,      
     
 def LSQR_skill(x,z,w=None):
     '''
