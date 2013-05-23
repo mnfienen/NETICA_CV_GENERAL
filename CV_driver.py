@@ -36,10 +36,20 @@ cdat.PredictBayesPostProc()
 
 # rock the cross-validation work 
 if cdat.probpars.CVflag:
-    # now run for each fold with both retained and leftout indices
+    print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation'
+    # make the necessary case files
+    print '\nMaking the casefiles for all folds'
+    cdat.cross_val_make_cas_files()
+    # now build all the nets
     for cfold in np.arange(cdat.probpars.numfolds):
-        for i in ['calibration','validation']:
-            print i
+        # rebuild the net
+        cname = cdat.allfolds.casfiles[cfold]
+        cdat.rebuild_net(cdat.probpars.baseNET,
+                         cname,
+                         cdat.probpars.voodooPar,
+                         cname[:-4] + '.neta',
+                         cdat.probpars.EMflag)
+
 # first need to sanitize away any ctypes/Netica pointers
 cdat.sanitize()
 # now dump into a pickle file

@@ -34,14 +34,13 @@ class input_parameters:
         self.scenario = netica_scenario()
         self.scenario.name =  inpars.findall('.//scenario/name')[0].text
         self.scenario.nodesIn = []
-        self.CASheader = []
         for cv in inpars.findall('.//scenario/input'):
             self.scenario.nodesIn.append(cv.text)
-            self.CASheader.append(cv.text)
         self.scenario.response = []
         for cr in  inpars.findall('.//scenario/response'):
             self.scenario.response.append(cr.text)        
         print self.CVflag
+        self.CASheader = list( self.scenario.nodesIn)
         self.CASheader.extend(self.scenario.response)    
         self.EMflag = tf2flag(inpars.findall('.//learnCPTdata/useEM')[0].text)
         self.voodooPar = float(inpars.findall('.//learnCPTdata/voodooPar')[0].text)
