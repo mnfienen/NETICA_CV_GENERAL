@@ -432,13 +432,25 @@ class pynetica:
         os.remove('###tmp###')
         self.N = len(self.casdata)
     # cross validation driver
-    def cross_val_make_cas_files(self):
-        self.allfolds.casfiles = []
+    def cross_val_setup(self):
+
         for cfold in np.arange(self.probpars.numfolds):
+            self.allfolds.calNODES.append(None)
+            self.allfolds.valNODES.append(None)
+            self.allfolds.calpred.append(None)
+            self.allfolds.valpred.append(None)
+                                    
             cname = '%s_fold_%d.cas' %(self.probpars.scenario.name,cfold)
             self.allfolds.casfiles.append(cname)
             retinds = np.array(self.allfolds.retained[cfold],dtype=int)
+            # outdat only includes the columns that are in CASheader
             outdat = np.atleast_2d(self.casdata[self.probpars.CASheader[0]][retinds]).T
+            # caldata and valdata both include all columns for simplicity
+            self.allfolds.caldata.append(self.casdata[retinds])
+            leftoutinds = np.array(self.allfolds.leftout[cfold],dtype=int)
+            self.allfolds.valdata.append(self.casdata[leftoutinds])
+            self.allfolds.valN.append(len(leftoutinds))
+            self.allfolds.calN.append(len(retinds))
             for i,chead in enumerate(self.probpars.CASheader):
                 if i>0:
                     outdat = np.hstack((outdat,np.atleast_2d(self.casdata[chead][retinds]).T))

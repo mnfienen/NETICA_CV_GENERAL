@@ -54,6 +54,16 @@ class all_folds:
     def __init__(self):
         self.leftout = list()
         self.retained = list()
+        self.casfiles = list() #filenames for calibration data (retained indices only)
+        self.caldata = list()  # calibration data (same as written to the calibration case file)
+        self.valdata = list()  # validation data (the data left out -- will be used to calc predictions)
+        # calibration and validation output from making predictions
+        self.calpred = list()  
+        self.valpred = list()
+        self.calNODES = list()  
+        self.valNODES = list()
+        self.valN = list()
+        self.calN = list()
         self.numfolds = None
 
     def k_fold_maker(self,n,k):
