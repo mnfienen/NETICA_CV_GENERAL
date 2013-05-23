@@ -290,6 +290,8 @@ class pynetica:
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
             print 'getting stats'
+            if 'mean_DTW' in self.pred.keys():
+                print self.pred['mean_DTW'].pdf[-1]
             self.PDF2Stats(i,alpha=0.1)
 
 
