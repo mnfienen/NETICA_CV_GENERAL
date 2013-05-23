@@ -67,6 +67,7 @@ class pynetica:
         self.casdata = None
         self.n = None #this is the netica environment
         self.mesg = ct.create_string_buffer('\000' * 1024)
+        self.basepred = None
         
     def sanitize(self):
         print 'Sanitizing pynetica object to remove pointers'
@@ -206,7 +207,7 @@ class pynetica:
         self.CloseNetica()
         return cNETNODES
     
-    def predictBayes(self,netName,N):
+    def predictBayes(self,netName,N,casdata):
         '''
         netName --> name of the built net to make predictions on
         '''
@@ -247,7 +248,7 @@ class pynetica:
         #
         # Now loop over each input and get the Netica predictions
         #
-        for i in np.arange(self.N):
+        for i in np.arange(N):
             # first have to enter the values for each node
             # retract all the findings again
             self.RetractNetFindings(cnet)
@@ -256,7 +257,7 @@ class pynetica:
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
                 # set the current node values
                 if cnodename in self.probpars.scenario.nodesIn:
-                    self.EnterNodeValue(cnode,self.casdata[cnodename][i])
+                    self.EnterNodeValue(cnode,casdata[cnodename][i])
             for cn in np.arange(numnodes):
             # obtain the updated beliefs from ALL nodes including input and output
                 cnode = self.NthNode(allnodes,ct.c_int(cn))
@@ -269,7 +270,7 @@ class pynetica:
         #
         # Do some postprocessing for just the output nodes
         #
-        currstds = np.ones((self.N,1))*1.0e-16
+        currstds = np.ones((N,1))*1.0e-16
         for i in self.probpars.scenario.response:
             print 'postprocessing output node --> %s' %(i)
             # record whether the node is continuous or discrete
@@ -278,13 +279,13 @@ class pynetica:
             else:
                 curr_continuous = 'discrete'
             pdfRanges = cpred[i].ranges
-            cpred[i].z = np.atleast_2d(self.casdata[i]).T
+            cpred[i].z = np.atleast_2d(casdata[i]).T
             pdfParam = np.hstack((cpred[i].z,currstds))
             pdfData = statfuns.makeInputPdf(pdfRanges,pdfParam,'norm',curr_continuous)
 
             cpred[i].probModelUpdate = np.nansum(pdfData * cpred[i].pdf,1)
             cpred[i].probModelPrior = np.nansum(pdfData * np.tile(cpred[i].priorPDF,
-                                                                      (self.N,1)),1)
+                                                                      (N,1)),1)
             cpred[i].logLikelihoodRatio = (np.log10(cpred[i].probModelUpdate + np.spacing(1)) - 
                                                np.log10(cpred[i].probModelPrior + np.spacing(1)))
             cpred[i].dataPDF = pdfData.copy()

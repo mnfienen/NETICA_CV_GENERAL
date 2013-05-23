@@ -14,13 +14,15 @@ a m!ke@usgs joint
 # CONFIGURATION FILE NAME
 parfile = 'example.xml'
 ############
+# initialize
 cdat = pyn.pynetica()
+# read in the problem parameters
 cdat.probpars = CVT.input_parameters(parfile)
 
-cdat.start_environment(cdat.probpars.pwdfile)
 # Initialize a pynetica instance/env using password in a text file
+cdat.start_environment(cdat.probpars.pwdfile)
 
-# read in the data from a cas file
+# read in the data from a base cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
 
 # determine the number of data points
@@ -30,11 +32,11 @@ cdat.allfolds = CVT.all_folds()
 cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
 # run the predictions using the base net --> 
-cpred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N)
+cdat.basepred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N,cdat.casdata)
 # write the results to a post-processing world
-cdat.PredictBayesPostProc(cpred,cdat.probpars.baseNET[:-5],cdat.probpars.baseCAS)
+cdat.PredictBayesPostProc(cdat.basepred,cdat.probpars.baseNET[:-5],cdat.probpars.baseCAS)
 
-# rock the cross-validation work 
+# if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
     print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation'
     # make the necessary case files
