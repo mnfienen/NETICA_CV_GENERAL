@@ -34,7 +34,9 @@ cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 # run the predictions using the base net --> 
 cdat.basepred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N,cdat.casdata)
 # write the results to a post-processing world
-cdat.PredictBayesPostProc(cdat.basepred,cdat.probpars.baseNET[:-5],cdat.probpars.baseCAS)
+cdat.PredictBayesPostProc(cdat.basepred,
+                          cdat.probpars.scenario.name + '_base_stats.dat',
+                          cdat.probpars.baseCAS)
 
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
