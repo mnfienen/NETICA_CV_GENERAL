@@ -30,9 +30,9 @@ cdat.allfolds = CVT.all_folds()
 cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
 # run the predictions using the base net --> 
-cdat.predictBayes(cdat.probpars.baseNET)
+cpred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N)
 # write the results to a post-processing world
-cdat.PredictBayesPostProc()
+cdat.PredictBayesPostProc(cpred,cdat.probpars.baseNET[:-5],cdat.probpars.baseCAS)
 
 # rock the cross-validation work 
 if cdat.probpars.CVflag:

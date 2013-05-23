@@ -179,67 +179,68 @@ class pynetica:
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
         print 'Reading Node information from net --> %s' %(netName)
-        self.NETNODES = []
+        cNETNODES = []
         # loop over the nodes
         for cn in np.arange(numnodes):
             cnode = self.NthNode(allnodes,ct.c_int(cn))
-            self.NETNODES.append(nodestruct())
-            self.NETNODES[-1].name = cth.c_char_p2str(self.GetNodeName(cnode))
-            self.NETNODES[-1].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
-            print '   Parsing node --> %s' %(self.NETNODES[-1].title)
-            self.NETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
-            self.NETNODES[-1].beliefs = cth.c_float_p2float(
+            cNETNODES.append(nodestruct())
+            cNETNODES[-1].name = cth.c_char_p2str(self.GetNodeName(cnode))
+            cNETNODES[-1].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
+            print '   Parsing node --> %s' %(cNETNODES[-1].title)
+            cNETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
+            cNETNODES[-1].beliefs = cth.c_float_p2float(
                 self.GetNodeBeliefs(cnode),
-                self.NETNODES[-1].Nbeliefs)
-            self.NETNODES[-1].likelihood = cth.c_float_p2float(
+                cNETNODES[-1].Nbeliefs)
+            cNETNODES[-1].likelihood = cth.c_float_p2float(
                 self.GetNodeLikelihood(cnode),
-                self.NETNODES[-1].Nbeliefs)
-            self.NETNODES[-1].levels =  cth.c_double_p2float(
+                cNETNODES[-1].Nbeliefs)
+            cNETNODES[-1].levels =  cth.c_double_p2float(
                 self.GetNodeLevels(cnode),
-                self.NETNODES[-1].Nbeliefs + 1)
+                cNETNODES[-1].Nbeliefs + 1)
 
             # loop over the states in each node
-            for cs in range(self.NETNODES[-1].Nbeliefs):
-                self.NETNODES[-1].state.append(statestruct())
-                self.NETNODES[-1].state[-1].name = cth.c_char_p2str(
+            for cs in range(cNETNODES[-1].Nbeliefs):
+                cNETNODES[-1].state.append(statestruct())
+                cNETNODES[-1].state[-1].name = cth.c_char_p2str(
                     self.GetNodeStateName(cnode,cs))            
         self.CloseNetica()
-
-    def predictBayes(self,netName):
+        return cNETNODES
+    
+    def predictBayes(self,netName,N):
         '''
         netName --> name of the built net to make predictions on
         '''
         # first read in the information about a Net's nodes
-        self.ReadNodeInfo(netName)
+        cNETNODES = self.ReadNodeInfo(netName)
         '''
         Initialize output 
         '''       
         # initialize dictionary of predictions objects
-        self.pred = dict()
+        cpred = dict()
 
         print 'Making predictions for net named --> %s' %(netName)
         cnet = self.OpenNeticaNet(netName)
         #retract all the findings
         self.RetractNetFindings(cnet)
-        for CNODES in self.NETNODES:
+        for CNODES in cNETNODES:
             Cname = CNODES.name
-            self.pred[Cname] = predictions()
-            self.pred[Cname].stats = pred_stats()
+            cpred[Cname] = predictions()
+            cpred[Cname].stats = pred_stats()
             Nbins = CNODES.Nbeliefs
-            self.pred[Cname].pdf = np.zeros((self.N,Nbins))
-            self.pred[Cname].ranges = np.array(CNODES.levels)
+            cpred[Cname].pdf = np.zeros((N,Nbins))
+            cpred[Cname].ranges = np.array(CNODES.levels)
             # get plottable ranges
             if Nbins < len(CNODES.levels):
                 # continuos, so plot bin centers
                 CNODES.continuous = True
-                self.pred[Cname].continuous = True
-                self.pred[Cname].rangesplt = (self.pred[Cname].ranges[1:]-
-                                              0.5*np.diff(self.pred[Cname].ranges))
+                cpred[Cname].continuous = True
+                cpred[Cname].rangesplt = (cpred[Cname].ranges[1:]-
+                                              0.5*np.diff(cpred[Cname].ranges))
             else:
                 #discrete so just use the bin values
-                self.pred[Cname].rangesplt = self.pred[Cname].ranges.copy()
+                cpred[Cname].rangesplt = cpred[Cname].ranges.copy()
 
-            self.pred[Cname].priorPDF = CNODES.beliefs
+            cpred[Cname].priorPDF = CNODES.beliefs
 
             allnodes = self.GetNetNodes(cnet)
             numnodes = self.LengthNodeList(allnodes)
@@ -261,7 +262,7 @@ class pynetica:
                 cnode = self.NthNode(allnodes,ct.c_int(cn))
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
                 # get the current belief values
-                self.pred[cnodename].pdf[i,:] = cth.c_float_p2float(
+                cpred[cnodename].pdf[i,:] = cth.c_float_p2float(
                     self.GetNodeBeliefs(cnode),
                     self.GetNodeNumberStates(cnode))
 
@@ -272,32 +273,33 @@ class pynetica:
         for i in self.probpars.scenario.response:
             print 'postprocessing output node --> %s' %(i)
             # record whether the node is continuous or discrete
-            if self.pred[i].continuous:
+            if cpred[i].continuous:
                 curr_continuous='continuous'
             else:
                 curr_continuous = 'discrete'
-            pdfRanges = self.pred[i].ranges
-            self.pred[i].z = np.atleast_2d(self.casdata[i]).T
-            pdfParam = np.hstack((self.pred[i].z,currstds))
+            pdfRanges = cpred[i].ranges
+            cpred[i].z = np.atleast_2d(self.casdata[i]).T
+            pdfParam = np.hstack((cpred[i].z,currstds))
             pdfData = statfuns.makeInputPdf(pdfRanges,pdfParam,'norm',curr_continuous)
 
-            self.pred[i].probModelUpdate = np.nansum(pdfData * self.pred[i].pdf,1)
-            self.pred[i].probModelPrior = np.nansum(pdfData * np.tile(self.pred[i].priorPDF,
+            cpred[i].probModelUpdate = np.nansum(pdfData * cpred[i].pdf,1)
+            cpred[i].probModelPrior = np.nansum(pdfData * np.tile(cpred[i].priorPDF,
                                                                       (self.N,1)),1)
-            self.pred[i].logLikelihoodRatio = (np.log10(self.pred[i].probModelUpdate + np.spacing(1)) - 
-                                               np.log10(self.pred[i].probModelPrior + np.spacing(1)))
-            self.pred[i].dataPDF = pdfData.copy()
+            cpred[i].logLikelihoodRatio = (np.log10(cpred[i].probModelUpdate + np.spacing(1)) - 
+                                               np.log10(cpred[i].probModelPrior + np.spacing(1)))
+            cpred[i].dataPDF = pdfData.copy()
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
-            if 'mean_DTW' in self.pred.keys():
-                print self.pred['mean_DTW'].pdf[-1]
+            if 'mean_DTW' in cpred.keys():
+                print cpred['mean_DTW'].pdf[-1]
             print 'getting stats'
-            self.PDF2Stats(i,alpha=0.1)
+            cpred = self.PDF2Stats(i,cpred,alpha=0.1)
 
 
         self.CloseNetica()
-
-    def PDF2Stats(self,nodename, alpha = None):
+        return cpred,cNETNODES
+    
+    def PDF2Stats(self,nodename, cpred, alpha = None):
         '''
         extract statistics from the PDF informed by a Bayesian Net
 
@@ -306,7 +308,7 @@ class pynetica:
         '''
 
         # normalize the PDF in case it doesn't sum to unity        
-        pdf = np.atleast_2d(self.pred[nodename].pdf).copy()
+        pdf = np.atleast_2d(cpred[nodename].pdf).copy()
         pdf /= np.tile(np.atleast_2d(np.sum(pdf,1)).T,(1, pdf.shape[1]))
 
         # Start computing the statistics
@@ -322,86 +324,87 @@ class pynetica:
             self.alpha = alpha
             dalpha = (1.0 - alpha)/2.0
             # first return the percentile requested in bAlpha
-            self.pred[nodename].stats.palpha = blank*statfuns.getPy(
+            cpred[nodename].stats.palpha = blank*statfuns.getPy(
                 alpha,pdf,
-                self.pred[nodename].ranges)
+                cpred[nodename].ranges)
 
             # now get the tails from requested bAlpha
             # upper tail
-            self.pred[nodename].stats.palphaPlus = blank*statfuns.getPy(
+            cpred[nodename].stats.palphaPlus = blank*statfuns.getPy(
                 1.0-dalpha,pdf,
-                self.pred[nodename].ranges)
+                cpred[nodename].ranges)
 
             # lower tail
-            self.pred[nodename].stats.palphaMinus = blank*statfuns.getPy(
+            cpred[nodename].stats.palphaMinus = blank*statfuns.getPy(
                 dalpha,pdf,
-                self.pred[nodename].ranges)
+                cpred[nodename].ranges)
         # now handle the p75,p95, and p975 cases
         # 75th percentiles
-        self.pred[nodename].stats.p25 = blank*statfuns.getPy(0.25,pdf,
-                                                             self.pred[nodename].ranges)    
-        self.pred[nodename].stats.p75 = blank*statfuns.getPy(0.75,pdf,
-                                                             self.pred[nodename].ranges)    
+        cpred[nodename].stats.p25 = blank*statfuns.getPy(0.25,pdf,
+                                                             cpred[nodename].ranges)    
+        cpred[nodename].stats.p75 = blank*statfuns.getPy(0.75,pdf,
+                                                             cpred[nodename].ranges)    
         # 95th percentiles
-        self.pred[nodename].stats.p05 = blank*statfuns.getPy(0.05,pdf, 
-                                                             self.pred[nodename].ranges)    
-        self.pred[nodename].stats.p95 = blank*statfuns.getPy(0.95,pdf,
-                                                             self.pred[nodename].ranges)    
+        cpred[nodename].stats.p05 = blank*statfuns.getPy(0.05,pdf, 
+                                                             cpred[nodename].ranges)    
+        cpred[nodename].stats.p95 = blank*statfuns.getPy(0.95,pdf,
+                                                             cpred[nodename].ranges)    
         # 97.5th percentiles
-        self.pred[nodename].stats.p025 = blank*statfuns.getPy(0.025,pdf, 
-                                                              self.pred[nodename].ranges)    
-        self.pred[nodename].stats.p975 = blank*statfuns.getPy(0.975,pdf,
-                                                              self.pred[nodename].ranges)  
+        cpred[nodename].stats.p025 = blank*statfuns.getPy(0.025,pdf, 
+                                                              cpred[nodename].ranges)    
+        cpred[nodename].stats.p975 = blank*statfuns.getPy(0.975,pdf,
+                                                              cpred[nodename].ranges)  
         # MEDIAN  
-        self.pred[nodename].stats.median = blank*statfuns.getPy(0.5,pdf,
-                                                                self.pred[nodename].ranges)  
+        cpred[nodename].stats.median = blank*statfuns.getPy(0.5,pdf,
+                                                                cpred[nodename].ranges)  
 
         # now get the mean, ML, and std values
-        (self.pred[nodename].stats.mean,
-         self.pred[nodename].stats.std,
-         self.pred[nodename].stats.mostProb) = statfuns.getMeanStdMostProb(pdf,
-                                                                           self.pred[nodename].ranges,
-                                                                           self.pred[nodename].continuous,
+        (cpred[nodename].stats.mean,
+         cpred[nodename].stats.std,
+         cpred[nodename].stats.mostProb) = statfuns.getMeanStdMostProb(pdf,
+                                                                           cpred[nodename].ranges,
+                                                                           cpred[nodename].continuous,
                                                                            blank)
 
-        self.pred[nodename].stats.skMean = statfuns.LSQR_skill(
-            self.pred[nodename].stats.mean,
-            self.pred[nodename].z-np.mean(self.pred[nodename].z))
+        cpred[nodename].stats.skMean = statfuns.LSQR_skill(
+            cpred[nodename].stats.mean,
+            cpred[nodename].z-np.mean(cpred[nodename].z))
 
-        self.pred[nodename].stats.skML = statfuns.LSQR_skill(
-            self.pred[nodename].stats.mostProb,
-            self.pred[nodename].z-np.mean(self.pred[nodename].z))
-        Mresid = (self.pred[nodename].stats.mean -
-                  self.pred[nodename].z)
-        self.pred[nodename].stats.rmseM = (
+        cpred[nodename].stats.skML = statfuns.LSQR_skill(
+            cpred[nodename].stats.mostProb,
+            cpred[nodename].z-np.mean(cpred[nodename].z))
+        Mresid = (cpred[nodename].stats.mean -
+                  cpred[nodename].z)
+        cpred[nodename].stats.rmseM = (
             np.sqrt(nanmean(Mresid**2)))  
-        self.pred[nodename].stats.meaneM = nanmean(Mresid)    
-        MLresid = (self.pred[nodename].stats.mostProb -
-                   self.pred[nodename].z)
-        self.pred[nodename].stats.rmseML = (
+        cpred[nodename].stats.meaneM = nanmean(Mresid)    
+        MLresid = (cpred[nodename].stats.mostProb -
+                   cpred[nodename].z)
+        cpred[nodename].stats.rmseML = (
             np.sqrt(nanmean(MLresid**2)))  
-        self.pred[nodename].stats.meaneML = nanmean(MLresid)            
+        cpred[nodename].stats.meaneML = nanmean(MLresid)            
         
-        
-    def PredictBayesPostProc(self,CV_flag = False):
+        return cpred
+    
+    def PredictBayesPostProc(self,cpred,outname,casname,CV_flag = False):
         if CV_flag:
             pass
         else:
-            ofp = open(self.probpars.baseNET[:-4] + 'stats.dat','w')
+            ofp = open(outname + 'stats.dat','w')
             ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
-                      %(self.probpars.baseNET,self.probpars.baseCAS))   
+                      %(outname,casname))   
             ofp.write('%14s '*7 
                       %('Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
                       + '\n')
         for i in self.probpars.scenario.response:
             print 'writing output for --> %s' %(i)
             ofp.write('%14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e'
-                      %(i,self.pred[i].stats.skMean,
-                        self.pred[i].stats.rmseM,
-                        self.pred[i].stats.meaneM,
-                        self.pred[i].stats.skML,
-                        self.pred[i].stats.rmseML,
-                        self.pred[i].stats.meaneML))
+                      %(i,cpred[i].stats.skMean,
+                        cpred[i].stats.rmseM,
+                        cpred[i].stats.meaneM,
+                        cpred[i].stats.skML,
+                        cpred[i].stats.rmseML,
+                        cpred[i].stats.meaneML))
         ofp.close()
 
 
