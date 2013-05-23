@@ -39,9 +39,9 @@ cdat.PredictBayesPostProc(cdat.basepred,cdat.probpars.baseNET[:-5],cdat.probpars
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
     print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation'
-    # make the necessary case files
-    print '\nMaking the casefiles for all folds'
-    cdat.cross_val_setup()
+    # set up for cross validation
+    print '\nSetting up cas files and file pointers for cross validation'
+    kfoldOFP_Val,kfoldOFP_Cal = cdat.cross_val_setup()
     # now build all the nets
     for cfold in np.arange(cdat.probpars.numfolds):
         # rebuild the net
@@ -52,16 +52,26 @@ if cdat.probpars.CVflag:
                          cname[:-4] + '.neta',
                          cdat.probpars.EMflag)
         # make predictions for both validation and calibration data sets
+        print '*'*5 + 'Calibration predictions' + '*'*5
         cdat.allfolds.calpred[cfold],cdat.allfolds.calNODES[cfold] = (
             cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.calN[cfold],
                               cdat.allfolds.caldata[cfold]))
-        
+        print '*'*5 + 'End Calibration predictions' + '*'*5  + '\n\n'      
+
+        print '*'*5 + 'Start Validation predictions' + '*'*5        
         cdat.allfolds.valpred[cfold],cdat.allfolds.valNODES[cfold] = (
             cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.valN[cfold],
                               cdat.allfolds.valdata[cfold]))
+        print '*'*5 + 'End Validation predictions' + '*'*5   + '\n\n'      
 
+        cdat.PredictBayesPostProcCV(cdat.allfolds.valpred[cfold],cfold,kfoldOFP_Val,'Validation')
+        cdat.PredictBayesPostProcCV(cdat.allfolds.calpred[cfold],cfold,kfoldOFP_Cal,'Calibration')
+
+    kfoldOFP_Cal.close()
+    kfoldOFP_Val.close()
+    
 # first need to sanitize away any ctypes/Netica pointers
 cdat.sanitize()
 # now dump into a pickle file

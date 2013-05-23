@@ -6,7 +6,7 @@
 </input_files>
 <kfold_data>
 	<CVflag>True</CVflag>
-	<numfolds>3</numfolds>
+	<numfolds>10</numfolds>
 </kfold_data>
 
 <scenarios>

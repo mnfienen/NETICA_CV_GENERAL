@@ -387,19 +387,16 @@ class pynetica:
         
         return cpred
     
-    def PredictBayesPostProc(self,cpred,outname,casname,CV_flag = False):
-        if CV_flag:
-            pass
-        else:
-            ofp = open(outname + 'stats.dat','w')
-            ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
-                      %(outname,casname))   
-            ofp.write('%14s '*7 
-                      %('Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
-                      + '\n')
+    def PredictBayesPostProc(self,cpred,outname,casname):
+        ofp = open(outname + 'stats.dat','w')
+        ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
+                  %(outname,casname))   
+        ofp.write('%14s '*7 
+                  %('Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
+                  + '\n')
         for i in self.probpars.scenario.response:
             print 'writing output for --> %s' %(i)
-            ofp.write('%14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e'
+            ofp.write('%14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e\n'
                       %(i,cpred[i].stats.skMean,
                         cpred[i].stats.rmseM,
                         cpred[i].stats.meaneM,
@@ -407,6 +404,18 @@ class pynetica:
                         cpred[i].stats.rmseML,
                         cpred[i].stats.meaneML))
         ofp.close()
+
+    def PredictBayesPostProcCV(self,cpred,cfold,ofp,calval):
+        for i in self.probpars.scenario.response:
+            print 'writing %s cross-validation output for --> %s' %(calval,i)
+            ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e\n'
+                      %(cfold,i,cpred[i].stats.skMean,
+                        cpred[i].stats.rmseM,
+                        cpred[i].stats.meaneM,
+                        cpred[i].stats.skML,
+                        cpred[i].stats.rmseML,
+                        cpred[i].stats.meaneML))
+
 
 
     def read_cas_file(self,casfilename):
@@ -433,6 +442,20 @@ class pynetica:
         self.N = len(self.casdata)
     # cross validation driver
     def cross_val_setup(self):
+        # open a file pointer to the stats output file for all the folds
+        kfoldOFP_Val = open('%s_kfold_stats_VAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
+        kfoldOFP_Val.write('Validation statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
+                  %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
+        kfoldOFP_Val.write('%14s '*8 
+                  %('Current Fold','Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
+                  + '\n')
+        
+        kfoldOFP_Cal = open('%s_kfold_stats_CAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
+        kfoldOFP_Cal.write('Calibration statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
+                  %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
+        kfoldOFP_Cal.write('%14s '*8 
+                  %('Current Fold','Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
+                  + '\n')
 
         for cfold in np.arange(self.probpars.numfolds):
             self.allfolds.calNODES.append(None)
@@ -460,7 +483,7 @@ class pynetica:
             ofp.write('\n')
             np.savetxt(ofp,outdat)
             ofp.close()
-            
+        return kfoldOFP_Val,kfoldOFP_Cal
     # general error-checking function    
     def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
         if self.GetError(err_severity):
