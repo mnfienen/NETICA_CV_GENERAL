@@ -35,6 +35,8 @@ class pred_stats:
         self.p975 = None
         self.palphaPlus = None
         self.pAlphaMinus = None
+        self.meanabserrM = None
+        self.meanabserrML = None        
         self.rmseM = None
         self.meaneM = None
         self.rmseML = None
@@ -386,7 +388,10 @@ class pynetica:
                    cpred[nodename].z)
         cpred[nodename].stats.rmseML = (
             np.sqrt(nanmean(MLresid**2)))  
-        cpred[nodename].stats.meaneML = nanmean(MLresid)            
+        cpred[nodename].stats.meaneML = nanmean(MLresid)   
+        cpred[nodename].stats.meanabserrM = nanmean(np.abs(Mresid))
+        cpred[nodename].stats.meanabserrML = nanmean(np.abs(MLresid))
+        
         
         return cpred
     
@@ -394,31 +399,36 @@ class pynetica:
         ofp = open(outname,'w')
         ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
                   %(outname,casname))   
-        ofp.write('%14s '*7 
-                  %('Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
+        ofp.write('%14s '*9
+                  %('Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
+                    'skillML','rmseML','meanErrML','meanAbsErrML')
                   + '\n')
         for i in self.probpars.scenario.response:
             print 'writing output for --> %s' %(i)
-            ofp.write('%14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e\n'
+            ofp.write('%14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e\n'
                       %(i,cpred[i].stats.skMean,
                         cpred[i].stats.rmseM,
                         cpred[i].stats.meaneM,
+                        cpred[i].stats.meanabserrM,                        
                         cpred[i].stats.skML,
                         cpred[i].stats.rmseML,
-                        cpred[i].stats.meaneML))
+                        cpred[i].stats.meaneML,
+                        cpred[i].stats.meanabserrML))
         ofp.close()
 
     def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval):
         for cfold in np.arange(numfolds):
             for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
-                ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e\n'
+                ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e\n'
                       %(cfold,j,cpred[cfold][j].stats.skMean,
                         cpred[cfold][j].stats.rmseM,
                         cpred[cfold][j].stats.meaneM,
+                        cpred[cfold][j].stats.meanabserrM,
                         cpred[cfold][j].stats.skML,
                         cpred[cfold][j].stats.rmseML,
-                        cpred[cfold][j].stats.meaneML))
+                        cpred[cfold][j].stats.meaneML,
+                        cpred[cfold][j].stats.meanabserrML))
 
 
 
@@ -450,16 +460,18 @@ class pynetica:
         kfoldOFP_Val = open('%s_kfold_stats_VAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
         kfoldOFP_Val.write('Validation statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
                   %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
-        kfoldOFP_Val.write('%14s '*8 
-                  %('Current Fold','Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
+        kfoldOFP_Val.write('%14s '*10
+                  %('Current Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
+                    'skillML','rmseML','meanErrML','meanAbsErrML')
                   + '\n')
         
         kfoldOFP_Cal = open('%s_kfold_stats_CAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
         kfoldOFP_Cal.write('Calibration statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
                   %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
-        kfoldOFP_Cal.write('%14s '*8 
-                  %('Current Fold','Response','skillMean','rmseMean','meanErrMean','skillML','rmseML','meanErrML')
-                  + '\n')
+        kfoldOFP_Cal.write('%14s '*10 
+                %('Current Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
+                  'skillML','rmseML','meanErrML','meanAbsErrML')
+                + '\n')
 
         for cfold in np.arange(self.probpars.numfolds):
             self.allfolds.calNODES.append(None)
