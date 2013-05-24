@@ -430,14 +430,37 @@ class pynetica:
                         cpred[cfold][j].stats.meaneML,
                         cpred[cfold][j].stats.meanabserrML))
 
-    def PerformSensitivityAnalysis(self):
+    def SensitivityAnalysis(self):
         '''
         Peforms sensitivity analysis on each response node assuming all 
         input nodes are active (as defined in self.probpars.scenario)
         
         Reports results to a text file.
         '''
-        
+        print '*' * 10 + '\n' + 'Performing Sensitity Analysis\n' + '*'*10
+        self.NewNeticaEnviron()
+        # meke a streamer to the Net file
+        net_streamer = self.NewFileStreamer(self.probpars.baseNET)
+        # read in the net using the streamer        
+        cnet = self.ReadNet(net_streamer)
+        # remove the input net streamer
+        self.DeleteStream(net_streamer)  
+        self.CompileNet(cnet)              
+        self.sensitivity = dict()
+        for cres in self.probpars.scenario.response:
+            # calculate the sensitivity for each response variable using all nodes  as Vnodes
+            Qnode = self.GetNodeNamed(cres,cnet)
+            Vnodes = self.GetNetNodes(cnet)
+            print Vnodes
+            sens = self.NewSensvToFinding(Qnode,Vnodes,ct.c_int(pnC.netica_const.VARIANCE_OF_REAL_SENSV))
+            for cn in self.probpars.scenario.nodesIn:
+                Vnode = self.GetNodeNamed(cn,cnet)
+                print cres
+                print cn
+                print sens
+                print 'vnode?'
+                print Vnode
+                print self.GetVarianceOfReal(sens,Vnode)
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -597,6 +620,10 @@ class pynetica:
         self.n.DeleteStream_ns(cstream)
         self.chkerr()
 
+    def DeleteSensvToFinding(self,sens):
+        self.n.DeleteSensvToFinding_bn(sens)
+        self.chkerr()
+
     def EnterFinding(self,cnode,cval):
         self.n.EnterFinding_bn(cnode,ct.c_double(cval))
         self.chkerr()
@@ -644,6 +671,11 @@ class pynetica:
         self.chkerr()
         return cname
 
+    def GetNodeNamed(self,nodename,cnet):
+        retnode = self.n.GetNodeNamed_bn(nodename,cnet)
+        self.chkerr()
+        return(retnode)
+    
     def GetNodeNumberStates(self,cnode):
         numstates = self.n.GetNodeNumberStates_bn(cnode)
         self.chkerr()
@@ -660,7 +692,7 @@ class pynetica:
         return ctitle
 
     def GetVarianceOfReal(self,sensv,Vnode):
-        retvar = self.n.GetVarianceOfReal_bn(sens,Vnode)
+        retvar = self.n.GetVarianceOfReal_bn(sensv,Vnode)
         self.chkerr()
         return retvar
         
@@ -693,8 +725,8 @@ class pynetica:
         self.chkerr()
         return newnet
     
-    def NewSensvToFinding(Qnode,Vnodes,what_find):
-        sesnsv = self.n.NewSensvToFinding_bn(Qnode,Vnodes,ct.c_int(what_find))
+    def NewSensvToFinding(self,Qnode,Vnodes,what_find):
+        sensv = self.n.NewSensvToFinding_bn(Qnode,Vnodes,what_find)
         self.chkerr()
         return sensv
 

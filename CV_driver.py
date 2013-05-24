@@ -44,6 +44,9 @@ cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.scenario.name + '_base_stats.dat',
                           cdat.probpars.baseCAS)
 
+# optionally perform sensitivity analysis on the base case
+cdat.SensitivityAnalysis()
+
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
     print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation'

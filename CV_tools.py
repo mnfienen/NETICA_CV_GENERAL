@@ -39,7 +39,6 @@ class input_parameters:
         self.scenario.response = []
         for cr in  inpars.findall('.//scenario/response'):
             self.scenario.response.append(cr.text)        
-        print self.CVflag
         self.CASheader = list( self.scenario.nodesIn)
         self.CASheader.extend(self.scenario.response)    
         self.EMflag = tf2flag(inpars.findall('.//learnCPTdata/useEM')[0].text)
