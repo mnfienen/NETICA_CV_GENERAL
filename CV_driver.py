@@ -2,6 +2,8 @@ import pythonNeticaUtils as pyn
 import CV_tools as CVT
 import numpy as np
 import pickle, gzip
+import sys
+
 '''
 CV_driver.py
 
@@ -12,7 +14,10 @@ a m!ke@usgs joint
 
 ############
 # CONFIGURATION FILE NAME
-parfile = 'example2.xml'
+try:
+    parfile = sys.argv[1]
+except:
+    parfile = 'example.xml'
 ############
 # initialize
 cdat = pyn.pynetica()
@@ -33,9 +38,7 @@ cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
 # run the predictions using the base net --> 
 cdat.basepred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N,cdat.casdata)
-print 'ginger1'
-print cdat.basepred
-print 'ginger2'
+
 # write the results to a post-processing world
 cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.scenario.name + '_base_stats.dat',
