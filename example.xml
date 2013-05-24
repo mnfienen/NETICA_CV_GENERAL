@@ -17,6 +17,7 @@
 		<input>mean_rch</input>
 		<input>maxWT</input>
 		<response>mean_DTW</response>
+		<response>meax_WT</response>
 	</scenario>	
 
 </scenarios>

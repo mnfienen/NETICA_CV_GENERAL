@@ -225,23 +225,24 @@ class pynetica:
         self.RetractNetFindings(cnet)
         for CNODES in cNETNODES:
             Cname = CNODES.name
-            cpred[Cname] = predictions()
-            cpred[Cname].stats = pred_stats()
-            Nbins = CNODES.Nbeliefs
-            cpred[Cname].pdf = np.zeros((N,Nbins))
-            cpred[Cname].ranges = np.array(CNODES.levels)
-            # get plottable ranges
-            if Nbins < len(CNODES.levels):
-                # continuos, so plot bin centers
-                CNODES.continuous = True
-                cpred[Cname].continuous = True
-                cpred[Cname].rangesplt = (cpred[Cname].ranges[1:]-
+            if Cname in self.probpars.scenario.response:
+                cpred[Cname] = predictions()
+                cpred[Cname].stats = pred_stats()
+                Nbins = CNODES.Nbeliefs
+                cpred[Cname].pdf = np.zeros((N,Nbins))
+                cpred[Cname].ranges = np.array(CNODES.levels)
+                # get plottable ranges
+                if Nbins < len(CNODES.levels):
+                    # continuos, so plot bin centers
+                    CNODES.continuous = True
+                    cpred[Cname].continuous = True
+                    cpred[Cname].rangesplt = (cpred[Cname].ranges[1:]-
                                               0.5*np.diff(cpred[Cname].ranges))
-            else:
-                #discrete so just use the bin values
-                cpred[Cname].rangesplt = cpred[Cname].ranges.copy()
+                else:
+                    #discrete so just use the bin values
+                    cpred[Cname].rangesplt = cpred[Cname].ranges.copy()
 
-            cpred[Cname].priorPDF = CNODES.beliefs
+                cpred[Cname].priorPDF = CNODES.beliefs
 
             allnodes = self.GetNetNodes(cnet)
             numnodes = self.LengthNodeList(allnodes)
@@ -262,10 +263,11 @@ class pynetica:
             # obtain the updated beliefs from ALL nodes including input and output
                 cnode = self.NthNode(allnodes,ct.c_int(cn))
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
-                # get the current belief values
-                cpred[cnodename].pdf[i,:] = cth.c_float_p2float(
-                    self.GetNodeBeliefs(cnode),
-                    self.GetNodeNumberStates(cnode))
+                if cnodename in self.probpars.scenario.response:
+                    # get the current belief values
+                    cpred[cnodename].pdf[i,:] = cth.c_float_p2float(
+                        self.GetNodeBeliefs(cnode),
+                        self.GetNodeNumberStates(cnode))
 
         #
         # Do some postprocessing for just the output nodes
@@ -291,8 +293,11 @@ class pynetica:
             cpred[i].dataPDF = pdfData.copy()
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
+            '''
+            MNF DEBUGGING
             if 'mean_DTW' in cpred.keys():
                 print cpred['mean_DTW'].pdf[-1]
+            '''
             print 'getting stats'
             cpred = self.PDF2Stats(i,cpred,alpha=0.1)
 
@@ -317,8 +322,6 @@ class pynetica:
         blank = 0.0 + ~np.isnan(pdf[:,0])
         blank[blank==0]=np.nan
         blank = np.atleast_2d(blank).T
-
-
 
         # handle the specific case of a user-specified percentile range
         if alpha:
@@ -388,7 +391,7 @@ class pynetica:
         return cpred
     
     def PredictBayesPostProc(self,cpred,outname,casname):
-        ofp = open(outname + 'stats.dat','w')
+        ofp = open(outname,'w')
         ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
                   %(outname,casname))   
         ofp.write('%14s '*7 
@@ -491,7 +494,7 @@ class pynetica:
                             str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
             raise NeticaException(exceptionMsg)
 
-        ###################################
+    ###################################
     # Key helper functions for Netica #   
     ###################################
 
@@ -534,7 +537,7 @@ class pynetica:
         return self.n.ErrorMessage_ns(error)
 
 
-        ################################################################
+    ################################################################
     # Small definitions and little functions in alphabetical order #  
     ################################################################   
     def AddFileToCaseset(self,caseset,streamer,degree):
@@ -705,8 +708,8 @@ class pynetica:
         self.n.WriteNet_bn(cnet,filename_streamer)
         self.chkerr()
 
-    #################
-    # Error Classes #
+#################
+# Error Classes #
 #################
 # -- can't open external file
 class dllFail(Exception):

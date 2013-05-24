@@ -1,7 +1,7 @@
 import pythonNeticaUtils as pyn
 import CV_tools as CVT
 import numpy as np
-import pickle
+import pickle, gzip
 '''
 CV_driver.py
 
@@ -12,7 +12,7 @@ a m!ke@usgs joint
 
 ############
 # CONFIGURATION FILE NAME
-parfile = 'example.xml'
+parfile = 'example2.xml'
 ############
 # initialize
 cdat = pyn.pynetica()
@@ -33,6 +33,9 @@ cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 
 # run the predictions using the base net --> 
 cdat.basepred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N,cdat.casdata)
+print 'ginger1'
+print cdat.basepred
+print 'ginger2'
 # write the results to a post-processing world
 cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.scenario.name + '_base_stats.dat',
@@ -77,8 +80,8 @@ if cdat.probpars.CVflag:
 # first need to sanitize away any ctypes/Netica pointers
 cdat.sanitize()
 # now dump into a pickle file
-outfilename = parfile[:-4] + '_cdat.pkl'
+outfilename = parfile[:-4] + '_cdat.pklz'
 print 'Dumping cdat to pickle file --> %s' %(outfilename)
-ofp = open(outfilename,'wb')
+ofp = gzip.open(outfilename,'wb')
 pickle.dump(cdat,ofp)
 ofp.close()
