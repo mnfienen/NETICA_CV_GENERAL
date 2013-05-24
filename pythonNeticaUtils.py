@@ -660,6 +660,9 @@ class pynetica:
         return ctitle
 
     def GetVarianceOfReal(self,sensv,Vnode):
+        retvar = self.n.GetVarianceOfReal_bn(sens,Vnode)
+        self.chkerr()
+        return retvar
         
     def LearnCPTs(self,learner,nodes,caseset,voodooPar):
         self.n.LearnCPTs_bn(learner,nodes,caseset,ct.c_double(voodooPar))
