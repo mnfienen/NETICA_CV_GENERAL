@@ -74,8 +74,8 @@ if cdat.probpars.CVflag:
                               cdat.allfolds.valdata[cfold]))
         print '*'*5 + 'End Validation predictions' + '*'*5   + '\n\n'      
 
-        cdat.PredictBayesPostProcCV(cdat.allfolds.valpred[cfold],cfold,kfoldOFP_Val,'Validation')
-        cdat.PredictBayesPostProcCV(cdat.allfolds.calpred[cfold],cfold,kfoldOFP_Cal,'Calibration')
+    cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,cdat.probpars.numfolds,kfoldOFP_Val,'Validation')
+    cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,cdat.probpars.numfolds,kfoldOFP_Cal,'Calibration')
 
     kfoldOFP_Cal.close()
     kfoldOFP_Val.close()

@@ -408,16 +408,17 @@ class pynetica:
                         cpred[i].stats.meaneML))
         ofp.close()
 
-    def PredictBayesPostProcCV(self,cpred,cfold,ofp,calval):
-        for i in self.probpars.scenario.response:
-            print 'writing %s cross-validation output for --> %s' %(calval,i)
-            ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e\n'
-                      %(cfold,i,cpred[i].stats.skMean,
-                        cpred[i].stats.rmseM,
-                        cpred[i].stats.meaneM,
-                        cpred[i].stats.skML,
-                        cpred[i].stats.rmseML,
-                        cpred[i].stats.meaneML))
+    def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval):
+        for cfold in np.arange(numfolds):
+            for j in self.probpars.scenario.response:
+                print 'writing %s cross-validation output for --> %s' %(calval,j)
+                ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.4f %14.6e %14.6e\n'
+                      %(cfold,j,cpred[cfold][j].stats.skMean,
+                        cpred[cfold][j].stats.rmseM,
+                        cpred[cfold][j].stats.meaneM,
+                        cpred[cfold][j].stats.skML,
+                        cpred[cfold][j].stats.rmseML,
+                        cpred[cfold][j].stats.meaneML))
 
 
 
