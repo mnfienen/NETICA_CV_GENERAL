@@ -420,8 +420,14 @@ class pynetica:
                         cpred[cfold][j].stats.rmseML,
                         cpred[cfold][j].stats.meaneML))
 
-
-
+    def PerformSensitivityAnalysis(self):
+        '''
+        Peforms sensitivity analysis on each response node assuming all 
+        input nodes are active (as defined in self.probpars.scenario)
+        
+        Reports results to a text file.
+        '''
+        
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -641,6 +647,8 @@ class pynetica:
         self.chkerr()
         return ctitle
 
+    def GetVarianceOfReal(self,sensv,Vnode):
+        
     def LearnCPTs(self,learner,nodes,caseset,voodooPar):
         self.n.LearnCPTs_bn(learner,nodes,caseset,ct.c_double(voodooPar))
         self.chkerr()
@@ -669,6 +677,11 @@ class pynetica:
         newnet = self.n.NewNet_bn(netname,self.env)
         self.chkerr()
         return newnet
+    
+    def NewSensvToFinding(Qnode,Vnodes,what_find):
+        sesnsv = self.n.NewSensvToFinding_bn(Qnode,Vnodes,ct.c_int(what_find))
+        self.chkerr()
+        return sensv
 
     def NthNode(self,nodelist,index_n):
         cnode = self.n.NthNode_bn(nodelist,index_n)
