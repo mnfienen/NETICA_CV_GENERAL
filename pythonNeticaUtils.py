@@ -451,15 +451,10 @@ class pynetica:
             # calculate the sensitivity for each response variable using all nodes  as Vnodes
             Qnode = self.GetNodeNamed(cres,cnet)
             Vnodes = self.GetNetNodes(cnet)
-            print Vnodes
+
             sens = self.NewSensvToFinding(Qnode,Vnodes,ct.c_int(pnC.netica_const.VARIANCE_OF_REAL_SENSV))
             for cn in self.probpars.scenario.nodesIn:
                 Vnode = self.GetNodeNamed(cn,cnet)
-                print cres
-                print cn
-                print sens
-                print 'vnode?'
-                print Vnode
                 print self.GetVarianceOfReal(sens,Vnode)
     def read_cas_file(self,casfilename):
         '''
@@ -692,6 +687,8 @@ class pynetica:
         return ctitle
 
     def GetVarianceOfReal(self,sensv,Vnode):
+        tmpNeticaFun = self.n.GetVarianceOfReal_bn
+        tmpNeticaFun.restype=ct.c_double
         retvar = self.n.GetVarianceOfReal_bn(sensv,Vnode)
         self.chkerr()
         return retvar
@@ -736,7 +733,7 @@ class pynetica:
         return cnode
 
     def ReadNet(self,streamer):
-        cnet = self.n.ReadNet_bn(streamer,pnC.netica_const.NO_WINDOW)
+        cnet = self.n.ReadNet_bn(streamer,ct.c_int(pnC.netica_const.NO_WINDOW))
         # check for errors
         self.chkerr()
         # reset the findings
