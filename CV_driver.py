@@ -45,7 +45,8 @@ cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.baseCAS)
 
 # optionally perform sensitivity analysis on the base case
-cdat.SensitivityAnalysis()
+if cdat.probpars.report_sens:
+    cdat.SensitivityAnalysis()
 
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:

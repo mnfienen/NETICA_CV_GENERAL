@@ -42,6 +42,8 @@ class input_parameters:
         self.CASheader = list( self.scenario.nodesIn)
         self.CASheader.extend(self.scenario.response)    
         self.EMflag = tf2flag(inpars.findall('.//learnCPTdata/useEM')[0].text)
+        self.report_sens = False
+        self.report_sens = tf2flag(inpars.findall('.//sensitivity/report_sens')[0].text)
         self.voodooPar = float(inpars.findall('.//learnCPTdata/voodooPar')[0].text)
 
 ###################

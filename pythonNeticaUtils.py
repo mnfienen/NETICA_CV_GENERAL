@@ -477,7 +477,7 @@ class pynetica:
         ofp.write('\n')
         for cres in self.sensitivity:
             ofp.write('%-14s' %(cres))
-            for cn in self.sensitivity[cres]:
+            for cn in allnodes:
                 ofp.write('%-14.5e' %(self.sensitivity[cres][cn]))
             ofp.write('\n')
         ofp.write('#'*10 + '   Percent Variance Reduction Values   ' + '#'*10 + '\n')
@@ -487,7 +487,7 @@ class pynetica:
         ofp.write('\n')
         for cres in self.precentvarreduction:
             ofp.write('%-14s' %(cres))
-            for cn in self.precentvarreduction[cres]:
+            for cn in allnodes:
                 ofp.write('%-14.5f' %(self.precentvarreduction[cres][cn]*100.0))
             ofp.write('\n')
         ofp.close()
