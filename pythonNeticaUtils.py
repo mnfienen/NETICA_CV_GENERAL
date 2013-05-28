@@ -85,7 +85,9 @@ class pynetica:
         if os.path.exists(self.licensefile):
             self.license = open(self.licensefile,'r').readlines()[0].strip().split()[0]
         else:
-            print "Warning: License File [%s] not found.\n Opening Netica without licence, which will limit size of nets that can be used." %(self.licensefile)
+            print ("Warning: License File [%s] not found.\n" %(self.licensefile) + 
+                   "Opening Netica without licence, which will limit size of nets that can be used.\n" +
+                   "Window may become unresponsive.")
             self.license = None         
         #############################################
         # Major validation and prediction functions #
@@ -437,7 +439,7 @@ class pynetica:
         
         Reports results to a text file.
         '''
-        print '*' * 10 + '\n' + 'Performing Sensitity Analysis\n' + '*'*10
+        print '\n' * 3 + '*' * 10 + '\n' + 'Performing Sensitity Analysis\n' + '*'*10
         self.NewNeticaEnviron()
         # meke a streamer to the Net file
         net_streamer = self.NewFileStreamer(self.probpars.baseNET)
@@ -447,15 +449,49 @@ class pynetica:
         self.DeleteStream(net_streamer)  
         self.CompileNet(cnet)              
         self.sensitivity = dict()
+        self.precentvarreduction = dict()
+        allnodes = list()
+        allnodes.extend(self.probpars.scenario.nodesIn)
+        allnodes.extend(self.probpars.scenario.response)
         for cres in self.probpars.scenario.response:
+            print "Calculating sensitivity to node --> %s" %(cres)
             # calculate the sensitivity for each response variable using all nodes  as Vnodes
             Qnode = self.GetNodeNamed(cres,cnet)
             Vnodes = self.GetNetNodes(cnet)
-
+            self.sensitivity[cres] = dict()
+            self.precentvarreduction[cres] = dict()
             sens = self.NewSensvToFinding(Qnode,Vnodes,ct.c_int(pnC.netica_const.VARIANCE_OF_REAL_SENSV))
-            for cn in self.probpars.scenario.nodesIn:
+            for cn in allnodes:
                 Vnode = self.GetNodeNamed(cn,cnet)
-                print self.GetVarianceOfReal(sens,Vnode)
+                self.sensitivity[cres][cn] = self.GetVarianceOfReal(sens,Vnode)
+                # percent variance reduction is the variance reduction of a node divided by variance reduction of self
+            for cn in allnodes:
+                self.precentvarreduction[cres][cn] = self.sensitivity[cres][cn]/self.sensitivity[cres][cres]
+        ofp = open(self.probpars.scenario.name + 'Sensitivity.dat','w')
+        ofp.write('Sensitivity analysis for scenario --> %s\n' %(self.probpars.scenario.name))
+        ofp.write('Base Case Net: %s\nBase Case Casfile: %s\n' %(self.probpars.baseNET,self.probpars.baseCAS))
+        ofp.write('#'*10 + '   Raw Variance Reduction Values   ' + '#'*10 + '\n')
+        ofp.write('%-14s' %('Response_node '))
+        for cn in allnodes:
+            ofp.write('%-14s' %(cn))
+        ofp.write('\n')
+        for cres in self.sensitivity:
+            ofp.write('%-14s' %(cres))
+            for cn in self.sensitivity[cres]:
+                ofp.write('%-14.5e' %(self.sensitivity[cres][cn]))
+            ofp.write('\n')
+        ofp.write('#'*10 + '   Percent Variance Reduction Values   ' + '#'*10 + '\n')
+        ofp.write('%-14s' %('Response_node '))
+        for cn in allnodes:
+            ofp.write('%-14s' %(cn))
+        ofp.write('\n')
+        for cres in self.precentvarreduction:
+            ofp.write('%-14s' %(cres))
+            for cn in self.precentvarreduction[cres]:
+                ofp.write('%-14.5f' %(self.precentvarreduction[cres][cn]*100.0))
+            ofp.write('\n')
+        ofp.close()
+
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
