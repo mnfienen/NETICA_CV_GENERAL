@@ -419,8 +419,7 @@ class pynetica:
         ofp.close()
 
     def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval):
-        for cfold in np.arange(numfolds):
-            for j in self.probpars.scenario.response:
+        for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
                 ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e\n'
                       %(cfold,j,cpred[cfold][j].stats.skMean,
@@ -521,7 +520,7 @@ class pynetica:
         kfoldOFP_Val.write('Validation statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
                   %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
         kfoldOFP_Val.write('%14s '*10
-                  %('Current Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
+                  %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
                     'skillML','rmseML','meanErrML','meanAbsErrML')
                   + '\n')
         
@@ -529,7 +528,7 @@ class pynetica:
         kfoldOFP_Cal.write('Calibration statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
                   %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
         kfoldOFP_Cal.write('%14s '*10 
-                %('Current Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
+                %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
                   'skillML','rmseML','meanErrML','meanAbsErrML')
                 + '\n')
 
