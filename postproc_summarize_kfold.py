@@ -3,7 +3,7 @@ import sys
 
 infile = sys.argv[1]
 
-header = open(infile,'r').readlines()[0:4]
+header = open(infile,'r').readlines()[0:3]
 
 stats = ['min','max','mean','median']
 
