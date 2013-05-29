@@ -1,6 +1,7 @@
 import numpy as np
+import sys
 
-infile = 'glass_sqrt_dist_set4_kfold_stats_CAL_10_folds.dat'
+infile = sys.argv[1]
 
 header = open(infile,'r').readlines()[0:4]
 

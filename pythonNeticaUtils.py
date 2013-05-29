@@ -419,7 +419,8 @@ class pynetica:
         ofp.close()
 
     def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval):
-        for j in self.probpars.scenario.response:
+        for cfold in np.arange(numfolds):
+            for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
                 ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e\n'
                       %(cfold,j,cpred[cfold][j].stats.skMean,
