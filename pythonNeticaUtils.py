@@ -560,12 +560,6 @@ class pynetica:
             np.savetxt(ofp,outdat)
             ofp.close()
         return kfoldOFP_Val,kfoldOFP_Cal
-    # general error-checking function    
-    def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
-        if self.GetError(err_severity):
-            exceptionMsg = ("pythonNeticaUtils: Error in " + 
-                            str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
-            raise NeticaException(exceptionMsg)
 
     ###################################
     # Key helper functions for Netica #   
@@ -609,6 +603,12 @@ class pynetica:
     def ErrorMessage(self, error):
         return self.n.ErrorMessage_ns(error)
 
+    # general error-checking function    
+    def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
+        if self.GetError(err_severity):
+            exceptionMsg = ("pythonNeticaUtils: Error in " + 
+                            str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
+            raise NeticaException(exceptionMsg)
 
     ################################################################
     # Small definitions and little functions in alphabetical order #  
@@ -757,6 +757,11 @@ class pynetica:
         newnet = self.n.NewNet_bn(netname,self.env)
         self.chkerr()
         return newnet
+    
+    def NewNetTester(self,test_nodes,unobs_nodes):
+        tester = self.n.NewNetTester_bn(test_nodes,unobs_nodes,ct.c_int(-1))
+        self.chkerr()
+        return tester
     
     def NewSensvToFinding(self,Qnode,Vnodes,what_find):
         sensv = self.n.NewSensvToFinding_bn(Qnode,Vnodes,what_find)
