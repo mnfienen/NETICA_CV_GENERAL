@@ -19,6 +19,11 @@ class nodestruct:
         self.continuous = False
         self.state = []
 
+class netica_test:
+    def __init__(self):
+        self.logloss = None
+        self.errrate = None
+
 class pred_stats:
     def __init__(self):
         self.alpha = None
@@ -70,6 +75,7 @@ class pynetica:
         self.n = None #this is the netica environment
         self.mesg = ct.create_string_buffer('\000' * 1024)
         self.basepred = None
+        self.NeticaTests = list()
         
     def sanitize(self):
         print 'Sanitizing pynetica object to remove pointers'
@@ -210,6 +216,68 @@ class pynetica:
                     self.GetNodeStateName(cnode,cs))            
         self.CloseNetica()
         return cNETNODES
+    
+
+
+    def PredictBayesNeticaCV(self,cfold,cnetname):
+        '''
+        function using Netica built-in testing functionality to evaluate Net
+        '''
+        ctestresults = netica_test()
+
+        # open up the current net
+        cnet = self.OpenNeticaNet(cnetname)
+        #retract all the findings
+        self.RetractNetFindings(cnet)
+        
+        # first create a caseset with the current leftout indices casefile
+        if cfold > -10:
+            ccasefile = '%s_fold_%d_leftout.cas' %(self.probpars.scenario.name,cfold)
+        # unless this is the base case -->
+        else:
+            ccasefile = self.probpars.baseCAS
+        currcases = self.NewCaseset('cval%d' %(np.abs(cfold)))        
+        ccaseStreamer = self.NewFileStreamer(ccasefile)
+        self.AddFileToCaseset(currcases,ccaseStreamer,100.0)
+            
+        # create a set of prediction nodes
+        numprednodes = len(self.probpars.scenario.response)
+        cnodelist = self.NewNodeList2(numprednodes,cnet)
+        for i,cn in enumerate(self.probpars.scenario.response):
+            cnode = self.GetNodeNamed(cn,cnet)
+            self.SetNthNode(cnodelist,i,cnode)
+        # create a tester object
+        ctester = self.NewNetTester(cnodelist,cnodelist)
+        
+        # test the network using the left-out cases
+        #retract all the findings and compile the net
+        self.CompileNet(cnet)
+        self.RetractNetFindings(cnet)        
+        self.TestWithCaseset(ctester,currcases)
+        
+        #
+        # now get the results
+        #
+        ctestresults.logloss = dict()
+        ctestresults.errrate = dict()
+        ctestresults.quadloss = dict()
+        for cn in self.probpars.scenario.response:
+            cnode = self.GetNodeNamed(cn,cnet)
+            # get log loss
+            ctestresults.logloss[cn] =  self.GetTestLogLoss(ctester,cnode)
+            print 'LogLoss for %s --> %f' %(cn,ctestresults.logloss[cn])
+            # get error rate
+            ctestresults.errrate[cn] = self.GetTestErrorRate(ctester,cnode)
+            print 'ErrorRate for %s --> %f' %(cn,ctestresults.errrate[cn]) 
+            # get quadratic loss
+            ctestresults.quadloss[cn] = self.GetTestQuadraticLoss(ctester,cnode)
+            print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])
+            
+        if cfold > -10:
+            self.NeticaTests.append(ctestresults)
+        else:
+            self.BaseNeticaTests = ctestresults            
+    
     
     def predictBayes(self,netName,N,casdata):
         '''
@@ -492,6 +560,8 @@ class pynetica:
             ofp.write('\n')
         ofp.close()
 
+        
+
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -547,18 +617,32 @@ class pynetica:
             # caldata and valdata both include all columns for simplicity
             self.allfolds.caldata.append(self.casdata[retinds])
             leftoutinds = np.array(self.allfolds.leftout[cfold],dtype=int)
+            # we will also make a CAS file for the leftout data for using Netica's testing codes
+            outdatLeftOut = np.atleast_2d(self.casdata[self.probpars.CASheader[0]][leftoutinds]).T            
             self.allfolds.valdata.append(self.casdata[leftoutinds])
             self.allfolds.valN.append(len(leftoutinds))
             self.allfolds.calN.append(len(retinds))
+            # concatenate together the columns of data that will make up the CAS files
             for i,chead in enumerate(self.probpars.CASheader):
                 if i>0:
                     outdat = np.hstack((outdat,np.atleast_2d(self.casdata[chead][retinds]).T))
+                    outdatLeftOut = np.hstack((outdatLeftOut,np.atleast_2d(self.casdata[chead][leftoutinds]).T))
+            # write out the retained casefile            
             ofp = open(cname,'w')
             for cnode in self.probpars.CASheader:
                 ofp.write('%s ' %(cnode))
             ofp.write('\n')
             np.savetxt(ofp,outdat)
             ofp.close()
+            
+            # write out the leftout casefile for later use with the NEtica validation testing functions
+            ofpLeftOut = open(cname[:-4] + '_leftout.cas','w')
+            for cnode in self.probpars.CASheader:
+                ofpLeftOut.write('%s ' %(cnode))
+            ofpLeftOut.write('\n')
+            np.savetxt(ofpLeftOut,outdatLeftOut)
+            ofpLeftOut.close()
+            ofpLeftOut.close()
         return kfoldOFP_Val,kfoldOFP_Cal
 
     ###################################
@@ -614,7 +698,7 @@ class pynetica:
     # Small definitions and little functions in alphabetical order #  
     ################################################################   
     def AddFileToCaseset(self,caseset,streamer,degree):
-        self.n.AddFileToCaseset_cs(caseset,streamer,ct.c_double(degree))
+        self.n.AddFileToCaseset_cs(caseset,streamer,ct.c_double(degree),None)
         self.chkerr()
 
     def CompileNet(self, net):
@@ -696,7 +780,6 @@ class pynetica:
         self.chkerr()
         return nodelikelihood
 
-
     def GetNodeName(self,cnode):
         cname = self.n.GetNodeName_bn(cnode)
         self.chkerr()
@@ -722,6 +805,27 @@ class pynetica:
         self.chkerr()
         return ctitle
 
+    def GetTestLogLoss(self,ctester,cnode):
+        tmpNeticaFun = self.n.GetTestLogLoss_bn
+        tmpNeticaFun.restype=ct.c_double
+        logloss = self.n.GetTestLogLoss_bn(ctester,cnode)
+        self.chkerr()
+        return logloss
+
+    def GetTestErrorRate(self,ctester,cnode):
+        tmpNeticaFun = self.n.GetTestErrorRate_bn
+        tmpNeticaFun.restype=ct.c_double
+        errrate = self.n.GetTestErrorRate_bn(ctester,cnode)
+        self.chkerr()
+        return errrate
+    
+    def GetTestQuadraticLoss(self,ctester,cnode):
+        tmpNeticaFun = self.n.GetTestQuadraticLoss_bn
+        tmpNeticaFun.restype=ct.c_double
+        quadloss = self.n.GetTestQuadraticLoss_bn(ctester,cnode)
+        self.chkerr()
+        return quadloss
+        
     def GetVarianceOfReal(self,sensv,Vnode):
         tmpNeticaFun = self.n.GetVarianceOfReal_bn
         tmpNeticaFun.restype=ct.c_double
@@ -762,6 +866,11 @@ class pynetica:
         tester = self.n.NewNetTester_bn(test_nodes,unobs_nodes,ct.c_int(-1))
         self.chkerr()
         return tester
+
+    def NewNodeList2(self,length,cnet):
+        nodelist = self.n.NewNodeList2_bn(ct.c_int(length),cnet)
+        self.chkerr()
+        return nodelist
     
     def NewSensvToFinding(self,Qnode,Vnodes,what_find):
         sensv = self.n.NewSensvToFinding_bn(Qnode,Vnodes,what_find)
@@ -794,6 +903,10 @@ class pynetica:
     def SetNetAutoUpdate(self,cnet,belief_value):
         self.n.SetNetAutoUpdate_bn(cnet,belief_value)
         self.chkerr()     
+        
+    def SetNthNode(self,nodelist,position,cnode):
+        self.n.SetNthNode_bn(nodelist,ct.c_int(position),cnode)
+        self.chkerr()
 
     def SetLearnerMaxIters(self,learner,maxiters):
         self.n.SetLearnerMaxIters_bn(learner,ct.c_int(maxiters))

@@ -44,6 +44,12 @@ cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.scenario.name + '_base_stats.dat',
                           cdat.probpars.baseCAS)
 
+print '*'*5 + 'Making Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+# ############### Now run the Netica built-in testing stuff ################
+cdat.PredictBayesNeticaCV(-999,cdat.probpars.baseNET)
+print '*'*5 + 'Finished --> Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'     
+
+
 # optionally perform sensitivity analysis on the base case
 if cdat.probpars.report_sens:
     cdat.SensitivityAnalysis()
@@ -71,13 +77,22 @@ if cdat.probpars.CVflag:
                               cdat.allfolds.caldata[cfold]))
         print '*'*5 + 'End Calibration predictions' + '*'*5  + '\n\n'      
 
+        print '*'*5 + 'Making Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+        # ############### Now run the Netica built-in testing stuff ################
+        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta')
+        print '*'*5 + 'Finished --> Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+
+
         print '*'*5 + 'Start Validation predictions' + '*'*5        
         cdat.allfolds.valpred[cfold],cdat.allfolds.valNODES[cfold] = (
             cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.valN[cfold],
                               cdat.allfolds.valdata[cfold]))
-        print '*'*5 + 'End Validation predictions' + '*'*5   + '\n\n'      
-
+        print '*'*5 + 'End Validation predictions' + '*'*5   + '\n\n'     
+        
+        # ############### Now run the Netica built-in testing stuff ################
+        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta')
+        
     cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,cdat.probpars.numfolds,kfoldOFP_Val,'Validation')
     cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,cdat.probpars.numfolds,kfoldOFP_Cal,'Calibration')
 
