@@ -448,8 +448,10 @@ class pynetica:
         # remove the input net streamer
         self.DeleteStream(net_streamer)  
         self.CompileNet(cnet)              
-        self.sensitivity = dict()
-        self.precentvarreduction = dict()
+        self.sensitivityvar = dict()
+        self.sensitivityEntropy = dict()
+        self.sensitivityEntropyNorm = dict()
+        self.percentvarreduction = dict()
         allnodes = list()
         allnodes.extend(self.probpars.scenario.nodesIn)
         allnodes.extend(self.probpars.scenario.response)
@@ -458,40 +460,71 @@ class pynetica:
             # calculate the sensitivity for each response variable using all nodes  as Vnodes
             Qnode = self.GetNodeNamed(cres,cnet)
             Vnodes = self.GetNetNodes(cnet)
-            self.sensitivity[cres] = dict()
-            self.precentvarreduction[cres] = dict()
-            sens = self.NewSensvToFinding(Qnode,Vnodes,ct.c_int(pnC.netica_const.VARIANCE_OF_REAL_SENSV))
+            self.sensitivityvar[cres] = dict()
+            self.sensitivityEntropy[cres] = dict()
+            self.sensitivityEntropyNorm[cres] = dict()            
+            self.percentvarreduction[cres] = dict()
+            sensvar = self.NewSensvToFinding(Qnode,Vnodes,ct.c_int(pnC.netica_const.VARIANCE_OF_REAL_SENSV))
+            sensmutual = self.NewSensvToFinding(Qnode,Vnodes,ct.c_int(pnC.netica_const.ENTROPY_SENSV))
             for cn in allnodes:
                 Vnode = self.GetNodeNamed(cn,cnet)
-                self.sensitivity[cres][cn] = self.GetVarianceOfReal(sens,Vnode)
+                self.sensitivityvar[cres][cn] = self.GetVarianceOfReal(sensvar,Vnode)
+                self.sensitivityEntropy[cres][cn] = self.GetMutualInfo(sensmutual,Vnode)
                 # percent variance reduction is the variance reduction of a node divided by variance reduction of self
             for cn in allnodes:
-                self.precentvarreduction[cres][cn] = self.sensitivity[cres][cn]/self.sensitivity[cres][cres]
+                self.percentvarreduction[cres][cn] = self.sensitivityvar[cres][cn]/self.sensitivityvar[cres][cres]
+                self.sensitivityEntropyNorm[cres][cn] = self.sensitivityEntropy[cres][cn]/self.sensitivityEntropy[cres][cres]
+            print "Deleting sensitivity to --> %s" %(cres)
+            self.DeleteSensvToFinding(sensvar)
         ofp = open(self.probpars.scenario.name + 'Sensitivity.dat','w')
         ofp.write('Sensitivity analysis for scenario --> %s\n' %(self.probpars.scenario.name))
         ofp.write('Base Case Net: %s\nBase Case Casfile: %s\n' %(self.probpars.baseNET,self.probpars.baseCAS))
+        # write out the raw variance reduction values        
         ofp.write('#'*10 + '   Raw Variance Reduction Values   ' + '#'*10 + '\n')
         ofp.write('%-14s' %('Response_node '))
         for cn in allnodes:
             ofp.write('%-14s' %(cn))
         ofp.write('\n')
-        for cres in self.sensitivity:
+        for cres in self.sensitivityvar:
             ofp.write('%-14s' %(cres))
             for cn in allnodes:
-                ofp.write('%-14.5e' %(self.sensitivity[cres][cn]))
+                ofp.write('%-14.5f' %(self.sensitivityvar[cres][cn]))
             ofp.write('\n')
+        # write out the percent variance reduction values                    
         ofp.write('#'*10 + '   Percent Variance Reduction Values   ' + '#'*10 + '\n')
         ofp.write('%-14s' %('Response_node '))
         for cn in allnodes:
             ofp.write('%-14s' %(cn))
         ofp.write('\n')
-        for cres in self.precentvarreduction:
+        for cres in self.percentvarreduction:
             ofp.write('%-14s' %(cres))
             for cn in allnodes:
-                ofp.write('%-14.5f' %(self.precentvarreduction[cres][cn]*100.0))
+                ofp.write('%-14.5f' %(self.percentvarreduction[cres][cn]*100.0))
             ofp.write('\n')
-        ofp.close()
+        # write out the mutual information (Entropy) values
+        ofp.write('#'*10 + '   Mutual Information (Entropy)   ' + '#'*10 + '\n')
+        ofp.write('%-14s' %('Response_node '))
+        for cn in allnodes:
+            ofp.write('%-14s' %(cn))
+        ofp.write('\n')
+        for cres in self.sensitivityEntropy:
+            ofp.write('%-14s' %(cres))
+            for cn in allnodes:
+                ofp.write('%-14.5f' %(self.sensitivityEntropy[cres][cn]))
+            ofp.write('\n')
 
+        # write out the normalized mutual information (Entropy) values
+        ofp.write('#'*10 + '   Mutual Information (Entropy) Normalized  ' + '#'*10 + '\n')
+        ofp.write('%-14s' %('Response_node '))
+        for cn in allnodes:
+            ofp.write('%-14s' %(cn))
+        ofp.write('\n')
+        for cres in self.sensitivityEntropyNorm:
+            ofp.write('%-14s' %(cres))
+            for cn in allnodes:
+                ofp.write('%-14.5f' %(self.sensitivityEntropyNorm[cres][cn]))
+            ofp.write('\n')
+        ofp.close()  
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -662,6 +695,13 @@ class pynetica:
     def EnterNodeValue(self,cnode,cval):
         self.n.EnterNodeValue_bn(cnode,ct.c_double(cval))
         self.chkerr()
+        
+    def GetMutualInfo(self,sensentrop,Vnode):
+        tmpNeticaFun = self.n.GetMutualInfo_bn
+        tmpNeticaFun.restype=ct.c_double
+        retvar = self.n.GetMutualInfo_bn(sensentrop,Vnode)
+        self.chkerr()
+        return retvar        
 
     def GetNetNodes(self,cnet):
         allnodes = self.n.GetNetNodes2_bn(cnet,None)
