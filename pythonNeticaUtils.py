@@ -803,6 +803,10 @@ class pynetica:
         self.n.SetLearnerMaxTol_bn(learner,ct.c_double(tol))
         self.chkerr()         
 
+    def TestWithCaseset(self,test,cases):
+        self.n.TestWithCaseset_bn(test,cases)
+        self.chkerr()
+        
     def WriteNet(self,cnet,filename_streamer):
         self.n.WriteNet_bn(cnet,filename_streamer)
         self.chkerr()
