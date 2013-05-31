@@ -14,8 +14,11 @@ allmetrics = ['skillMean',
         'skillML',
         'rmseML',
         'meanErrML',
-        'meanAbsErrML']
-numsets = 8
+        'meanAbsErrML',
+        'LogLoss',
+        'ErrorRate',
+        'QuadraticLoss']
+numsets = 10
 numfolds = 10
 # ############################
 figdir = probroot + '_plots'
