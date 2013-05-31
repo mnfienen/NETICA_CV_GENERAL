@@ -268,13 +268,9 @@ class pynetica:
         ctestresults.quadloss = dict()
         for cn in self.probpars.scenario.response:
             cnode = self.GetNodeNamed(cn,cnet)
-            print cnode
-            print ctester
             # get log loss
             ctestresults.logloss[cn] =  self.GetTestLogLoss(ctester,cnode)
-            print 'LogLoss for %s --> %f' %(cn,ctestresults.logloss[cn])  
-            print cnode
-            print ctester            
+            print 'LogLoss for %s --> %f' %(cn,ctestresults.logloss[cn])           
             # get error rate
             ctestresults.errrate[cn] = self.GetTestErrorRate(ctester,cnode)
             print 'ErrorRate for %s --> %f' %(cn,ctestresults.errrate[cn]) 
@@ -505,15 +501,16 @@ class pynetica:
         for cfold in np.arange(numfolds):
             for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
+                print cfold
                 ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e %14.6e %14.6e %14.6e\n'
-                      %(cfold,cpred[cfold][j].stats.skMean[0],
-                        cpred[cfold][j].stats.rmseM[0],
-                        cpred[cfold][j].stats.meaneM[0],
-                        cpred[cfold][j].stats.meanabserrM[0],
-                        cpred[cfold][j].stats.skML[0],
-                        cpred[cfold][j].stats.rmseML[0],
-                        cpred[cfold][j].stats.meaneML[0],
-                        cpred[cfold][j].stats.meanabserrML[0],
+                      %(cfold,j,cpred[cfold][j].stats.skMean,
+                        cpred[cfold][j].stats.rmseM,
+                        cpred[cfold][j].stats.meaneM,
+                        cpred[cfold][j].stats.meanabserrM,
+                        cpred[cfold][j].stats.skML,
+                        cpred[cfold][j].stats.rmseML,
+                        cpred[cfold][j].stats.meaneML,
+                        cpred[cfold][j].stats.meanabserrML,
                         cNeticaTestStats[cfold].logloss[j],
                         cNeticaTestStats[cfold].errrate[j],
                         cNeticaTestStats[cfold].quadloss[j]))

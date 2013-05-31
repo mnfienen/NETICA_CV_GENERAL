@@ -60,7 +60,7 @@ if cdat.probpars.report_sens:
 
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
-    print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation for %d folds\n' %() + '#'*20+ '\n' * 2
+    print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation for %d folds\n' %(cdat.probpars.numfolds) + '#'*20+ '\n' * 2
     # set up for cross validation
     print '\nSetting up cas files and file pointers for cross validation'
     kfoldOFP_Val,kfoldOFP_Cal = cdat.cross_val_setup()
@@ -76,7 +76,7 @@ if cdat.probpars.CVflag:
                          cdat.probpars.EMflag)
         # make predictions for both validation and calibration data sets
         print '*'*5 + 'Calibration predictions' + '*'*5
-        cdat.allfolds.calpred[cfold] = (
+        cdat.allfolds.calpred[cfold],cdat.allfolds.calNODES[cfold] = (
             cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.calN[cfold],
                               cdat.allfolds.caldata[cfold]))
@@ -86,7 +86,7 @@ if cdat.probpars.CVflag:
         # ############### Now run the Netica built-in testing stuff ################
         cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta','CAL')
         print '*'*5 + 'Finished --> Calibration Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
-
+       
 
         print '*'*5 + 'Start Validation predictions' + '*'*5        
         cdat.allfolds.valpred[cfold],cdat.allfolds.valNODES[cfold] = (
@@ -99,9 +99,11 @@ if cdat.probpars.CVflag:
         # ############### Now run the Netica built-in testing stuff ################
         cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta','VAL')
         print '*'*5 + 'Finished --> Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
-        
-        
+
+    print "write out validation"
     cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,cdat.probpars.numfolds,kfoldOFP_Val,'Validation',cdat.NeticaTests['VAL'])
+        
+    print "write out calibration"     
     cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,cdat.probpars.numfolds,kfoldOFP_Cal,'Calibration',cdat.NeticaTests['CAL'])
 
     kfoldOFP_Cal.close()
