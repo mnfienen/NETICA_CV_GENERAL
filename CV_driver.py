@@ -39,15 +39,18 @@ cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
 # run the predictions using the base net --> 
 cdat.basepred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N,cdat.casdata)
 
+print '*'*5 + 'Making Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+# ############### Now run the Netica built-in testing stuff ################
+cdat.PredictBayesNeticaCV(-999,cdat.probpars.baseNET,None)
+print '*'*5 + 'Finished --> Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'     
+
+
 # write the results to a post-processing world
 cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.scenario.name + '_base_stats.dat',
-                          cdat.probpars.baseCAS)
+                          cdat.probpars.baseCAS,
+                          cdat.BaseNeticaTests)
 
-print '*'*5 + 'Making Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
-# ############### Now run the Netica built-in testing stuff ################
-cdat.PredictBayesNeticaCV(-999,cdat.probpars.baseNET)
-print '*'*5 + 'Finished --> Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'     
 
 
 # optionally perform sensitivity analysis on the base case
@@ -79,7 +82,8 @@ if cdat.probpars.CVflag:
 
         print '*'*5 + 'Making Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
         # ############### Now run the Netica built-in testing stuff ################
-        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta')
+        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta','CAL')
+        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta','VAL')
         print '*'*5 + 'Finished --> Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
 
 
@@ -90,11 +94,9 @@ if cdat.probpars.CVflag:
                               cdat.allfolds.valdata[cfold]))
         print '*'*5 + 'End Validation predictions' + '*'*5   + '\n\n'     
         
-        # ############### Now run the Netica built-in testing stuff ################
-        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta')
         
-    cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,cdat.probpars.numfolds,kfoldOFP_Val,'Validation')
-    cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,cdat.probpars.numfolds,kfoldOFP_Cal,'Calibration')
+    cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,cdat.probpars.numfolds,kfoldOFP_Val,'Validation',cdat.NeticaTests['VAL'])
+    cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,cdat.probpars.numfolds,kfoldOFP_Cal,'Calibration',cdat.NeticaTests['CAL'])
 
     kfoldOFP_Cal.close()
     kfoldOFP_Val.close()

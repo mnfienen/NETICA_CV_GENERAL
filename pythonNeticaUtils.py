@@ -75,7 +75,9 @@ class pynetica:
         self.n = None #this is the netica environment
         self.mesg = ct.create_string_buffer('\000' * 1024)
         self.basepred = None
-        self.NeticaTests = list()
+        self.NeticaTests = dict()
+        self.NeticaTests['CAL'] = list()
+        self.NeticaTests['VAL'] = list()
         
     def sanitize(self):
         print 'Sanitizing pynetica object to remove pointers'
@@ -219,7 +221,7 @@ class pynetica:
     
 
 
-    def PredictBayesNeticaCV(self,cfold,cnetname):
+    def PredictBayesNeticaCV(self,cfold,cnetname,calval):
         '''
         function using Netica built-in testing functionality to evaluate Net
         '''
@@ -232,7 +234,12 @@ class pynetica:
         
         # first create a caseset with the current leftout indices casefile
         if cfold > -10:
-            ccasefile = '%s_fold_%d_leftout.cas' %(self.probpars.scenario.name,cfold)
+            if calval.upper() == 'CAL':
+                ccasefile = '%s_fold_%d.cas' %(self.probpars.scenario.name,cfold)
+            elif calval.upper()=='VAL':            
+                ccasefile = '%s_fold_%d_leftout.cas' %(self.probpars.scenario.name,cfold)
+            else:
+                pass
         # unless this is the base case -->
         else:
             ccasefile = self.probpars.baseCAS
@@ -274,10 +281,15 @@ class pynetica:
             print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])
             
         if cfold > -10:
-            self.NeticaTests.append(ctestresults)
+            if calval.upper() == 'CAL':
+                self.NeticaTests['CAL'].append(ctestresults)
+            elif calval.upper() == 'VAL':
+                self.NeticaTests['VAL'].append(ctestresults)
+            else:
+                pass
         else:
             self.BaseNeticaTests = ctestresults            
-    
+        self.CloseNetica()
     
     def predictBayes(self,netName,N,casdata):
         '''
@@ -465,17 +477,17 @@ class pynetica:
         
         return cpred
     
-    def PredictBayesPostProc(self,cpred,outname,casname):
+    def PredictBayesPostProc(self,cpred,outname,casname,cNeticaTestStats):
         ofp = open(outname,'w')
         ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
                   %(outname,casname))   
-        ofp.write('%14s '*9
+        ofp.write('%14s '*12
                   %('Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
-                    'skillML','rmseML','meanErrML','meanAbsErrML')
+                    'skillML','rmseML','meanErrML','meanAbsErrML','LogLoss','ErrorRate','QuadraticLoss')
                   + '\n')
         for i in self.probpars.scenario.response:
             print 'writing output for --> %s' %(i)
-            ofp.write('%14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e\n'
+            ofp.write('%14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e %14.6e %14.6e %14.6e\n'
                       %(i,cpred[i].stats.skMean,
                         cpred[i].stats.rmseM,
                         cpred[i].stats.meaneM,
@@ -483,14 +495,17 @@ class pynetica:
                         cpred[i].stats.skML,
                         cpred[i].stats.rmseML,
                         cpred[i].stats.meaneML,
-                        cpred[i].stats.meanabserrML))
+                        cpred[i].stats.meanabserrML,
+                        cNeticaTestStats.logloss[i],
+                        cNeticaTestStats.errrate[i],
+                        cNeticaTestStats.quadloss[i]))
         ofp.close()
 
-    def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval):
+    def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval,cNeticaTestStats):
         for cfold in np.arange(numfolds):
             for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
-                ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e\n'
+                ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e %14.6e %14.6e %14.6e\n'
                       %(cfold,j,cpred[cfold][j].stats.skMean,
                         cpred[cfold][j].stats.rmseM,
                         cpred[cfold][j].stats.meaneM,
@@ -498,7 +513,10 @@ class pynetica:
                         cpred[cfold][j].stats.skML,
                         cpred[cfold][j].stats.rmseML,
                         cpred[cfold][j].stats.meaneML,
-                        cpred[cfold][j].stats.meanabserrML))
+                        cpred[cfold][j].stats.meanabserrML,
+                        cNeticaTestStats[cfold].logloss[j],
+                        cNeticaTestStats[cfold].errrate[j],
+                        cNeticaTestStats[cfold].quadloss[j]))
 
     def SensitivityAnalysis(self):
         '''
@@ -621,17 +639,17 @@ class pynetica:
         kfoldOFP_Val = open('%s_kfold_stats_VAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
         kfoldOFP_Val.write('Validation statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
                   %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
-        kfoldOFP_Val.write('%14s '*10
+        kfoldOFP_Val.write('%14s '*13
                   %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
-                    'skillML','rmseML','meanErrML','meanAbsErrML')
+                    'skillML','rmseML','meanErrML','meanAbsErrML','LogLoss','ErrorRate','QuadraticLoss')
                   + '\n')
         
         kfoldOFP_Cal = open('%s_kfold_stats_CAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
         kfoldOFP_Cal.write('Calibration statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
                   %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
-        kfoldOFP_Cal.write('%14s '*10 
+        kfoldOFP_Cal.write('%14s '*13
                 %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
-                  'skillML','rmseML','meanErrML','meanAbsErrML')
+                  'skillML','rmseML','meanErrML','meanAbsErrML','LogLoss','ErrorRate','QuadraticLoss')
                 + '\n')
 
         for cfold in np.arange(self.probpars.numfolds):
