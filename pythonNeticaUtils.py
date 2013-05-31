@@ -72,7 +72,7 @@ class statestruct:
 class pynetica:
     def __init__(self):
         self.casdata = None
-        self.n = None #this is the netica environment
+        self.n = None
         self.mesg = ct.create_string_buffer('\000' * 1024)
         self.basepred = None
         self.NeticaTests = dict()
@@ -97,9 +97,11 @@ class pynetica:
                    "Opening Netica without licence, which will limit size of nets that can be used.\n" +
                    "Window may become unresponsive.")
             self.license = None         
-        #############################################
-        # Major validation and prediction functions #
-        #############################################
+        self.NewNeticaEnviron()
+            
+    #############################################
+    # Major validation and prediction functions #
+    #############################################
     def rebuild_net(self,NetName,newCaseFile,voodooPar,outfilename,EMflag=False):
         '''
          rebuild_net(NetName,newCaseFilename,voodooPar,outfilename)
@@ -116,7 +118,6 @@ class pynetica:
          '''   
         # create a Netica environment
         print 'Rebuilding net: %s using Casefile: %s' %(NetName,newCaseFile)
-        self.NewNeticaEnviron()
         # meke a streamer to the Net file
         net_streamer = self.NewFileStreamer(NetName)
         # read in the net using the streamer        
@@ -158,17 +159,14 @@ class pynetica:
         outfile_streamer = self.NewFileStreamer(outfilename)
         print 'Writing new net to: %s' %(outfilename)
         self.WriteNet(cnet,outfile_streamer)
+        self.DeleteStream(outfile_streamer)  
         self.DeleteNet(cnet)
-        self.CloseNetica()
 
     def OpenNeticaNet(self,netName):
         '''
-        Start a Netica environment and open a net identified by
-        netName.
-        Returns a pointed to the opened net after it is compiled
+        Open a net identified by netName.
+        Returns a pointer to the opened net after it is compiled
         '''
-        # create a Netica environment
-        self.NewNeticaEnviron()
         # meke a streamer to the Net file
         cname = netName
         if '.neta' not in netName:
@@ -215,8 +213,9 @@ class pynetica:
             for cs in range(cNETNODES[-1].Nbeliefs):
                 cNETNODES[-1].state.append(statestruct())
                 cNETNODES[-1].state[-1].name = cth.c_char_p2str(
-                    self.GetNodeStateName(cnode,cs))            
-        self.CloseNetica()
+                    self.GetNodeStateName(cnode,cs))   
+       
+        self.DeleteNet(cnet)
         return cNETNODES
     
 
@@ -226,7 +225,7 @@ class pynetica:
         function using Netica built-in testing functionality to evaluate Net
         '''
         ctestresults = netica_test()
-
+        
         # open up the current net
         cnet = self.OpenNeticaNet(cnetname)
         #retract all the findings
@@ -255,13 +254,12 @@ class pynetica:
             self.SetNthNode(cnodelist,i,cnode)
         # create a tester object
         ctester = self.NewNetTester(cnodelist,cnodelist)
+        self.DeleteNodeList(cnodelist)
         
         # test the network using the left-out cases
-        #retract all the findings and compile the net
-        self.CompileNet(cnet)
-        self.RetractNetFindings(cnet)        
+        # first retract all the findings and compile the net
         self.TestWithCaseset(ctester,currcases)
-        
+        self.DeleteCaseset(currcases)
         #
         # now get the results
         #
@@ -270,16 +268,24 @@ class pynetica:
         ctestresults.quadloss = dict()
         for cn in self.probpars.scenario.response:
             cnode = self.GetNodeNamed(cn,cnet)
+            print cnode
+            print ctester
             # get log loss
             ctestresults.logloss[cn] =  self.GetTestLogLoss(ctester,cnode)
-            print 'LogLoss for %s --> %f' %(cn,ctestresults.logloss[cn])
+            print 'LogLoss for %s --> %f' %(cn,ctestresults.logloss[cn])  
+            print cnode
+            print ctester            
             # get error rate
             ctestresults.errrate[cn] = self.GetTestErrorRate(ctester,cnode)
             print 'ErrorRate for %s --> %f' %(cn,ctestresults.errrate[cn]) 
             # get quadratic loss
             ctestresults.quadloss[cn] = self.GetTestQuadraticLoss(ctester,cnode)
-            print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])
+            print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])    
             
+        self.DeleteNetTester(ctester)
+        self.DeleteNet(cnet)
+        
+        # write to the proper dictionary
         if cfold > -10:
             if calval.upper() == 'CAL':
                 self.NeticaTests['CAL'].append(ctestresults)
@@ -289,7 +295,7 @@ class pynetica:
                 pass
         else:
             self.BaseNeticaTests = ctestresults            
-        self.CloseNetica()
+        
     
     def predictBayes(self,netName,N,casdata):
         '''
@@ -328,8 +334,8 @@ class pynetica:
 
                 cpred[Cname].priorPDF = CNODES.beliefs
 
-            allnodes = self.GetNetNodes(cnet)
-            numnodes = self.LengthNodeList(allnodes)
+        allnodes = self.GetNetNodes(cnet)
+        numnodes = self.LengthNodeList(allnodes)
         #
         # Now loop over each input and get the Netica predictions
         #
@@ -352,7 +358,6 @@ class pynetica:
                     cpred[cnodename].pdf[i,:] = cth.c_float_p2float(
                         self.GetNodeBeliefs(cnode),
                         self.GetNodeNumberStates(cnode))
-
         #
         # Do some postprocessing for just the output nodes
         #
@@ -377,16 +382,11 @@ class pynetica:
             cpred[i].dataPDF = pdfData.copy()
             # note --> np.spacing(1) is like eps in MATLAB
             # get the PDF stats here
-            '''
-            MNF DEBUGGING
-            if 'mean_DTW' in cpred.keys():
-                print cpred['mean_DTW'].pdf[-1]
-            '''
+      
             print 'getting stats'
             cpred = self.PDF2Stats(i,cpred,alpha=0.1)
 
-
-        self.CloseNetica()
+        self.DeleteNet(cnet)
         return cpred,cNETNODES
     
     def PDF2Stats(self,nodename, cpred, alpha = None):
@@ -506,14 +506,14 @@ class pynetica:
             for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
                 ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e %14.6e %14.6e %14.6e\n'
-                      %(cfold,j,cpred[cfold][j].stats.skMean,
-                        cpred[cfold][j].stats.rmseM,
-                        cpred[cfold][j].stats.meaneM,
-                        cpred[cfold][j].stats.meanabserrM,
-                        cpred[cfold][j].stats.skML,
-                        cpred[cfold][j].stats.rmseML,
-                        cpred[cfold][j].stats.meaneML,
-                        cpred[cfold][j].stats.meanabserrML,
+                      %(cfold,cpred[cfold][j].stats.skMean[0],
+                        cpred[cfold][j].stats.rmseM[0],
+                        cpred[cfold][j].stats.meaneM[0],
+                        cpred[cfold][j].stats.meanabserrM[0],
+                        cpred[cfold][j].stats.skML[0],
+                        cpred[cfold][j].stats.rmseML[0],
+                        cpred[cfold][j].stats.meaneML[0],
+                        cpred[cfold][j].stats.meanabserrML[0],
                         cNeticaTestStats[cfold].logloss[j],
                         cNeticaTestStats[cfold].errrate[j],
                         cNeticaTestStats[cfold].quadloss[j]))
@@ -526,7 +526,6 @@ class pynetica:
         Reports results to a text file.
         '''
         print '\n' * 3 + '*' * 10 + '\n' + 'Performing Sensitity Analysis\n' + '*'*10
-        self.NewNeticaEnviron()
         # meke a streamer to the Net file
         net_streamer = self.NewFileStreamer(self.probpars.baseNET)
         # read in the net using the streamer        
@@ -562,6 +561,10 @@ class pynetica:
                 self.sensitivityEntropyNorm[cres][cn] = self.sensitivityEntropy[cres][cn]/self.sensitivityEntropy[cres][cres]
             print "Deleting sensitivity to --> %s" %(cres)
             self.DeleteSensvToFinding(sensvar)
+            self.DeleteSensvToFinding(sensmutual)
+        self.DeleteNet(cnet)
+        
+        # #### WRITE OUTPUT #### #
         ofp = open(self.probpars.scenario.name + 'Sensitivity.dat','w')
         ofp.write('Sensitivity analysis for scenario --> %s\n' %(self.probpars.scenario.name))
         ofp.write('Base Case Net: %s\nBase Case Casfile: %s\n' %(self.probpars.baseNET,self.probpars.baseCAS))
@@ -611,6 +614,9 @@ class pynetica:
                 ofp.write('%-14.5f' %(self.sensitivityEntropyNorm[cres][cn]))
             ofp.write('\n')
         ofp.close()  
+        
+        
+        
     def read_cas_file(self,casfilename):
         '''
         function to read in a casfile into a pynetica object.
@@ -633,6 +639,7 @@ class pynetica:
                                      dtype=None,missing_values = '*,?')
         os.remove('###tmp###')
         self.N = len(self.casdata)
+        
     # cross validation driver
     def cross_val_setup(self):
         # open a file pointer to the stats output file for all the folds
@@ -715,11 +722,12 @@ class pynetica:
         # try to intialize Netica
         res = self.n.InitNetica2_bn(self.env, ct.byref(self.mesg))
         if res >= 0:
-            print 'Opening Netica:'
+            print '\n'*2 + '#' * 40 + '\nOpening Netica:'
             print self.mesg.value
         else:
             raise(NeticaInitFail(res.value))    
-
+        print 'Netica is open\n' + '#'*40 + '\n' * 2
+        
     def CloseNetica(self):
         res = self.n.CloseNetica_bn(self.env, ct.byref(self.mesg))    
         if res >= 0:
@@ -727,7 +735,8 @@ class pynetica:
             print self.mesg.value
         else:
             raise(NeticaCloseFail(res.value))    
-
+        self.n = None
+        
     def GetError(self, severity = pnC.errseverity_ns_const.ERROR_ERR, after = None):
         res = self.n.GetError_ns(self.env, severity, after)
         if res: return ct.c_void_p(res)
@@ -775,9 +784,17 @@ class pynetica:
     def DeleteNet(self,cnet):
         self.n.DeleteNet_bn(cnet)
         self.chkerr()
+    
+    def DeleteNetTester(self,ctester):
+        self.n.DeleteNetTester_bn(ctester)
+        self.chkerr()
 
     def DeleteNodeTables(self,node):
         self.n.DeleteNodeTables_bn(node)
+        self.chkerr()
+
+    def DeleteNodeList(self,cnodes):
+        self.n.DeleteNodeList_bn(cnodes)
         self.chkerr()
 
     def DeleteStream(self,cstream):
@@ -871,7 +888,7 @@ class pynetica:
     def GetTestErrorRate(self,ctester,cnode):
         tmpNeticaFun = self.n.GetTestErrorRate_bn
         tmpNeticaFun.restype=ct.c_double
-        errrate = self.n.GetTestErrorRate_bn(ctester,cnode)
+        errrate = tmpNeticaFun(ctester,cnode)
         self.chkerr()
         return errrate
     
