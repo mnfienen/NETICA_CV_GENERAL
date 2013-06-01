@@ -1,7 +1,22 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os, shutil
-
+import matplotlib as mpl
+from matplotlib.font_manager import FontProperties
+#--modify default matplotlib settings
+mpl.rcParams['font.sans-serif']          = 'Univers 57 Condensed'
+mpl.rcParams['font.serif']               = 'Times'
+mpl.rcParams['font.cursive']             = 'Zapf Chancery'
+mpl.rcParams['font.fantasy']             = 'Comic Sans MS'
+mpl.rcParams['font.monospace']           = 'Courier New'
+mpl.rcParams['mathtext.default']         = 'regular'
+mpl.rcParams['pdf.compression']          = 0
+mpl.rcParams['pdf.fonttype']             = 42
+#--figure text sizes
+mpl.rcParams['legend.fontsize']  = 18
+mpl.rcParams['axes.labelsize']   = 18
+mpl.rcParams['xtick.labelsize']  = 18
+mpl.rcParams['ytick.labelsize']  = 18
 
 # ############################
 # USER DATA
