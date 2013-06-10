@@ -24,7 +24,6 @@ class netica_test:
         self.logloss = None
         self.errrate = None
         self.quadloss = None
-        self.confusion_nodes = None
         self.confusion_matrix = None
         
 class pred_stats:
@@ -193,29 +192,30 @@ class pynetica:
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
         print 'Reading Node information from net --> %s' %(netName)
-        cNETNODES = []
+        cNETNODES = dict()
         # loop over the nodes
         for cn in np.arange(numnodes):
             cnode = self.NthNode(allnodes,ct.c_int(cn))
-            cNETNODES.append(nodestruct())
-            cNETNODES[-1].name = cth.c_char_p2str(self.GetNodeName(cnode))
-            cNETNODES[-1].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
-            print '   Parsing node --> %s' %(cNETNODES[-1].title)
-            cNETNODES[-1].Nbeliefs = self.GetNodeNumberStates(cnode)
-            cNETNODES[-1].beliefs = cth.c_float_p2float(
+            cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
+            cNETNODES[cnodename] =nodestruct()
+            cNETNODES[cnodename].name = cth.c_char_p2str(self.GetNodeName(cnode))
+            cNETNODES[cnodename].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
+            print '   Parsing node --> %s' %(cNETNODES[cnodename].title)
+            cNETNODES[cnodename].Nbeliefs = self.GetNodeNumberStates(cnode)
+            cNETNODES[cnodename].beliefs = cth.c_float_p2float(
                 self.GetNodeBeliefs(cnode),
-                cNETNODES[-1].Nbeliefs)
-            cNETNODES[-1].likelihood = cth.c_float_p2float(
+                cNETNODES[cnodename].Nbeliefs)
+            cNETNODES[cnodename].likelihood = cth.c_float_p2float(
                 self.GetNodeLikelihood(cnode),
-                cNETNODES[-1].Nbeliefs)
-            cNETNODES[-1].levels =  cth.c_double_p2float(
+                cNETNODES[cnodename].Nbeliefs)
+            cNETNODES[cnodename].levels =  cth.c_double_p2float(
                 self.GetNodeLevels(cnode),
-                cNETNODES[-1].Nbeliefs + 1)
+                cNETNODES[cnodename].Nbeliefs + 1)
 
             # loop over the states in each node
-            for cs in range(cNETNODES[-1].Nbeliefs):
-                cNETNODES[-1].state.append(statestruct())
-                cNETNODES[-1].state[-1].name = cth.c_char_p2str(
+            for cs in range(cNETNODES[cnodename].Nbeliefs):
+                cNETNODES[cnodename].state.append(statestruct())
+                cNETNODES[cnodename].state[-1].name = cth.c_char_p2str(
                     self.GetNodeStateName(cnode,cs))   
        
         self.DeleteNet(cnet)
@@ -269,7 +269,6 @@ class pynetica:
         ctestresults.logloss = dict()
         ctestresults.errrate = dict()
         ctestresults.quadloss = dict()
-        ctestresults.state_levels = dict()
         ctestresults.confusion_matrix = dict()
         for cn in self.probpars.scenario.response:
             cnode = self.GetNodeNamed(cn,cnet)
@@ -282,9 +281,10 @@ class pynetica:
             # get quadratic loss
             ctestresults.quadloss[cn] = self.GetTestQuadraticLoss(ctester,cnode)
             print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])    
-            # write confusion matrix
-            print 'Calculating confusion matrix for %s' %(cn)
-            ctestresults.state_levels[cn],ctestresults.confusion_matrix[cn] = self.ConfusionMatrix(ctester,cnode)
+            # write confusion matrix --- only for the base case
+            if cfold < 0:
+                print 'Calculating confusion matrix for %s' %(cn)
+                ctestresults.confusion_matrix[cn] = self.ConfusionMatrix(ctester,cnode)
 
             
         self.DeleteNetTester(ctester)
@@ -318,7 +318,8 @@ class pynetica:
         cnet = self.OpenNeticaNet(netName)
         #retract all the findings
         self.RetractNetFindings(cnet)
-        for CNODES in cNETNODES:
+        for CN in cNETNODES:
+            CNODES = cNETNODES[CN]
             Cname = CNODES.name
             if Cname in self.probpars.scenario.response:
                 cpred[Cname] = predictions()
@@ -505,12 +506,34 @@ class pynetica:
                         cNeticaTestStats.errrate[i],
                         cNeticaTestStats.quadloss[i]))
         ofp.close()
-
+        outfileConfusion = re.sub('base_stats','Confusion',outname)
+        ofpC = open(outfileConfusion,'w')
+        ofpC.write('Confusion matrices for net --> %s and casefile --> %s\n' 
+                  %(outname,casname))   
+        for j in self.probpars.scenario.response:
+            ofpC.write('*'*16 + '\nConfusion matrix for %s\n' %(j) + '*'*16 + '\n')
+            numstates = len(self.NETNODES[j].levels)-1
+            ofpC.write('%24s' %(''))
+            for i in np.arange(numstates):
+                ofpC.write('%24s' %('%8.4e--%8.4e'%(self.NETNODES[j].levels[i],
+                                        self.NETNODES[j].levels[i+1])))
+            ofpC.write('\n')
+            for i in np.arange(numstates):
+                ofpC.write('%24s' %('%8.4e--%8.4e'%(self.NETNODES[j].levels[i],
+                                        self.NETNODES[j].levels[i+1])))
+                for k in cNeticaTestStats.confusion_matrix[j][i,:]:
+                    ofpC.write('%24d' %(k))
+                ofpC.write('\n')
+            ofpC.write('\n' * 2)
+        ofpC.close()
+            
+            
+        
+        
     def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval,cNeticaTestStats):
         for cfold in np.arange(numfolds):
             for j in self.probpars.scenario.response:
                 print 'writing %s cross-validation output for --> %s' %(calval,j)
-                print cfold
                 ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e %14.6e %14.6e %14.6e\n'
                       %(cfold,j,cpred[cfold][j].stats.skMean,
                         cpred[cfold][j].stats.rmseM,
@@ -523,6 +546,7 @@ class pynetica:
                         cNeticaTestStats[cfold].logloss[j],
                         cNeticaTestStats[cfold].errrate[j],
                         cNeticaTestStats[cfold].quadloss[j]))
+        
 
     def ConfusionMatrix(self,ctester,cnode):
         '''
@@ -530,14 +554,12 @@ class pynetica:
         within the tester environment laid out in ctester
         '''
         numstates = self.GetNodeNumberStates(cnode)
-        statelevels = cth.c_double_p2float(
-                self.GetNodeLevels(cnode),
-                numstates + 1)
+        
         confusion_matrix = np.zeros((numstates,numstates))
         for a in np.arange(numstates):
             for p in np.arange(numstates):
                 confusion_matrix[a,p] = self.GetTestConfusion(ctester,cnode,p,a)
-        return statelevels,confusion_matrix
+        return confusion_matrix
 
 
 
