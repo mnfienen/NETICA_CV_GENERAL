@@ -23,7 +23,10 @@ class netica_test:
     def __init__(self):
         self.logloss = None
         self.errrate = None
-
+        self.quadloss = None
+        self.confusion_nodes = None
+        self.confusion_matrix = None
+        
 class pred_stats:
     def __init__(self):
         self.alpha = None
@@ -266,6 +269,8 @@ class pynetica:
         ctestresults.logloss = dict()
         ctestresults.errrate = dict()
         ctestresults.quadloss = dict()
+        ctestresults.state_levels = dict()
+        ctestresults.confusion_matrix = dict()
         for cn in self.probpars.scenario.response:
             cnode = self.GetNodeNamed(cn,cnet)
             # get log loss
@@ -277,6 +282,10 @@ class pynetica:
             # get quadratic loss
             ctestresults.quadloss[cn] = self.GetTestQuadraticLoss(ctester,cnode)
             print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])    
+            # write confusion matrix
+            print 'Calculating confusion matrix for %s' %(cn)
+            ctestresults.state_levels[cn],ctestresults.confusion_matrix[cn] = self.ConfusionMatrix(ctester,cnode)
+
             
         self.DeleteNetTester(ctester)
         self.DeleteNet(cnet)
@@ -514,6 +523,23 @@ class pynetica:
                         cNeticaTestStats[cfold].logloss[j],
                         cNeticaTestStats[cfold].errrate[j],
                         cNeticaTestStats[cfold].quadloss[j]))
+
+    def ConfusionMatrix(self,ctester,cnode):
+        '''
+        Makes a confusion matrix for a particular node specified by name in cnode
+        within the tester environment laid out in ctester
+        '''
+        numstates = self.GetNodeNumberStates(cnode)
+        statelevels = cth.c_double_p2float(
+                self.GetNodeLevels(cnode),
+                numstates + 1)
+        confusion_matrix = np.zeros((numstates,numstates))
+        for a in np.arange(numstates):
+            for p in np.arange(numstates):
+                confusion_matrix[a,p] = self.GetTestConfusion(ctester,cnode,p,a)
+        return statelevels,confusion_matrix
+
+
 
     def SensitivityAnalysis(self):
         '''
@@ -881,7 +907,14 @@ class pynetica:
         logloss = self.n.GetTestLogLoss_bn(ctester,cnode)
         self.chkerr()
         return logloss
-
+    
+    def GetTestConfusion(self,ctester,cnode,predState,actualState):
+        tmpNeticaFun = self.n.GetTestConfusion_bn
+        tmpNeticaFun.restype=ct.c_double        
+        confusion = tmpNeticaFun(ctester,cnode,ct.c_int(predState),ct.c_int(actualState))
+        self.chkerr()
+        return confusion
+    
     def GetTestErrorRate(self,ctester,cnode):
         tmpNeticaFun = self.n.GetTestErrorRate_bn
         tmpNeticaFun.restype=ct.c_double
