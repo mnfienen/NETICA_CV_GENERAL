@@ -19,6 +19,12 @@ class nodestruct:
         self.continuous = False
         self.state = []
 
+class experience:
+    def __init__(self):
+        self.parent_names = list()
+        self.parent_states = None
+        self.node_experience = list()
+
 class netica_test:
     def __init__(self):
         self.logloss = None
@@ -133,7 +139,7 @@ class pynetica:
 
         # loop over the nodes deleting CPT
         for cn in np.arange(numnodes):
-            cnode = self.NthNode(allnodes,ct.c_int(cn))
+            cnode = self.NthNode(allnodes,cn)
             self.DeleteNodeTables(cnode)
         # make a streamer to the new cas file
         new_cas_streamer = self.NewFileStreamer(newCaseFile)
@@ -195,7 +201,7 @@ class pynetica:
         cNETNODES = dict()
         # loop over the nodes
         for cn in np.arange(numnodes):
-            cnode = self.NthNode(allnodes,ct.c_int(cn))
+            cnode = self.NthNode(allnodes,cn)
             cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
             cNETNODES[cnodename] =nodestruct()
             cNETNODES[cnodename].name = cth.c_char_p2str(self.GetNodeName(cnode))
@@ -350,14 +356,14 @@ class pynetica:
             # retract all the findings again
             self.RetractNetFindings(cnet)
             for cn in np.arange(numnodes):
-                cnode = self.NthNode(allnodes,ct.c_int(cn))
+                cnode = self.NthNode(allnodes,cn)
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
                 # set the current node values
                 if cnodename in self.probpars.scenario.nodesIn:
                     self.EnterNodeValue(cnode,casdata[cnodename][i])
             for cn in np.arange(numnodes):
             # obtain the updated beliefs from ALL nodes including input and output
-                cnode = self.NthNode(allnodes,ct.c_int(cn))
+                cnode = self.NthNode(allnodes,cn)
                 cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
                 if cnodename in self.probpars.scenario.response:
                     # get the current belief values
@@ -561,8 +567,43 @@ class pynetica:
                 confusion_matrix[a,p] = self.GetTestConfusion(ctester,cnode,p,a)
         return confusion_matrix
 
+    def ExperienceAnalysis(self,exnodes,cnet):
+        '''
+        calculate the experience for each node named in the list of exnodes
+        '''
+        
+        allexperience = dict()
+        for cn in exnodes:
+            cnex = experience()
+            # get a list of the parents of the node
+            testnode = self.GetNodeNamed(cn,cnet)
+            #start a list for the cartesian sum of node states
+            allstates = list()
+            cparents = self.GetNodeParents(testnode)    
+            numnodes = self.LengthNodeList(cparents)
+            for cp in np.arange(numnodes):
+                # append the name to the list of returned names
+                cnode = self.NthNode(cparents,cp)
+                cnex.parent_names.append(cth.c_char_p2str(self.GetNodeName(cnode)))
+                # find the number of states for each parent
+                allstates.append(np.arange(self.GetNodeNumberStates(
+                    self.NthNode(cparents,cp))))
+            if numnodes > 1:
+                cnex.parent_states = self.cartesian(allstates)
+            else:
+                cnex.parent_states = allstates
+            for cs in cnex.parent_states:
+                cnex.node_experience.append(self.GetnodeExperience(
+                    testnode,cs.ctypes.data_as(ct.POINTER(ct.c_int))))
+            cnex.node_experience = np.array(cnex.node_experience)
+            # change the null pointers (meaning 
+            cnex.node_experience[cnex.node_experience<1]=0.0
+            
+            allexperience[cn] = cnex
+        return allexperience
 
-
+        
+        
     def SensitivityAnalysis(self):
         '''
         Peforms sensitivity analysis on each response node assuming all 
@@ -804,6 +845,32 @@ class pynetica:
         self.n.AddFileToCaseset_cs(caseset,streamer,ct.c_double(degree),None)
         self.chkerr()
 
+       
+    def cartesian(self,arrays,out=None):   
+        '''
+        function to calculate the Cartesian sum of multiple arrays.
+        This is used to provide the permutations (odometer style) of all
+        the possible parent states when calculating experience.
+        See: http://stackoverflow.com/questions/1208118/
+        using-numpy-to-build-an-array-of-all-combinations-of-two-arrays
+        '''
+
+        arrays = [np.asarray(x) for x in arrays]
+        dtype = arrays[0].dtype
+    
+        n = np.prod([x.size for x in arrays])
+        if out is None:
+            out = np.zeros([n, len(arrays)], dtype=dtype)
+    
+        m = n / arrays[0].size
+        out[:,0] = np.repeat(arrays[0], m)
+        if arrays[1:]:
+            # recursive?
+            self.cartesian(arrays[1:], out=out[0:m,1:])
+            for j in xrange(1, arrays[0].size):
+                out[j*m:(j+1)*m,1:] = out[0:m,1:]
+        return out
+
     def CompileNet(self, net):
         self.n.CompileNet_bn(net)
         self.chkerr()
@@ -888,6 +955,13 @@ class pynetica:
         self.chkerr()
         return expected_val, std_dev.value
 
+    def GetnodeExperience(self,cnode,parent_states):
+        tmpNeticaFun = self.n.GetNodeExperience_bn
+        tmpNeticaFun.restype=ct.c_double
+        experience = tmpNeticaFun(cnode,parent_states)
+        self.chkerr()
+        return experience
+        
     def GetNodeLevels(self,cnode):
         nodelevels = self.n.GetNodeLevels_bn(cnode)
         self.chkerr()
@@ -913,6 +987,11 @@ class pynetica:
         self.chkerr()
         return numstates
 
+    def GetNodeParents(self,cnode):
+        parents = self.n.GetNodeParents_bn(cnode)
+        self.chkerr()
+        return parents
+    
     def GetNodeStateName(self,cnode,cstate):
         stname = self.n.GetNodeStateName_bn(cnode,ct.c_int(cstate))
         self.chkerr()
@@ -1003,10 +1082,10 @@ class pynetica:
         return sensv
 
     def NthNode(self,nodelist,index_n):
-        cnode = self.n.NthNode_bn(nodelist,index_n)
+        cnode = self.n.NthNode_bn(nodelist,ct.c_int(index_n))
         self.chkerr()
         return cnode
-
+        
     def ReadNet(self,streamer):
         cnet = self.n.ReadNet_bn(streamer,ct.c_int(pnC.netica_const.NO_WINDOW))
         # check for errors
@@ -1040,7 +1119,22 @@ class pynetica:
     def SetLearnerMaxTol(self,learner,tol):
         self.n.SetLearnerMaxTol_bn(learner,ct.c_double(tol))
         self.chkerr()         
-
+        
+    def SizeCartesianProduct(self,cnodes):
+        '''
+        based on the NeticaEx function of the same name
+        N.B. --> Not handling the overflow possibility for now
+        '''
+        numnodes = self.LengthNodeList(cnodes)
+        retsize = 1
+        print numnodes
+        for i in np.arange(numnodes):
+            numstates = self.GetNodeNumberStates(self.NthNode(cnodes,i))
+            if numstates == 0:
+                retsize = 0
+            retsize*=numstates
+        return retsize
+            
     def TestWithCaseset(self,test,cases):
         self.n.TestWithCaseset_bn(test,cases)
         self.chkerr()

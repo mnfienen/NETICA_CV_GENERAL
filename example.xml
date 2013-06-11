@@ -19,6 +19,10 @@
 		<response>mean_DTW</response>
 	</scenario>	
 
+<sensitivity>
+	<report_sens>True</report_sens>
+</sensitivity>
+
 </scenarios>
 <learnCPTdata>
 	<voodooPar>100</voodooPar>
