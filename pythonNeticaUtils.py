@@ -31,6 +31,7 @@ class netica_test:
         self.errrate = None
         self.quadloss = None
         self.confusion_matrix = None
+        self.experience = None
         
 class pred_stats:
     def __init__(self):
@@ -54,6 +55,7 @@ class pred_stats:
         self.meaneM = None
         self.rmseML = None
         self.meaneML = None
+        self.parent_states = None
 
 
 class predictions:
@@ -276,6 +278,7 @@ class pynetica:
         ctestresults.errrate = dict()
         ctestresults.quadloss = dict()
         ctestresults.confusion_matrix = dict()
+        ctestresults.experience = dict()
         for cn in self.probpars.scenario.response:
             cnode = self.GetNodeNamed(cn,cnet)
             # get log loss
@@ -291,7 +294,8 @@ class pynetica:
             if cfold < 0:
                 print 'Calculating confusion matrix for %s' %(cn)
                 ctestresults.confusion_matrix[cn] = self.ConfusionMatrix(ctester,cnode)
-
+                print 'Calculating Experience for the base Net, node --> %s' %(cn)
+                ctestresults.experience[cn] = self.ExperienceAnalysis(cn,cnet)
             
         self.DeleteNetTester(ctester)
         self.DeleteNet(cnet)
@@ -567,40 +571,36 @@ class pynetica:
                 confusion_matrix[a,p] = self.GetTestConfusion(ctester,cnode,p,a)
         return confusion_matrix
 
-    def ExperienceAnalysis(self,exnodes,cnet):
+    def ExperienceAnalysis(self,cn,cnet):
         '''
-        calculate the experience for each node named in the list of exnodes
+        calculate the experience for the node named in cn
         '''
+        cnex = experience()
+        # get a list of the parents of the node
+        testnode = self.GetNodeNamed(cn,cnet)
+        #start a list for the cartesian sum of node states
+        allstates = list()
+        cparents = self.GetNodeParents(testnode)    
+        numnodes = self.LengthNodeList(cparents)
+        for cp in np.arange(numnodes):
+            # append the name to the list of returned names
+            cnode = self.NthNode(cparents,cp)
+            cnex.parent_names.append(cth.c_char_p2str(self.GetNodeName(cnode)))
+            # find the number of states for each parent
+            allstates.append(np.arange(self.GetNodeNumberStates(
+                self.NthNode(cparents,cp))))
+        if numnodes > 1:
+            cnex.parent_states = self.cartesian(allstates)
+        else:
+            cnex.parent_states = allstates
+        for cs in cnex.parent_states:
+            cnex.node_experience.append(self.GetnodeExperience(
+                testnode,cs.ctypes.data_as(ct.POINTER(ct.c_int))))
+        cnex.node_experience = np.array(cnex.node_experience)
+        # change the null pointers (meaning 
+        cnex.node_experience[cnex.node_experience<1]=0.0
         
-        allexperience = dict()
-        for cn in exnodes:
-            cnex = experience()
-            # get a list of the parents of the node
-            testnode = self.GetNodeNamed(cn,cnet)
-            #start a list for the cartesian sum of node states
-            allstates = list()
-            cparents = self.GetNodeParents(testnode)    
-            numnodes = self.LengthNodeList(cparents)
-            for cp in np.arange(numnodes):
-                # append the name to the list of returned names
-                cnode = self.NthNode(cparents,cp)
-                cnex.parent_names.append(cth.c_char_p2str(self.GetNodeName(cnode)))
-                # find the number of states for each parent
-                allstates.append(np.arange(self.GetNodeNumberStates(
-                    self.NthNode(cparents,cp))))
-            if numnodes > 1:
-                cnex.parent_states = self.cartesian(allstates)
-            else:
-                cnex.parent_states = allstates
-            for cs in cnex.parent_states:
-                cnex.node_experience.append(self.GetnodeExperience(
-                    testnode,cs.ctypes.data_as(ct.POINTER(ct.c_int))))
-            cnex.node_experience = np.array(cnex.node_experience)
-            # change the null pointers (meaning 
-            cnex.node_experience[cnex.node_experience<1]=0.0
-            
-            allexperience[cn] = cnex
-        return allexperience
+        return cnex
 
         
         
@@ -1120,21 +1120,6 @@ class pynetica:
         self.n.SetLearnerMaxTol_bn(learner,ct.c_double(tol))
         self.chkerr()         
         
-    def SizeCartesianProduct(self,cnodes):
-        '''
-        based on the NeticaEx function of the same name
-        N.B. --> Not handling the overflow possibility for now
-        '''
-        numnodes = self.LengthNodeList(cnodes)
-        retsize = 1
-        print numnodes
-        for i in np.arange(numnodes):
-            numstates = self.GetNodeNumberStates(self.NthNode(cnodes,i))
-            if numstates == 0:
-                retsize = 0
-            retsize*=numstates
-        return retsize
-            
     def TestWithCaseset(self,test,cases):
         self.n.TestWithCaseset_bn(test,cases)
         self.chkerr()
