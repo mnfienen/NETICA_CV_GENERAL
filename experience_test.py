@@ -21,11 +21,12 @@ cdat.probpars = CVT.input_parameters(parfile)
 # Initialize a pynetica instance/env using password in a text file
 cdat.start_environment(cdat.probpars.pwdfile)
 
-# open the current net
-cnet = cdat.OpenNeticaNet(cdat.probpars.baseNET)
 
 
-junks = cdat.ExperienceAnalysis(['mean_DTW'],cnet)
+junks = cdat.NodeParentIndexing(cdat.probpars.baseNET,cdat.probpars.baseCAS)
+
+
+
 '''
 # let's operate on a single example here for now
 testnode = cdat.GetNodeNamed('islandwidth',cnet)

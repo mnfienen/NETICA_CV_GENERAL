@@ -18,7 +18,11 @@ class nodestruct:
         self.Likelihood = None
         self.continuous = False
         self.state = []
-
+class parent_inds:
+    def __init__(self):
+        self.parent_names = list()
+        self.parent_indices = list()
+        
 class experience:
     def __init__(self):
         self.parent_names = list()
@@ -229,7 +233,54 @@ class pynetica:
         self.DeleteNet(cnet)
         return cNETNODES
     
+    def NodeParentIndexing(self,netName,casfile):
+        '''
+        Find all the configurations of states in the parent nodes for each response node
+        '''
+        # open the net stored in netName
+        cnet = self.OpenNeticaNet(netName)
+        #get the nodes and their number
+        allnodes = self.GetNetNodes(cnet)
+        numnodes = self.LengthNodeList(allnodes)
 
+        #parent indices dictionary for the results
+        parent_indices = dict()
+        # now focus in on the repsonse nodes only
+        respnodes = self.probpars.scenario.response
+        for cr in respnodes:
+            parent_indices[cr] = parent_inds()
+            crespnode = self.GetNodeNamed(cr,cnet)
+            # get the parent nodes and their names
+            cparents = self.GetNodeParents(crespnode)
+            numparents = self.LengthNodeList(cparents)
+            for cp in np.arange(numparents):
+                tmpnode = self.NthNode(cparents,cp)
+                parent_indices[cr].parent_names.append(
+                    cth.c_char_p2str(self.GetNodeName(tmpnode)))            
+            
+        # open a streamer to the CAS file we will read over
+        cas_streamer = self.NewFileStreamer(casfile)
+        case_posn = pnC.netica_const.FIRST_CASE
+        
+        while(1):
+            print case_posn
+            if case_posn < pnC.netica_const.NO_MORE_CASES:
+                # first set the findings according to what's in the case file
+                case_posn = self.ReadNetFindings2(case_posn,cas_streamer,allnodes)
+                # now, for each parent, in order, read the states
+                for cr in respnodes:
+                    tmpinds = list()
+                    for cp in parent_indices[cr].parent_names:
+                        cnode = self.GetNodeNamed(cp,cnet)
+                        tmpinds.append(self.GetNodeFinding(cnode))
+                    parent_indices[cr].parent_indices.append(tmpinds)
+                print parent_indices[cr].parent_names
+                print tmpinds
+            else:
+                break
+        self.DeleteNet(cnet)
+        return parent_indices
+    
 
     def PredictBayesNeticaCV(self,cfold,cnetname,calval):
         '''
@@ -311,6 +362,9 @@ class pynetica:
         else:
             self.BaseNeticaTests = ctestresults            
         
+        
+    
+    
     
     def predictBayes(self,netName,N,casdata):
         '''
@@ -834,7 +888,7 @@ class pynetica:
     # general error-checking function    
     def chkerr(self,err_severity = pnC.errseverity_ns_const.ERROR_ERR):
         if self.GetError(err_severity):
-            exceptionMsg = ("pythonNeticaUtils: Error in " + 
+            exceptionMsg = ("\npythonNeticaUtils: \nError " + 
                             str(ct.cast(ct.c_void_p(self.ErrorMessage(self.GetError(err_severity))), ct.c_char_p).value))
             raise NeticaException(exceptionMsg)
 
@@ -950,8 +1004,6 @@ class pynetica:
         tmpNeticaFun.restype=ct.c_double
         expected_val = tmpNeticaFun(cnode,ct.byref(std_dev),
                                     None,None)
-        print expected_val
-        print std_dev.value
         self.chkerr()
         return expected_val, std_dev.value
 
@@ -961,7 +1013,12 @@ class pynetica:
         experience = tmpNeticaFun(cnode,parent_states)
         self.chkerr()
         return experience
-        
+    
+    def GetNodeFinding(self,cnode):
+        cf = self.n.GetNodeFinding_bn(cnode)
+        self.chkerr()
+        return cf
+    
     def GetNodeLevels(self,cnode):
         nodelevels = self.n.GetNodeLevels_bn(cnode)
         self.chkerr()
@@ -1095,6 +1152,23 @@ class pynetica:
         self.chkerr()
         return cnet
 
+    def ReadNetFindings2(self,case_posn,filestream,allnodes):
+        #tmpneticafun = self.n.ReadNetFindings2_bn
+        #tmpneticafun.restype = ct.c_long
+        case_position = ct.c_long(case_posn)
+        print case_position
+        self.n.ReadNetFindings2_bn(ct.byref(case_position),
+                            filestream,
+                            ct.c_ubyte(0),
+                            allnodes,None,None)
+        self.chkerr()
+        print case_position
+        print '%d --> ginger' %(case_posn)
+        print case_position.value
+        
+        return case_position.value
+                                   
+                                   
     def RetractNetFindings(self,cnet):
         self.n.RetractNetFindings_bn(cnet)
         self.chkerr()
