@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle, gzip, sys
+import matplotlib as mpl
 from matplotlib.font_manager import FontProperties
 #--modify default matplotlib settings
 mpl.rcParams['font.sans-serif']          = 'Univers 57 Condensed'

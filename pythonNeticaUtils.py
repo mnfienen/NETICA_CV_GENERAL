@@ -278,8 +278,10 @@ class pynetica:
                     cnode = self.GetNodeNamed(cp,cnet)
                     tmpinds.append(self.GetNodeFinding(cnode))
                 parent_indices[cr].parent_indices.append(tmpinds)
-        parent_indices[cr].parent_indices = np.array(
-                parent_indices[cr].parent_indices,dtype=int)
+        for cr in respnodes:
+            print 'making into an array --> %s' %(cr)
+            parent_indices[cr].parent_indices = np.array(
+                    parent_indices[cr].parent_indices,dtype=int)
         # clean up the temporary streamer and net
         self.DeleteNet(cnet)
         self.DeleteStream(cas_streamer)
