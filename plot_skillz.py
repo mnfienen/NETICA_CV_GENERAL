@@ -20,7 +20,7 @@ mpl.rcParams['ytick.labelsize']  = 18
 
 # ############################
 # USER DATA
-probroot = 'glass_sqrt_dist'
+probroot = 'glacial4433'
 allstats = ['min','max','mean','median']
 allmetrics = ['skillMean',
         'rmseMean',
@@ -29,10 +29,7 @@ allmetrics = ['skillMean',
         'skillML',
         'rmseML',
         'meanErrML',
-        'meanAbsErrML',
-        'LogLoss',
-        'ErrorRate',
-        'QuadraticLoss']
+        'meanAbsErrML']
 numsets = 10
 numfolds = 10
 # ############################
