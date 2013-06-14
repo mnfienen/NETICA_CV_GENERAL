@@ -1,4 +1,5 @@
-import pythonNeticaUtils as pyn
+import pythonNetica as pyn
+
 import CV_tools as CVT
 import numpy as np
 import pickle, gzip
@@ -26,7 +27,7 @@ cdat = pyn.pynetica()
 cdat.probpars = CVT.input_parameters(parfile)
 
 # Initialize a pynetica instance/env using password in a text file
-cdat.start_environment(cdat.probpars.pwdfile)
+cdat.pyt.start_environment(cdat.probpars.pwdfile)
 
 # read in the data from a base cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
@@ -64,16 +65,16 @@ if cdat.probpars.report_sens:
 
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
-    print '\n' * 2 + '#'*20 +'\n Performing k-fold cross-validation for %d folds\n' %(cdat.probpars.numfolds) + '#'*20+ '\n' * 2
+    print '\n' * 2 + '#'*20 + '\n Performing k-fold cross-validation for %d folds\n' %(cdat.probpars.numfolds) + '#'*20+ '\n' * 2
     # set up for cross validation
     print '\nSetting up cas files and file pointers for cross validation'
     kfoldOFP_Val,kfoldOFP_Cal = cdat.cross_val_setup()
     # now build all the nets
     for cfold in np.arange(cdat.probpars.numfolds):
-        print ' ' * 10 + '#' * 20 + '\n' + ' ' * 10 +'#  F O L D --> %d  #\n' %(cfold) + ' ' * 10 + '#' * 20 
+        print ' ' * 10 + '#' * 20 + '\n' + ' ' * 10 +'#  F O L D --> %d  #\n' %(cfold) + ' ' * 10 + '#' * 20
         # rebuild the net
         cname = cdat.allfolds.casfiles[cfold]
-        cdat.rebuild_net(cdat.probpars.baseNET,
+        cdat.pyt.rebuild_net(cdat.probpars.baseNET,
                          cname,
                          cdat.probpars.voodooPar,
                          cname[:-4] + '.neta',
@@ -114,11 +115,11 @@ if cdat.probpars.CVflag:
     kfoldOFP_Val.close()
 
 # Done with Netica so shut it down
-cdat.CloseNetica()
+cdat.pyt.CloseNetica()
 
 
 # first need to sanitize away any ctypes/Netica pointers
-cdat.sanitize()
+cdat.pyt.sanitize()
 # now dump into a pickle file
 outfilename = parfile[:-4] + '_cdat.pklz'
 print 'Dumping cdat to pickle file --> %s' %(outfilename)
