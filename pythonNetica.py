@@ -72,6 +72,7 @@ class pynetica:
         self.NeticaTests = dict()
         self.NeticaTests['CAL'] = list()
         self.NeticaTests['VAL'] = list()
+        self.probpars = None
 
 
     #############################################
