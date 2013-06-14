@@ -31,6 +31,9 @@ cdat.start_environment(cdat.probpars.pwdfile)
 # read in the data from a base cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
 
+# set up the experience node indexing
+cdat.NodeParentIndexing(cdat.probpars.baseNET,cdat.probpars.baseCAS)
+
 # determine the number of data points
 cdat.numfolds = cdat.probpars.numfolds
 # create the folds desired
@@ -52,7 +55,8 @@ cdat.PredictBayesPostProc(cdat.basepred,
                           cdat.probpars.baseCAS,
                           cdat.BaseNeticaTests)
 
-
+# also need to postprocess experience
+cdat.ExperiencePostProc()
 
 # optionally perform sensitivity analysis on the base case
 if cdat.probpars.report_sens:

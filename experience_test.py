@@ -18,6 +18,9 @@ cdat = pyn.pynetica()
 # read in the problem parameters
 cdat.probpars = CVT.input_parameters(parfile)
 
+# read in cas file
+cdat.read_cas_file(cdat.probpars.baseCAS)
+
 # Initialize a pynetica instance/env using password in a text file
 cdat.start_environment(cdat.probpars.pwdfile)
 

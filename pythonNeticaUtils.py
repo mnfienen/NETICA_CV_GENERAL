@@ -28,6 +28,7 @@ class experience:
         self.parent_names = list()
         self.parent_states = None
         self.node_experience = list()
+        self.case_experience = list()
 
 class netica_test:
     def __init__(self):
@@ -89,6 +90,7 @@ class pynetica:
         self.n = None
         self.mesg = ct.create_string_buffer('\000' * 1024)
         self.basepred = None
+        self.parent_inds = None
         self.NeticaTests = dict()
         self.NeticaTests['CAL'] = list()
         self.NeticaTests['VAL'] = list()
@@ -260,26 +262,28 @@ class pynetica:
             
         # open a streamer to the CAS file we will read over
         cas_streamer = self.NewFileStreamer(casfile)
-        case_posn = pnC.netica_const.FIRST_CASE
         
-        while(1):
-            print case_posn
-            if case_posn < pnC.netica_const.NO_MORE_CASES:
-                # first set the findings according to what's in the case file
-                case_posn = self.ReadNetFindings2(case_posn,cas_streamer,allnodes)
-                # now, for each parent, in order, read the states
-                for cr in respnodes:
-                    tmpinds = list()
-                    for cp in parent_indices[cr].parent_names:
-                        cnode = self.GetNodeNamed(cp,cnet)
-                        tmpinds.append(self.GetNodeFinding(cnode))
-                    parent_indices[cr].parent_indices.append(tmpinds)
-                print parent_indices[cr].parent_names
-                print tmpinds
+        # loop over the cases
+        for ccas in np.arange(self.N):
+            if ccas==0:
+                case_posn = pnC.netica_const.FIRST_CASE
             else:
-                break
+                case_posn = pnC.netica_const.NEXT_CASE
+            # first set the findings according to what's in the case file
+            case_posn_out = self.ReadNetFindings2(case_posn,cas_streamer,allnodes)
+            # now, for each parent, in order, read the states
+            for cr in respnodes:
+                tmpinds = list()
+                for cp in parent_indices[cr].parent_names:
+                    cnode = self.GetNodeNamed(cp,cnet)
+                    tmpinds.append(self.GetNodeFinding(cnode))
+                parent_indices[cr].parent_indices.append(tmpinds)
+        parent_indices[cr].parent_indices = np.array(
+                parent_indices[cr].parent_indices,dtype=int)
+        # clean up the temporary streamer and net
         self.DeleteNet(cnet)
-        return parent_indices
+        self.DeleteStream(cas_streamer)
+        self.parent_inds = parent_indices
     
 
     def PredictBayesNeticaCV(self,cfold,cnetname,calval):
@@ -345,6 +349,7 @@ class pynetica:
             if cfold < 0:
                 print 'Calculating confusion matrix for %s' %(cn)
                 ctestresults.confusion_matrix[cn] = self.ConfusionMatrix(ctester,cnode)
+                # also calculate the experience for the node
                 print 'Calculating Experience for the base Net, node --> %s' %(cn)
                 ctestresults.experience[cn] = self.ExperienceAnalysis(cn,cnet)
             
@@ -363,7 +368,17 @@ class pynetica:
             self.BaseNeticaTests = ctestresults            
         
         
-    
+    def ExperiencePostProc(self):
+        print "Post-Processing Experience data, matching with predicted nodes and cases"
+        for cn in self.probpars.scenario.response:
+            for ccas in np.arange(self.N):
+                testinds = self.parent_inds[cn].parent_indices[ccas,:]
+                tmp = testinds-self.BaseNeticaTests.experience[cn].parent_states                
+                tmp = np.sum(np.abs(tmp),axis=1)
+                cind = np.where(tmp==0)
+                self.BaseNeticaTests.experience[cn].case_experience.append(
+                    self.BaseNeticaTests.experience[cn].node_experience[cind[0]])
+                
     
     
     def predictBayes(self,netName,N,casdata):
@@ -1156,16 +1171,11 @@ class pynetica:
         #tmpneticafun = self.n.ReadNetFindings2_bn
         #tmpneticafun.restype = ct.c_long
         case_position = ct.c_long(case_posn)
-        print case_position
         self.n.ReadNetFindings2_bn(ct.byref(case_position),
                             filestream,
                             ct.c_ubyte(0),
                             allnodes,None,None)
-        self.chkerr()
-        print case_position
-        print '%d --> ginger' %(case_posn)
-        print case_position.value
-        
+        self.chkerr()      
         return case_position.value
                                    
                                    

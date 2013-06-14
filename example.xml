@@ -5,7 +5,7 @@
 	<pwdfile>mikeppwd.txt</pwdfile>
 </input_files>
 <kfold_data>
-	<CVflag>True</CVflag>
+	<CVflag>False</CVflag>alse
 	<numfolds>10</numfolds>
 </kfold_data>
 
