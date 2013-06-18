@@ -12,7 +12,7 @@ class netica_scenario:
         self.response = None
 def tf2flag(intxt):
     # converts text written in XML file to True or False flag
-    if intxt.lower()=='true':
+    if intxt.lower() == 'true':
         return True
     else:
         return False
