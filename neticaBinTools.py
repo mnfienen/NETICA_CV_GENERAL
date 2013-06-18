@@ -9,6 +9,6 @@ class netica_binning:
     def bin_thresholds(self):
         a = np.min( self.x )
         b = np.max( self.x )
-        self.probs = np.linspace(0,100.0,self.n+1)/100.
+        self.probs = np.linspace(0,1.0,self.n+1)
         self.binlevels = scpstat.mquantiles(self.x,self.probs)
 

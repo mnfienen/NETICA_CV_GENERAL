@@ -553,14 +553,6 @@ class pyneticaTools:
                                        ct.c_double(voodooPar))
         self.chkerr()
 
-    def SetNetAutoUpdate(self,cnet,belief_value):
-        self.n.SetNetAutoUpdate_bn(cnet,belief_value)
-        self.chkerr()     
-        
-    def SetNthNode(self,nodelist,position,cnode):
-        self.n.SetNthNode_bn(nodelist,ct.c_int(position),cnode)
-        self.chkerr()
-
     def SetLearnerMaxIters(self,learner,maxiters):
         self.n.SetLearnerMaxIters_bn(learner,ct.c_int(maxiters))
         self.chkerr()    
@@ -568,6 +560,19 @@ class pyneticaTools:
     def SetLearnerMaxTol(self,learner,tol):
         self.n.SetLearnerMaxTol_bn(learner,ct.c_double(tol))
         self.chkerr()         
+        
+    def SetNetAutoUpdate(self,cnet,belief_value):
+        self.n.SetNetAutoUpdate_bn(cnet,belief_value)
+        self.chkerr()
+
+    def SetNthNode(self,nodelist,position,cnode):
+        self.n.SetNthNode_bn(nodelist,ct.c_int(position),cnode)
+        self.chkerr()
+
+    def SetNodeLevels(self,cnode,clevels):
+        self.n.SetNodeLevels_bn(cnode,ct.c_int(np.len(clevels-1),
+                                               clevels.ctypes.data_as(ct.POINTER(ct.c_double))))
+        self.chkerr()
         
     def TestWithCaseset(self,test,cases):
         self.n.TestWithCaseset_bn(test,cases)
