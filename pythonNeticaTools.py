@@ -565,21 +565,21 @@ class pyneticaTools:
         self.n.SetNetAutoUpdate_bn(cnet,belief_value)
         self.chkerr()
 
-    def SetNthNode(self,nodelist,position,cnode):
-        self.n.SetNthNode_bn(nodelist,ct.c_int(position),cnode)
+    def SetNthNode(self, nodelist, position, cnode):
+        self.n.SetNthNode_bn(nodelist, ct.c_int(position), cnode)
         self.chkerr()
 
-    def SetNodeLevels(self,cnode,clevels):
-        self.n.SetNodeLevels_bn(cnode,ct.c_int(np.len(clevels-1),
-                                               clevels.ctypes.data_as(ct.POINTER(ct.c_double))))
+    def SetNodeLevels(self, cnode, clevels):
+        self.n.SetNodeLevels_bn(cnode, ct.c_int(len(clevels)-1),
+                                                clevels.ctypes.data_as(ct.POINTER(ct.c_double)))
+        self.chkerr()
+
+    def TestWithCaseset(self, test, cases):
+        self.n.TestWithCaseset_bn(test, cases)
         self.chkerr()
         
-    def TestWithCaseset(self,test,cases):
-        self.n.TestWithCaseset_bn(test,cases)
-        self.chkerr()
-        
-    def WriteNet(self,cnet,filename_streamer):
-        self.n.WriteNet_bn(cnet,filename_streamer)
+    def WriteNet(self, cnet, filename_streamer):
+        self.n.WriteNet_bn(cnet, filename_streamer)
         self.chkerr()
 
 #################

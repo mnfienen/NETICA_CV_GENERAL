@@ -1,31 +1,42 @@
 <data>
-<input_files>
-	<baseNET>SLR.neta</baseNET>
-	<baseCAS>SEAWAT2NETICA_SLR_00.cas</baseCAS>
-	<pwdfile>mikeppwd.txt</pwdfile>
-</input_files>
-<kfold_data>
-	<CVflag>False</CVflag>alse
-	<numfolds>10</numfolds>
-</kfold_data>
+	<input_files>
+		<baseNET>glacial4433.neta</baseNET>
+		<baseCAS>glacial4433.cas</baseCAS>
+		<pwdfile>mikeppwd.txt</pwdfile>
+	</input_files>
+	<kfold_data>
+		<CVflag>False</CVflag>alse
+		<numfolds>10</numfolds>
+	</kfold_data>
 
-<scenarios>
-	<scenario>
-		<name>updateALL_predWT</name>
-		<input>islandwidth</input>
-		<input>islandelev</input>
-		<input>mean_rch</input>
-		<input>maxWT</input>
-		<response>mean_DTW</response>
-	</scenario>	
+	<scenarios>
+		<scenario>
+			<name>glacialtest</name>
+			<input>log_TRANGM</input> 
+			<input>sqrt_SW_MIN</input> 
+			<input>PCT_SW</input> 
+			<input>RCHSUM</input> 
+			<input>sqrt_RIVMIN1</input> 
+			<input>PCTORD1</input>
+			<response>EXT_FLOW</response> 
+			<response>SW_SRC</response> 
+			<response>SRC_ORD1</response> 
+			<response>SRC_ORD2</response> 
+			<response>SRC_ORD3</response>
+		</scenario>	
 
-<sensitivity>
-	<report_sens>True</report_sens>
-</sensitivity>
-
-</scenarios>
-<learnCPTdata>
-	<voodooPar>100</voodooPar>
-	<useEM>True</useEM>
-</learnCPTdata>
+		<sensitivity>
+			<report_sens>True</report_sens>
+		</sensitivity>
+		<learnCPTdata>
+			<voodooPar>100</voodooPar>
+			<useEM>True</useEM>
+		</learnCPTdata>
+	
+		<rebinning>
+			<rebin_flag>True</rebin_flag>
+			<rebin_file>glacial4433_bins1.xml</rebin_file>
+		</rebinning>
+	
+	</scenarios>
 </data>

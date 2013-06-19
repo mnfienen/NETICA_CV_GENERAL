@@ -5,6 +5,7 @@ import ctypes as ct
 import pythonNeticaConstants as pnC
 import pythonNeticaTools as pyT
 import cthelper as cth
+import neticaBinTools as nBT
 import stats_functions as statfuns
 from scipy.stats import nanmean
 
@@ -110,12 +111,12 @@ class pynetica:
         
         # loop over the cases
         for ccas in np.arange(self.N):
-            if ccas==0:
+            if ccas == 0:
                 case_posn = pnC.netica_const.FIRST_CASE
             else:
                 case_posn = pnC.netica_const.NEXT_CASE
             # first set the findings according to what's in the case file
-            case_posn_out = self.pyt.ReadNetFindings2(case_posn,cas_streamer,allnodes)
+            case_posn_out = self.pyt.ReadNetFindings2(case_posn, cas_streamer, allnodes)
             # now, for each parent, in order, read the states
             for cr in respnodes:
                 tmpinds = list()
@@ -131,7 +132,26 @@ class pynetica:
         self.pyt.DeleteNet(cnet)
         self.pyt.DeleteStream(cas_streamer)
         self.parent_inds = parent_indices
-    
+
+    def UpdateNeticaBinThresholds(self):
+        '''
+        Function that reads in new numbers of bins and sets each node to
+        have equiprobable bins in that number
+        '''
+        # first open the net
+        cnet = self.pyt.OpenNeticaNet(self.probpars.baseNET)
+        for cbin in self.probpars.binsetup:
+            cnodebins = nBT.netica_binning(self.casdata[cbin], self.probpars.binsetup[cbin])
+            cnodebins.bin_thresholds()
+            cnode = self.pyt.GetNodeNamed(cbin,cnet)
+            print 'Setting node %s to have %d bins' %(cbin,self.probpars.binsetup[cbin])
+            self.pyt.SetNodeLevels(cnode,cnodebins.binlevels)
+        outfile_streamer = self.pyt.NewFileStreamer(self.probpars.baseNET)
+        self.pyt.CompileNet(cnet)
+        print 'Writing new bin configurations for net to: %s' %(self.probpars.baseNET)
+        self.pyt.WriteNet(cnet,outfile_streamer)
+        self.pyt.DeleteStream(outfile_streamer)
+        self.pyt.DeleteNet(cnet)
 
     def PredictBayesNeticaCV(self,cfold,cnetname,calval):
         '''

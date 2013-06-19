@@ -32,19 +32,32 @@ class input_parameters:
         self.CVflag = tf2flag(inpars.findall('.//kfold_data/CVflag')[0].text)
         self.numfolds = int(inpars.findall('.//kfold_data/numfolds')[0].text)
         self.scenario = netica_scenario()
-        self.scenario.name =  inpars.findall('.//scenario/name')[0].text
+        self.scenario.name = inpars.findall('.//scenario/name')[0].text
         self.scenario.nodesIn = []
         for cv in inpars.findall('.//scenario/input'):
             self.scenario.nodesIn.append(cv.text)
         self.scenario.response = []
-        for cr in  inpars.findall('.//scenario/response'):
+        for cr in inpars.findall('.//scenario/response'):
             self.scenario.response.append(cr.text)        
-        self.CASheader = list( self.scenario.nodesIn)
+        self.CASheader = list(self.scenario.nodesIn)
         self.CASheader.extend(self.scenario.response)    
         self.EMflag = tf2flag(inpars.findall('.//learnCPTdata/useEM')[0].text)
         self.report_sens = False
         self.report_sens = tf2flag(inpars.findall('.//sensitivity/report_sens')[0].text)
         self.voodooPar = float(inpars.findall('.//learnCPTdata/voodooPar')[0].text)
+        self.rebin_flag = False
+        self.rebin_flag = tf2flag(inpars.findall('.//rebinning/rebin_flag')[0].text)
+        if self.rebin_flag:
+            self.rebin_file = inpars.findall('.//rebinning/rebin_file')[0].text
+            try:
+                inpardat = ET.parse(self.rebin_file)
+            except:
+                raise(FileOpenFail(self.rebin_file))
+            self.binsetup = dict()
+            allbins = inpardat.findall('.//newbins/node')
+            for cbin in allbins:
+                tmp = cbin.attrib
+                self.binsetup[cbin.text] = int(tmp['numbins'])
 
 ###################
 # Tools for k-fold setup
