@@ -1,0 +1,15 @@
+<data>
+	<newbins>
+		<node numbins="6">log_TRANGM</node>
+		<node numbins="6">sqrt_SW_MIN</node>
+		<node numbins="6">PCT_SW</node>
+		<node numbins="6">RCHSUM</node>
+		<node numbins="6">sqrt_RIVMIN1</node>
+		<node numbins="6">PCTORD1</node>
+		<node numbins="6">EXT_FLOW</node>
+		<node numbins="6">SW_SRC</node>
+		<node numbins="6">SRC_ORD1</node>
+		<node numbins="6">SRC_ORD2</node>
+		<node numbins="6">SRC_ORD3</node>
+	</newbins>
+</data>
