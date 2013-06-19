@@ -483,6 +483,11 @@ class pyneticaTools:
         self.chkerr()
         return res    
 
+    def LimitMemoryUsage(self,memlimit):
+        self.n.LimitMemoryUsage_ns(ct.c_double(memlimit),self.env)
+        print 'set memory limit to ---> %fbytes' %memlimit
+        self.chkerr()
+        
     def NewCaseset(self,name):
         newcaseset = self.n.NewCaseset_cs(name,self.env)
         self.chkerr()
