@@ -1,6 +1,8 @@
 *.py[cod]
 mikeppwd.txt
 
+*.lyx~
+
 # C extensions
 *.so
 
