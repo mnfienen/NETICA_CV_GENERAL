@@ -1,793 +1,854 @@
-@book{AsterEtal2005,
-   author = {Aster, Richard C. and Borchers, Brian and Thurber, Clifford H.},
-   title = {Parameter Estimation and Inverse Problems},
-   publisher = {Elsevier Academic Press},
-   address = {Amsterdam},
-   volume = {90},
-   series = {International Geophysics Series},
-   pages = {301},
-   year = {2005}
+
+@techreport{GSFLOW,
+   author = "Markstrom, S.L. and Niswonger, R.G. and Regan, R.S. and Prudic, D.E. and Barlow, P.M",
+   title = "{GSFLOW-Coupled Ground-water and Surface-water FLOW model based on the integration of the Precipitation-Runoff Modeling System (PRMS) and the Modular Ground-Water Flow Model (MODFLOW-2005)}",
+   year = "2008"
+}
+@techreport{HydroGeoSphere,
+   author = "R. Therrien and R.G. McLaren and E.A. Sudicky and Park, Y-J.",
+   title = "{HydroGeoSphere} A Three-dimensional Numerical Model Describing Fully-integrated Subsurface and Surface Flow and Solute Transport",
+   institution = "Groundwater Simulations Group",
+   year = "2012"
+}
+@techreport{mt3d,
+   author = "Zheng, C.",
+   title = "{MT3D}, a modular three-dimensional transport model for simulation of advection, dispersion, and chemical reactions of contaminants in groundwater system",
+   institution ="U. S. Environmental Protection Agency",
+   year = "1990"
 }
 
-@techreport{BantaEtAl2006,
-   author = {Banta, E.R. and Poeter, E.P. and Doherty, J.E. and Hill, M.C.},
-   title = {{JUPITER: Joint Universal Parameter IdenTification and Evaluation of Reliability-- An application programming interface (API) for model analysis}},
-   institution = {U.S. Geological Survey Techniques and Methods Book 6, Section E, Chapter 1},
-   pages = {268},
-   year = {2006}
+@techreport{SEAWATv4,
+   author = "Langevin, C.D. and Thorne, D.T. Jr. and Dausman, A.M. and  Sukop, M.C. and Guo, Weixing",
+   title = " SEAWAT Version 4: A Computer Program for Simulation of Multi-Species Solute and Heat Transport",
+   institution = "U.S. Geological Survey",
+	type="Techniques and Methods Report",
+	number="Book 6, Chapter A22",
+	pages="39",
+	address="Reston, VA",
+   year = "2007"
+   
+}@techreport{FienenPREDUNC2010,
+   author = "Fienen, M.N. and Doherty, J.E. and Hunt, R.J. and Reeves, H.W.",
+   title = "Using Prediction Uncertainty Analysis to Design Hydrologic Monitoring Networks: Example Applications from the {Great Lakes Water Availability Pilot Project}",
+   institution = "United States Geological Survey",
+   type = "Scientific Investigations Report 2010-5159",
+   year = "2010"
 }
 
-@article{BoxCox1964,
-   author = {Box, G.E.P. and Cox, D. R.},
-   title = {An Analysis of Transformations},
-   journal = {Journal of the Royal Statistical Society.  Series B (Methodolodical)},
-   volume = {26},
-   number = {2},
-   pages = {211-252},
-   year = {1964}
-
-}
-
-@article{CardiffPKK2009,
-   author = {Cardiff, M. and Kitanidis, P. K.},
-   title = {Bayesian inversion for facies detection: An extensible level set framework},
-   journal = {Water Resources Research},
-   volume = {45},
-   abstract = {In many cases, it has been assumed that the variability in hydrologic parameters can be adequately described through a simple geostatistical model with a given variogram. In other cases, variability may be best described as a series of ‚Äújumps‚Äù in parameter behavior, e.g., those that occur at geologic facies contacts. When using indirect measurements such as pump tests to try to map such heterogeneity (during inverse modeling), the resulting images of the subsurface are always affected by the assumptions invoked. In this paper, we discuss inversion for parameter fields where prior information has suggested that major variability can be described by boundaries between geologic units or facies. In order to identify such parameter fields, we propose a Bayesian level set inversion protocol framework, which allows for flexible zones of any shape, size, and number. We review formulas for defining facies locations using the level set method and for moving the boundaries between zones using a gradient-based technique that improves fit through iterative deformation of the boundaries. We describe the optimization algorithm employed when multiple level set functions are used to represent a field with more than two facies. We extend these formulas to the investigation of the inverse problem in a Bayesian context in which prior information is taken into account and through which measures of uncertainty can be derived. We also demonstrate that the level set method is well suited for joint inversion problems and present a strategy for integrating different data types (such as hydrologic and geophysical) without assuming strict petrophysical relations. Our framework for joint inversion also contrasts with many previous methods in that all data sources (e.g., both hydrologic and geophysical) contribute to boundary delineation at once.},
-   keywords = {inverse modeling
-level sets
-joint
-uncertainty
-3260 Mathematical Geophysics: Inverse theory
-3333 Atmospheric Processes: Model calibration
-1829 Hydrology: Groundwater hydrology
-1835 Hydrology: Hydrogeophysics},
-   year = {2009},
-   doi = {10.1029/2008wr007675},
-   pages = {W05531}
-
-}
-
-@article{cardiff2012,
-	Author = {Cardiff, M. and Barrash, W. and Kitanidis, P. K.},
-	Date = {2012/05/19},
-	Date-Added = {2012-06-02 19:44:20 -0500},
-	Date-Modified = {2012-06-02 19:44:20 -0500},
-	Doi = {10.1029/2011WR011704},
-	Isbn = {0043-1397},
-	Journal = {Water Resources Research},
-	Keywords = {3-D; hydraulic conductivity; modular; portable; tomography; transient; 1829 Hydrology: Groundwater hydrology; 1846 Hydrology: Model calibration (3333); 1910 Informatics: Data assimilation, integration and fusion},
-	Month = {05},
-	Number = {5},
-	Publisher = {AGU},
-	Sp = {W05531},
-	Title = {A field proof-of-concept of aquifer imaging using {3-D} transient hydraulic tomography with modular, temporarily-emplaced equipment},
-	Ty = {JOUR},
-	Url = {http://dx.doi.org/10.1029/2011WR011704},
-	Volume = {48},
-	Year = {2012},
-	pages = {W05531},
-	Bdsk-Url-1 = {http://dx.doi.org/10.1029/2011WR011704}}
-
-@article{casella1985,
-   author = {Casella, G.},
-   title = {AN INTRODUCTION TO EMPIRICAL {B}AYES DATA-ANALYSIS},
-   journal = {American Statistician},
-   volume = {39},
-   number = {2},
-   pages = {83-87},
-   year = {1985},
-   doi = {10.2307/2682801}
+@article{Kitanidis1995,
+   author = "Kitanidis, Peter K.",
+   title = "Quasi-linear geostatistical theory for inversing",
+   journal = "Water Resources Research",
+   volume = "31",
+   number = "10",
+   pages = "2411-2419",
+   year = "1995",
+   doi = "10.1029/95WR01945"
 
 }
 
+@article{TonkinDoherty2009,
+   author = "Tonkin, M. and Doherty, J.",
+   title = "Calibration-Constrainted {M}onte {C}arlo Analysis of Highly-Parameterized Models using Subspace Methods",
+   journal = "Water Resources Research",
+   volume = "45",
+   number = "W00B10",
+   year = "2009",
+   doi = "10.1029/2007WR006678"
+
+}
+@article{MichalakPKK2003,
+   author = "Michalak, A. M. and Kitanidis, P. K.",
+   title = "A method for enforcing parameter nonnegativity in {B}ayesian inverse problems with an application to contaminant source identification",
+   journal = "Water Resources Research",
+   volume = "39",
+   number = "2",
+   pages = "1033",
+   year = "2003",
+   doi = "10.1029/2002WR001480"
+
+}
+@article{Michalak2008,
+   author = "Michalak, A. M.",
+   title = "A {G}ibbs sampler for inequality-constrained geostatistical interpolation and inverse modeling",
+   journal = "Water Resources Research",
+   volume = "44",
+   number = "9",
+   pages = "W09437",
+   year = "2008",
+   doi = "10.1029/2007wr006645"
+
+}
+@article{Sadoddin2005,
+   author = "Sadoddin, A. and Letcher, R. A. and Jakeman, A. J. and Newham, L. T. H.",
+   title = "A {B}ayesian decision network approach for assessing the ecological impacts of salinity management",
+   journal = "Mathematics and Computers in Simulation",
+   volume = "69",
+   number = "1-2",
+   pages = "162-176",
+   year = "2005",
+   doi = "10.1016/j.matcom.2005.02.020"
+
+}
+@article{Guillaume2012,
+   author = "Guillaume, Joseph H. A. and Qureshi, M. Ejaz and Jakeman, Anthony J.",
+   title = "A structured analysis of uncertainty surrounding modeled impacts of groundwater-extraction rules",
+   journal = "Hydrogeology Journal",
+   volume = "20",
+   number = "5",
+   pages = "915-932",
+   year = "2012",
+   doi = "10.1007/s10040-012-0864-0"
+}
+
+@article{mdso2007,
+   author = "Martin de Santa Olalla, Francisco and Dominguez, Alfonso and Ortega, Fernando and Artigao, Alfonso and Fabeiro, Concepcion",
+   title = "{Bayesian networks in planning a large aquifer in Eastern Mancha, Spain}",
+   journal = "Environmental Modelling and Software",
+   volume = "22",
+   number = "8",
+   pages = "1089-1100",
+   year = "2007",
+   doi = "10.1016/j.envsoft.2006.05.020"
+
+}
+
+@article{Stiber2004,
+   author = "Stiber, N. A. and Small, M. J. and Pantazidou, M.",
+   title = "Site-specific updating and aggregation of {B}ayesian belief network models for multiple experts",
+   journal = "Risk Analysis",
+   volume = "24",
+   number = "6",
+   pages = "1529-1538",
+   year = "2004",
+   doi = "10.1111/j.0272-4332.2004.00547.x"
+
+}
+@article{Jenkins1968,
+   author = "Jenkins, C. T.",
+   title = "Techniques for Computing Rate and Volume of Stream Depletion by Wells",
+   journal = "Ground Water",
+   volume = "6",
+   number = "2",
+   pages = "37-46",
+   year = "1968",
+   doi = "10.1111/j.1745-6584.1968.tb01641.x"
+}
+
+@article{Kennedy2001,
+   author = "Kennedy, M. C. and O'Hagan, A.",
+   title = "{B}ayesian calibration of computer models",
+   journal = "Journal of the Royal Statistical Society Series B-Statistical Methodology",
+   volume = "63",
+   pages = "425-450",
+   year = "2001",
+   doi = "10.1111/1467-9868.00294"
+
+}
+@article{NoleanEST2012,
+   author = "Nolan, B. T. and Malone, R. W. and Gronberg, J. A. and Thorp, K. R. and Ma, L.",
+   title = "Verifiable metamodels for nitrate losses to drains and groundwater in the {Corn Belt, USA}",
+   journal = "Environmental Science and Technology",
+   volume = "46",
+   number = "2",
+   pages = "901-908",
+   year = "2012",
+   doi = "10.1021/es202875e"
+}
+
+@article{GusyevANN2012,
+   author = "Gusyev, M. A. and Haitjema, H. M. and Carlson, C. P. and Gonzalez, M. A.",
+   title = "Use of Nested Flow Models and Interpolation Techniques for Science-Based Management of the {Sheyenne National Grassland, North Dakota, USA}",
+   journal = "Ground Water",
+   year = "2012",
+   doi = "10.1111/j.1745-6584.2012.00989.x"
+}
+
+
+@article{LiHDMR2001,
+   author = "Li, G. Y. and Rosenthal, C. and Rabitz, H.",
+   title = "High dimensional model representations",
+   journal = "Journal of Physical Chemistry A",
+   volume = "105",
+   number = "33",
+   pages = "7765-7777",
+   year = "2001",
+   doi = "10.1021/jp010450t"
+}
+@book{JensenNielsen2001,
+   author = "Jensen, Finn V. and Nielsen, Thomas D.",
+   title = "{B}ayesian networks and decision graphs",
+   publisher = "Springer",
+   address = "New York",
+   series = "Statistics for engineering and information science",
+     pages = "xv, 268 p.",
+   year = "2001"
+}
+
+@article{plant2011a,
+   author = "Plant, Nathaniel G. and Holland, K. Todd",
+   title = "Prediction and assimilation of surf-zone processes using a {B}ayesian network Part I: Forward models",
+   journal = "Coastal Engineering",
+   volume = "58",
+   number = "1",
+   pages = "119-130",
+   year = "2011",
+   doi = "10.1016/j.coastaleng.2010.09.003"
+}
+@article{plant2011b,
+   author = "Plant, Nathaniel G. and Holland, K. Todd",
+   title = "Prediction and assimilation of surf-zone processes using a {B}ayesian network Part II: Inverse models",
+   journal = "Coastal Engineering",
+   volume = "58",
+   number = "3",
+   pages = "256-266",
+   year = "2011",
+   doi = "10.1016/j.coastaleng.2010.11.002"
+}
+@phdthesis{Halsey1978,
+   author = "Halsey, S.D.",
+   title = "Late Quaternary geologic history and morphological development of the barrier island system along the {Delmarva Peninsula of the mid-Atlantic Bight}",
+   university = "University of Delaware",
+   type = "PhD",
+   pages="592",
+   year = "1978"
+}
+@article{Leatherman1979,
+   author = "Leatherman, Stephen P.",
+   title = "Migration of Assateague Island, {Maryland, by inlet and overwash processes}",
+   journal = "Geology",
+   volume = "7",
+   number = "2",
+   pages = "104",
+   year = "1979",
+   doi = "10.1130/0091-7613(1979)7<104:moaimb>2.0.co;2"
+}
+
+@inbook{Krantz2009,
+   author = "Krantz, D.E. and Schupp, C.A. and Spaur, C.C. and Thomas, J.E. and Wells, D.V.",
+   title = "Dynamics systems at the	land-sea interface",
+   booktitle = "Shifting Sands, Environmental and cultural change in {M}aryland’s Coastal Bays",
+   editor = "Dennison, W.C.",
+   publisher = "IAN Press, University of Maryland Center for Environmental Science",
+   address = "Cambridge, MD",
+   pages = "211--248",
+   year = "2009"
+}
+
+@article{Schupp2013,
+   author = "Schupp, Courtney A. and Winn, Neil T. and Pearl, Tami L. and Kumer, John P. and Carruthers, Tim J. B. and Zimmerman, Carl S.",
+   title = "Restoration of overwash processes creates piping plover ({C}haradrius melodus) habitat on a barrier island ({Assateague Island, Maryland)}",
+   journal = "Estuarine, Coastal and Shelf Science",
+   volume = "116",
+   pages = "11--20",
+   year = "2013",
+   doi = "10.1016/j.ecss.2012.07.003"
+}
+
+
+@techreport{MidAtlantic2009,
+   author = "Titus, J.G. and K. Eric Anderson and Donald R. Cahoon and Dean B. Gesch and Stephen K. Gill and Benjamin T. Gutierrez  and E. Robert Thieler and S. Jeffress Williams",
+   title = "Coastal Sensitivity to Sea-Level Rise: A Focus on the {Mid-Atlantic} Region",
+   institution = "The U.S. Climate Change Science Program, U.S. Environmental Protection Agency",
+   address = "Washington, D.C.",
+   year = "2009"
+}
+@book{Henry1947,
+   author = "Henry, Marguerite and Dennis, Wesley",
+   title = "Misty of Chincoteague",
+   publisher = "Rand McNally",
+   address = "Chicago,",
+   pages = "173",
+   year = "1947"
+}
+
+@techreport{Masterson2013SIR,
+   author = "Masterson, John P. and Fienen, Michael N. and Gesch, Dean and Carlson, Carl S.",
+   title = "Development of a Numerical Model of groundwater flow for {Assateague Island, Maryland-Virginia}",
+   institution = "United States Geological Survey",
+   year = "2013--in press"
+}
+@techreport{AssateagueOFR2012,
+   author = "Banks, W.S.L. and Masterson, J.P. and Johnson, C.D.",
+   title = "Well network installation and hydrogeologic data collection, {Assateague Island National Seashore, Worcester County, Maryland}, 2010",
+   institution = "United States Geological Survey",
+   type="Open File Report 2012-5079",
+   year = "2012"
+}
+
+@techreport{Condor2012,
+author="{Condor Team}",
+title="Condor Version 7.6.6 Manual",
+year="2012",
+institution = "University of {W}isconsin--{Madison}"
+}
+@book{Korb2004,
+   author = "Korb, Kevin B. and Nicholson, Ann E.",
+   title = "{B}ayesian artificial intelligence",
+   publisher = "Chapman \& Hall/CRC",
+   address = "Boca Raton, Fla.",
+   series = "Chapman \& Hall/CRC series in computer science and data analysis",
+   pages = "364 p.",
+   year = "2004"
+}
+@Misc{Netica,
+author = "{Norsys Software Corp.}",
+title = "{Netica Version 4.16}",
+howpublished = "http://www.norsys.com/",
+year = "1990--2012"
+}
+
+@Misc{Hugin,
+author = "{Hugin Expert A/S}",
+title = "{HuginExpert Version 2013.0.0}",
+howpublished = "{http://www.hugin.com}",
+year = "2013"
+
+
+
+@book{jaynesBook,
+   author = "Jaynes, E. T. and Bretthorst, G. Larry",
+   title = "Probability theory : the logic of science",
+   publisher = "Cambridge University Press",
+   address = "Cambridge, UK ; New York, NY",
+   pages = "xxix, 727 p.",
+   year = "2003"
+}
+@article{FienenEdGW2013,
+   author = "Fienen, M. N.",
+   title = "We speak for the data",
+   journal = "Groundwater",
+   volume = "51",
+   number = "2",
+   pages = "157",
+   year = "2013",
+   doi = "10.1111/gwat.12018"
+}
+@article{FienenBNWRR,
+author = "Michael N. Fienen and John P. Masterson and Nathaniel G. Plant and Benjamin T. Gutierrez and E. Robert Thieler",
+title = "Bridging Groundwater Models and Decision Support with a {Bayesian Network}",
+journal = "Water Resources Research",
+year = "{2013--In Press}"
+}
+
+@article{Molina2010,
+   author = "Molina, J. L. and Bromley, J. and Garc\'{i}a-Ar\'{o}stegui, J. L. and Sullivan, C. and Benavente, J.",
+   title = "Integrated water resources management of overexploited hydrogeological systems using Object-Oriented {B}ayesian Networks",
+   journal = "Environmental Modelling \& Software",
+   volume = "25",
+   number = "4",
+   pages = "383-397",
+   year = "2010",
+   doi = "10.1016/j.envsoft.2009.10.007"
+
+}
+@article{Chen2012,
+   author = "Chen, Serena H. and Pollino, Carmel A.",
+   title = "Good practice in Bayesian network modelling",
+   journal = "Environmental Modelling \& Software",
+   volume = "37",
+   pages = "134-145",
+   year = "2012",
+   doi = "10.1016/j.envsoft.2012.03.012"
+}
+@inbook{calhoon2009,
+   author = "Cahoon, D.R. and D.J. Reed and A.S. Kolker and M.M. Brinson and J.C. Stevenson and S. Riggs and  R. Christian and E. Reyes and C. Voss and D. Kunz",
+   title = "Coastal wetland sustainability",
+   booktitle = "Coastal Sensitivity to Sea-Level Rise: A Focus on the {Mid-Atlantic} Region",
+   publisher = "The U.S. Climate Change Science Program, U.S. Environmental Protection Agency",
+   address = "Washington, D.C.",
+   pages = "57--72",
+   year = "2009"
+}
+
+
+@article{Fitz2008,
+   author = "FitzGerald, Duncan M. and Fenster, Michael S. and Argow, Britt A. and Buynevich, Ilya V.",
+   title = "Coastal Impacts Due to Sea-Level Rise",
+   journal = "Annual Review of Earth and Planetary Sciences",
+   volume = "36",
+   number = "1",
+   pages = "601--647",
+   year = "2008",
+   doi = "10.1146/annurev.earth.35.031306.140139"
+}
+
+
+@inbook{Gutierrez2009,
+   author = "Gutierrez, B.T. and  S.J. Williams and E.R. Thieler",
+   title = "Ocean coasts",
+   booktitle = "Coastal Sensitivity to Sea-Level Rise: A Focus on the {Mid-Atlantic} Region",
+   publisher = "The U.S. Climate Change Science Program, U.S. Environmental Protection Agency",
+   address = "Washington, D.C.",
+   pages = "43--56",
+   year = "2009"
+}
+
+
+
+@article{Poch2004,
+   author = "Poch, Manel and Comas, Joaquim and Rodr\'{i}guez-Roda, Ignasi and S\`{a}nchez-Marr\`{e}, Miquel and Cort\'{e}s, Ulises",
+   title = "Designing and building real environmental decision support systems",
+   journal = "Environmental Modelling \& Software",
+   volume = "19",
+   number = "9",
+   pages = "857--873",
+   year = "2004",
+   doi = "10.1016/j.envsoft.2003.03.007"
+}
+
+@inproceedings{DeanPerlin1977,
+year = "1977",
+   author = "Dean, R.G. and Perlin, M.",
+   title = "Coastal engineering study of Ocean City Inlet, Maryland.",
+   booktitle = "Proceedings of Coastal Sediments, American Society of Civil Engineers",
+   pages = "520--542"
+
+}
+
+@techreport{Barlow2003,
+   author = "Barlow, P.M",
+   title = "Ground water in freshwater-saltwater environments of the Atlantic Coast",
+   institution = "United States Geological Survey",
+   type = "Circular 1262",
+   year = "2003"
+}
+
+@article{Barthel2008,
+   author = "Barthel, R. and Janisch, S. and Schwarz, N. and Trifkovic, A. and Nickel, D. and Schulz, C. and Mauser, W.",
+   title = "An integrated modelling framework for simulating regional-scale actor responses to global change in the water domain",
+   journal = "Environmental Modelling and Software",
+   volume = "23",
+   number = "9",
+   pages = "1095--1121",
+   year = "2008",
+   doi = "10.1016/j.envsoft.2008.02.004"
+
+}
+
+
+@article{Carmona2011,
+   author = "Carmona, G. and Molina, J. L. and Bromley, J. and Varela-Ortega, C. and Garc\'{i}a-Ar\'{o}stegui, J. L.",
+   title = "Object-Oriented Bayesian Networks for Participatory Water Management: Two Case Studies in Spain",
+   journal = "Journal of Water Resources Planning and Management",
+   volume = "137",
+   number = "4",
+   pages = "366--376",
+   year = "2011",
+   doi = "10.1061/(asce)wr.1943-5452.0000116"
+}
+
+@article{Castelletti2012,
+   author = "Castelletti, A. and Galelli, S. and Ratto, M. and Soncini-Sessa, R. and Young, P. C.",
+   title = "A general framework for Dynamic Emulation Modelling in environmental problems",
+   journal = "Environmental Modelling and Software",
+   volume = "34",
+   pages = "5--18",
+   year = "2012",
+   doi = "10.1016/j.envsoft.2012.01.002"
+
+}
 
 @article{Chamberlin1890,
-   author = {Chamberlin, T. C.},
-   title = {The Method of Multiple Working Hypotheses},
-   journal = {Science (Old Series)},
-   volume = {15},
-   number = {92},
-   year = {1890}
+   author = "Chamberlin, T. C.",
+   title = "The Method of Multiple Working Hypotheses",
+   journal = "Science (Old Series)",
+   volume = "15",
+   number = "92",
+   year = "1890",
+   doi = "10.1126/science.148.3671.754"
+
+}
+
+@inbook{Davis1994,
+   author = "Davis, R.A.",
+   title = "Barrier island systems-a geologic overview",
+   booktitle = " Geology Of Holocene Barrier Island Systems",
+   editor = "David, R.A.",
+   publisher = "Springer-Varag",
+   address = "New York",
+   pages = "435--456",
+   year = "1994"
+}
+
+
+@article{Dempster1977,
+   author = "Dempster, A.P. and Laird, N.M. and Rubin, D.B.",
+   title = "Maximum Likelihood From Incomplete Data Via EM Algorithm",
+   journal = "Journal of the Royal Statistical Society Series B-Methodological",
+   volume = "39",
+   number = "1",
+   pages = "1--38",
+   year = "1977"
 
 }
 
 
-@article{Collinson1969,
-   author = {Collinson, J. D. },
-   title = {SEDIMENTOLOGY OF {G}RINDSLOW SHALES AND {K}INDERSCOUT GRIT - A DELTAIC COMPLEX IN {N}AMURIAN OF {N}ORTHERN {E}NGLAND},
-   journal = {Journal of Sedimentary Petrology},
-   volume = {39},
-   number = {1},
-   pages = {194-221},
-   year = {1969}
-
+@misc{PEST,
+   author = "Doherty, J.",
+   title = "{PEST}, Model-independent parameter estimation---User manual (5th ed., with slight additions)",
+   publisher = "Watermark Numerical Computing",
+   year = "2010"
 }
 
-@book{DeutschJourneal1992,
-   author = {Deutsch, Clayton V. and Journel, Andre G.},
-   title = {{GSLIB} : geostatistical software library and user's guide},
-   publisher = {Oxford University Press},
-   address = {New York},
-   pages = {340},
-   year = {1992}
+@article{DohertyChristensen2011,
+   author = "Doherty, John and Christensen, Steen",
+   title = "Use of paired simple and complex models to reduce predictive bias and quantify uncertainty",
+   journal = "Water Resources Research",
+   volume = "47",
+   number = "12",
+   year = "2011",
+   doi = "10.1029/2011wr010763"
 }
 
 
-@book{PEST,
-   author = {Doherty, J.},
-   title = {{PEST}, Model-independent parameter estimation---User manual (5th ed., with slight additions)},
-   publisher = {Watermark Numerical Computing, Brisbane, Australia},
-   year = {2010}
-}
+@article{Ehrenfeld1990,
+   author = "Ehrenfeld, J. G.",
+   title = "DYNAMICS AND PROCESSES OF BARRIER-ISLAND VEGETATION",
+   journal = "Reviews in Aquatic Sciences",
+   volume = "2",
+   number = "3-4",
+   pages = "437--480",
+   year = "1990"
 
-@book{PESTAdd,
-   author = {Doherty, J.},
-   title = {{PEST}, Model Independent Parameter Estimation.  {A}ddendum to User Manual: 5th Edition. },
-   publisher = {Watermark Numerical Computing, Brisbane, Australia},
-   year = {2010}
 }
 
 
-@phdthesis{MarcoDiss,
-   author = {D'Oria, M},
-   title = {{Characterization of Aquifer Hydraulic Parameters: from {T}heis to Hydraulic Tomography}},
-   school = {{Universit\`{a} degli Studi di Parma, 153 p.}},
-   type = {{PhD Dissertation}},
-   year = {2010},
-   pages = {153}
+@article{Essink2010,
+   author = "Essink, G. H. P. Oude and van Baaren, E. S. and de Louw, P. G. B.",
+   title = "Effects of climate change on coastal groundwater systems: A modeling study in the Netherlands",
+   journal = "Water Resources Research",
+   volume = "46",
+   year = "2010",
+   doi = "10.1029/2009wr008719"
 }
 
-@article{doriareverserouting,
-   author = {D'Oria, M. and Tanda, M. G. },
-   title = {Reverse flow routing in open channels: a {Bayesian Geostatistical Approach}},
-   journal = {Journal of hydrology},
-   volume = {{in review}},
-   year = {2012}
-}
-
-@book{drapersmith66,
-   author = {Draper, Norman Richard and Smith, Harry},
-   title = {Applied regression analysis},
-   publisher = {Wiley},
-   address = {New York},
-   keywords = {Regression analysis.
-Mathematical statistics.},
-   pages = {407},
-   year = {1966}
-}
-
-@misc{Basement,
-   author = {Faeh, R. and Mueller, R. and Rousselot, P. and Vetsch, D. and Volz, C. and Vonwiller, L. and Veprek R. and Farshi, D},
-   title = {System {M}anuals of {BASEMENT}, {V}ersion 2.1.
-   {L}aboratory of {H}ydraulics, {G}laciology and {H}ydrology ({VAW}). {ETH} {Z}urich},
-   year = {2011}
+@article{fienenEtal2004,
+   author = "Fienen, MN and Kitanidis, PK and Watson, D and Jardine, P",
+   title = "An application of {B}ayesian inverse methods to vertical deconvolution of hydraulic conductivity in a heterogeneous aquifer at {Oak Ridge National Laboratory}",
+   journal = "Mathematical Geology",
+   volume = "36",
+   number = "1",
+   pages = "101--126",
+   year = "2004",
+   doi = "10.1023/B:MATG.0000016232.71993.bd"
 
 }
 
 
 @article{fienenIsthmusWRR,
-   author = {Fienen, M. and Hunt, R. and Krabbenhoft, D. and Clemo, T.},
-   title = {Obtaining parsimonious hydraulic conductivity fields using head and transport observations: A {B}ayesian geostatistical parameter estimation approach},
-   journal = {Water Resources Research},
-   volume = {45},
-   abstract = {Flow path delineation is a valuable tool for interpreting the subsurface hydrogeochemical environment. Different types of data, such as groundwater flow and transport, inform different aspects of hydrogeologic parameter values (hydraulic conductivity in this case) which, in turn, determine flow paths. This work combines flow and transport information to estimate a unified set of hydrogeologic parameters using the Bayesian geostatistical inverse approach. Parameter flexibility is allowed by using a highly parameterized approach with the level of complexity informed by the data. Despite the effort to adhere to the ideal of minimal a priori structure imposed on the problem, extreme contrasts in parameters can result in the need to censor correlation across hydrostratigraphic bounding surfaces. These partitions segregate parameters into facies associations. With an iterative approach in which partitions are based on inspection of initial estimates, flow path interpretation is progressively refined through the inclusion of more types of data. Head observations, stable oxygen isotopes (18O/16O ratios), and tritium are all used to progressively refine flow path delineation on an isthmus between two lakes in the Trout Lake watershed, northern Wisconsin, United States. Despite allowing significant parameter freedom by estimating many distributed parameter values, a smooth field is obtained.},
-   keywords = {inverse modeling
-parameter estimation
-coupled
-flow
-transport
-Bayes
-1846 Hydrology: Model calibration
-1090 Geochemistry: Field relationships
-1829 Hydrology: Groundwater hydrology
-1831 Hydrology: Groundwater quality},
-   year = {2009},
-   pages = {W08405},
-   doi = {10.1029/2008wr007431}
-
-}
-
-@article{FienenWRR2008,
-   author = {Fienen, M. N. and Clemo, Thomas M. and Kitanidis, P. K.},
-   title = {An Interactive {B}ayesian Geostatistical Inverse Protocol for Hydraulic Tomography},
-   journal = {Water Resources Research},
-   volume = {44},
-   year = {2008},
-   pages ={W00B01},
-   doi = {10.1029/2007WR006730}
+   author = "Fienen, M. and Hunt, R. and Krabbenhoft, D. and Clemo, T.",
+   title = "Obtaining parsimonious hydraulic conductivity fields using head and transport observations: A {B}ayesian geostatistical parameter estimation approach",
+   journal = "Water Resources Research",
+   volume = "45",
+   year = "2009",
+   doi = "10.1029/2008wr007431"
 
 }
 
 
-@article{FienenWRR2006,
-   author = {Fienen, M.N. and Luo, J. and Kitanidis, P.K.},
-   title = {A {B}ayesian geostatistical transfer function approach to tracer test analysis},
-   journal = {Water Resources Research},
-   volume = {42},
-   number = {7},
-   abstract = {Reactive transport modeling is often used in support of bioremediation and chemical treatment planning and design. There remains a pressing need for practical and efficient models that do not require ( or assume attainable) the high level of characterization needed by complex numerical models. We focus on a linear systems or transfer function approach to the problem of reactive tracer transport in a heterogeneous saprolite aquifer. Transfer functions are obtained through the Bayesian geostatistical inverse method applied to tracer injection histories and breakthrough curves. We employ nonparametric transfer functions, which require minimal assumptions about shape and structure. The resulting flexibility empowers the data to determine the nature of the transfer function with minimal prior assumptions. Nonnegativity is enforced through a reflected Brownian motion stochastic model. The inverse method enables us to quantify uncertainty and to generate conditional realizations of the transfer function. Complex information about a hydrogeologic system is distilled into a relatively simple but rigorously obtained function that describes the transport behavior of the system between two wells. The resulting transfer functions are valuable in reactive transport models based on traveltime and streamline methods. The information contained in the data, particularly in the case of strong heterogeneity, is not overextended but is fully used. This is the first application of Bayesian geostatistical inversion to transfer functions in hydrogeology but the methodology can be extended to any linear system.},
-   keywords = {AQUIFERS
-DECONVOLUTION
-FLOW
-IDENTIFICATION
-INVERSE PROBLEMS
-NOISE
-PARAMETRIC TRANSFER-FUNCTION
-REACTIVE TRANSPORT
-SOLUTE TRANSPORT
-SYSTEMS},
-   year = {2006},
-   pages = {W07426},
-   doi = {10.1029/2005WR004576}
-
+@article{Gutierrez2011,
+   author = "Gutierrez, Benjamin T. and Plant, Nathaniel G. and Thieler, E. Robert",
+   title = "A {B}ayesian network to predict coastal vulnerability to sea level rise",
+   journal = "Journal of Geophysical Research",
+   volume = "116",
+   number = "F2",
+   year = "2011",
+   doi = "10.1029/2010jf001891"
 }
 
-@article{GaganisSmith2001,
-   author = {Gaganis, P. and Smith, L.},
-   title = {A {B}ayesian approach to the quantification of the effect of model error on the predictions of groundwater models},
-   journal = {Water Resources Research},
-   volume = {37},
-   number = {9},
-   pages = {2309-2322},
-   abstract = {Errors arising from the imperfect mathematical representation of the structure of a hydrologic system (model error) are not random but systematic. Their effect on model predictions varies in space and time and differs for the flow and solute transport components of a groundwater model. Such errors do not necessarily have any probabilistic properties that can be easily exploited in the construction of a model performance criterion. A Bayesian approach is presented for quantifying model error in the presence of parameter uncertainty. Insight gained in updating the prior information on the model parameters is used to assess the correctness of the model structure, which is defined relative to the accuracy required of the model predictions. Model error is evaluated for each measurement of the dependent variable through an examination of the correctness of the model structure for different accuracy levels. The effect of model error on each dependent variable, which is quantified as a function of location and time, represents a measure of the reliability of the model in terms of each model prediction. This method can be used in identifying possible causes of model error and in discriminating among models in terms of the correctness of the model structure. It also offers an improved description of the uncertainties associated with a modeling exercise that may be useful in risk assessments and decision analyses.},
-   keywords = {CALIBRATION
-CRITERION
-FLOW MODELS
-MULTIPLE
-PARAMETERS
-PRIOR INFORMATION
-SELECTION
-UNCERTAINTY
-VALIDATION},
-   year = {2001},
-   doi = {10.1029/2000WR000001}
-
-}
-@article{GallagherDoherty2007,
-   author = {Gallagher, M. R. and Doherty, J.},
-   title = {Parameter interdependence and uncertainty induced by lumping in a hydrologic model},
-   journal = {Water Resources Research},
-   volume = {43},
-   number = {5},
-   abstract = {[1] Throughout the world, watershed modeling is undertaken using lumped parameter hydrologic models that represent real-world processes in a manner that is at once abstract, but nevertheless relies on algorithms that reflect real-world processes and parameters that reflect real-world hydraulic properties. In most cases, values are assigned to the parameters of such models through calibration against flows at watershed outlets. One criterion by which the utility of the model and the success of the calibration process are judged is that realistic values are assigned to parameters through this process. This study employs regularization theory to examine the relationship between lumped parameters and corresponding real-world hydraulic properties. It demonstrates that any kind of parameter lumping or averaging can induce a substantial amount of "structural noise,'' which devices such as Box-Cox transformation of flows and autoregressive moving average (ARMA) modeling of residuals are unlikely to render homoscedastic and uncorrelated. Furthermore, values estimated for lumped parameters are unlikely to represent average values of the hydraulic properties after which they are named and are often contaminated to a greater or lesser degree by the values of hydraulic properties which they do not purport to represent at all. As a result, the question of how rigidly they should be bounded during the parameter estimation process is still an open one.},
-   year = {2007},
-   doi = {10.1029/2006wr005347}
-
+@book{StatLearning2009,
+   author = "Hastie, Trevor and Tibshirani, Robert and Friedman, J. H.",
+   title = "The elements of statistical learning : data mining, inference, and prediction",
+   publisher = "Springer",
+   address = "New York",
+   edition = "2nd",
+   series = "Springer series in statistics",
+   keywords = "Supervised learning (Machine learning)",
+   pages = "xxii, 745 p.",
+   year = "2009"
 }
 
-
-@techreport{toeplitz,
-   author = {Gray, R.M.},
-   title = {Toeplitz and Circulant Matrices: a Review},
-   institution = {Now Publishers, Inc.},
-   address = {Delft, The Netherlands},
-   pages={90},
-   year = {2005}
+@article{Hayden1995,
+   author = "Hayden, B. P. and Santos, Mcfv and Shao, G. F. and Kochel, R. C.",
+   title = "GEOMORPHOLOGICAL CONTROLS ON COASTAL VEGETATION AT THE VIRGINIA-COAST-RESERVE",
+   journal = "Geomorphology",
+   volume = "13",
+   number = "1--4",
+   pages = "283--300",
+   year = "1995",
+   doi = "10.1016/0169-555x(95)00032-z"
 }
 
-@article{Hill2006,
-   author = {Hill, M. C.},
-   title = {The practical use of simplicity in developing ground water models},
-   journal = {Ground Water},
-   volume = {44},
-   number = {6},
-   pages = {775-781},
-   year = {2006},
-   doi = {10.1111/j.1745-6584.2006.00227.x}
-
+@inbook{Hayes1979,
+   author = "Hayes, M. O.",
+   title = "Barrier island morphology as a function of tidal and wave regime.",
+   booktitle = "Barrier Islands from the Gulf of St. Lawrence to the Gulf of Mexico",
+   editor = "Leatherman, S.",
+   publisher = "Academic Press",
+   address = "New York",
+   pages = "211--236",
+   year = "1979"
 }
 
-
-@article{HoeksemaKitanidis1984a,
-   author = {Hoeksema, Robert J. and Kitanidis, Peter K.},
-   title = {An Application of the Geostatistical Approach to the Inverse Problem in Two-Dimensional Groundwater Modeling},
-   journal = {Water Resources Research},
-   volume = {20},
-   number = {7},
-   pages = {1003-1020},
-   keywords = {geostatistics
-Inverse Problem
-Jordan aquifer
-Iowa},
-   year = {1984},
-   doi = {10.1029/WR020i007p01003}
-
+@article{Jevrejeva2010,
+   author = "Jevrejeva, S. and Moore, J. C. and Grinsted, A.",
+   title = "How will sea level respond to changes in natural and anthropogenic forcings by 2100?",
+   journal = "Geophysical Research Letters",
+   volume = "37",
+   year = "2010",
+   doi = "10.1029/2010gl042947"
+}
+@article{Kirwin2007,
+   author = "Kirwan, Matthew L. and Kirwan, Jeffrey L. and Copenheaver, Carolyn A.",
+   title = "Dynamics of an Estuarine Forest and its Response to Rising Sea Level",
+   journal = "Journal of Coastal Research",
+   pages = "457--463",
+   year = "2007",
+   doi = "10.2112/04-0211.1"
 }
 
-@book{Isaaks1989,
-   author = {Isaaks, Edward H. and Srivastava, R. Mohan},
-   title = {Applied geostatistics},
-   publisher = {Oxford University Press},
-   address = {Oxford, UK; New York, NY},
-   keywords = {Geology Statistical methods.},
-   pages = {xix, 561},
-   year = {1989}
+@article{Marcot2012,
+   author = "Marcot, Bruce G.",
+   title = "Metrics for evaluating performance and uncertainty of {B}ayesian network models",
+   journal = "Ecological Modelling",
+   volume = "230",
+   pages = "50--62",
+   year = "2012",
+   doi = "10.1016/j.ecolmodel.2012.01.013"
 }
 
-@book{jaynesBook,
-   author = {Jaynes, E. T. and Bretthorst, G. Larry},
-   title = {Probability theory : the logic of science},
-   publisher = {Cambridge University Press},
-   address = {Cambridge, UK; New York, NY},
-   pages = {727},
-   year = {2003}
+@article{Masterson2007,
+   author = "Masterson, John P. and Garabedian, Stephen P.",
+   title = "Effects of sea-level rise on ground water flow in a coastal aquifer system",
+   journal = "Ground Water",
+   volume = "45",
+   number = "2",
+   pages = "209--217",
+   year = "2007",
+   doi = "10.1111/j.1745-6584.2006.00279.x"
 }
 
-@article{Kitanidis1995,
-   author = {Kitanidis, Peter K.},
-   title = {Quasi-linear geostatistical theory for inversing},
-   journal = {Water Resources Research},
-   volume = {31},
-   number = {10},
-   pages = {2411-2419},
-   year = {1995},
-   doi = {10.1029/95WR01945}
+@article{Molina2013,
+   author = "Molina, Jos\'{e}-Luis and Pulido-Vel\'{a}zquez, David and Garc\'{i}a-Ar\'{o}stegui, Jos\'{e} Luis and Pulido-Vel\'{a}zquez, Manuel",
+   title = "Dynamic {B}ayesian Networks as a Decision Support tool for assessing Climate Change impacts on highly stressed groundwater systems",
+   journal = "Journal of Hydrology",
+   volume = "479",
+   pages = "113--129",
+   year = "2013",
+   doi = "10.1016/j.jhydrol.2012.11.038"
+}
 
+@book{MorganHenrion1990,
+   author = "Morgan, M. Granger and Henrion, Max and Small, Mitchell",
+   title = "Uncertainty : a guide to dealing with uncertainty in quantitative risk and policy analysis",
+   publisher = "Cambridge University Press",
+   address = "Cambridge ; New York",
+   pages = "xii, 332 p.",
+   year = "1990"
 }
 
 
-@article{Kitanidis1996ana,
-   author = {Kitanidis, P. K.},
-   title = {Analytical expressions of conditional mean, covariance, and sample functions in geostatistics},
-   journal = {Stochastic Hydrology and Hydraulics},
-   volume = {10},
-   number = {4},
-   pages = {279-294},
-   year = {1996},
-   doi = {10.1007/bf01581870}
-
+@article{Najjar2000,
+   author = "Najjar, R. G. and Walker, H. A. and Anderson, P. J. and Barron, E. J. and Bord, R. J. and Gibson, J. R. and Kennedy, V. S. and Knight, C. G. and Megonigal, J. P. and O'Connor, R. E. and Polsky, C. D. and Psuty, N. P. and Richards, B. A. and Sorenson, L. G. and Steele, E. M. and Swanson, R. S.",
+   title = "The potential impacts of climate change on the mid-Atlantic coastal region",
+   journal = "Climate Research",
+   volume = "14",
+   number = "3",
+   pages = "219--233",
+   year = "2000",
+   doi = "10.3354/cr014219"
 }
 
-@book{Kitanidis1997,
-   author = {Kitanidis, Peter K.},
-   title = {Introduction to Geostatistics: Applications in Hydrogeology},
-   publisher = {Cambridge University Press},
-   address = {Cambridge, UK; New York, NY},
-   pages = {249},
-   year = {1997}
+@article{NS1970,
+   author = "Nash, J. E. and Sutcliffe, J. V.",
+   title = "River flow forecasting through conceptual models part I--A discussion of principles",
+   journal = "Journal of Hydrology",
+   volume = "10",
+   number = "3",
+   pages = "282--290",
+   year = "1970",
+   doi = "http://dx.doi.org/10.1016/0022-1694(70)90255-6"
 }
 
-
-@article{KitanidisVomvoris1983,
-   author = {Kitanidis, Peter K. and Vomvoris, Efstratios G.},
-   title = {A Geostatistical Approach to the Inverse Problem in Groundwater Modeling (Steady State) and One-Dimensional Simulations},
-   journal = {Water Resources Research},
-   volume = {19},
-   number = {3},
-   pages = {677-690},
-   keywords = {geostatistics
-heterogeneity
-Inverse Problem},
-   year = {1983},
-   doi = {10.1029/WR019i003p00677}
-
+@book{NRC2009,
+   author = "{National Research Council}",
+   title = "Informing Decisions in a Changing Climate",
+   publisher = "The National Academies Press",
+   address = "Washington, D.C.",
+   year = "2009",
+   pages="188"
 }
 
-@article{LiCirpka2006,
-   author = {Li, W. and Cirpka, O. A.},
-   title = {Efficient geostatistical inverse methods for structured and unstructured grids},
-   journal = {Water Resources Research},
-   volume = {42},
-   number = {6},
-   year = {2006},
-   doi = {10.1029/2005WR004668}
-
-}
-@article{LiNowakCirpka2005,
-   author = {Li, Wei and Nowak, Wolfgang and Cirpka, Olaf A.},
-   title = {Geostatistical inverse modeling of transient pumping tests using temporal moments of drawdown},
-   journal = {Water Resources Research},
-   volume = {41},
-   number = {8},
-   pages = {1-13},
-   abstract = {[1] Pumping tests belong to the most common techniques of hydrogeological site assessment. While the steady state drawdown is determined by the distribution of transmissivity alone, the transient behavior is also influenced by the storativity field. In geostatistical inverse modeling the spatial distributions of both transmissivity and storativity are inferred from the drawdown curves and prior information on the spatial correlation of the parameter fields. So far, however, transient data have hardly been analyzed by geostatistical inverse methods because the computational effort is rather high. In the present study, we characterize the drawdown by its temporal moments. We present moment-generating equations and corresponding equations to compute the sensitivity of the temporal moments of drawdown with respect to the distributions of transmissivity and storativity. We utilize these equations to infer the transmissivity and storativity fields from transient pumping tests using the quasi-linear geostatistical approach of inverse modeling. Considering temporal moments rather than full drawdown curves drastically reduces the computational effort of the estimation procedure. In test cases we show that the first two temporal moments are sufficient to characterize the drawdown curves. We investigate how erroneous assumptions regarding the spatial variability of storativity affect the estimate of the transmissivity field, and we analyze the effect of truncating the measured drawdown curves. Copyright 2005 by the American Geophysical Union. (39 Refs.)},
-   keywords = {Pumping tests
-Spatial correlation
-Temporal moments
-Transient behavior
-Computational methods
-Computer simulation
-Correlation methods
-Error analysis
-Hydrogeology
-Parameter estimation
-Sensitivity analysis
-Applied Mathematics [921]
-Computer Theory (Includes Formal Logic, Automata Theory, Switching Theory, Programming Theory) [721.1]
-Control Systems [731.1]
-Geology [481.1]
-Mathematical Statistics [922.2]
-Numerical Methods [921.6]
-Theoretical},
-   year = {2005},
-   doi = {10.1029/2004WR003874}
-
+@inbook{Nummedel1983,
+   author = "Nummedal, D.",
+   title = "Barrier islands",
+   booktitle = "Handbook of Coastal Processes and Erosion",
+   editor = "Komar, P.D.",
+   publisher = "CRC Press",
+   address = "Boca Raton, Florida",
+   pages = " 77--122",
+   year = "1983"
 }
 
-@article{LiCirpka2007,
-   author = {Li, W. and Englert, A. and Cirpka, O. A. and Vanderborght, J. and Vereecken, H.},
-   title = {Two-dimensional characterization of hydraulic heterogeneity by multiple pumping tests},
-   journal = {Water Resources Research},
-   volume = {43},
-   number = {4},
-   year = {2007},
-   doi = {10.1029/2006WR005333}
-
+@article{OConnell2012,
+   author = "O'Connell, Michael J. and Shugart, Herman H. and Okin, Gregory S.",
+   title = "Measurement and Monitoring of Barrier Island Forest Sensitivity to Ecohydrological Change Using LIDAR Remote Sensing",
+   journal = "Journal of Coastal Research",
+   volume = "28",
+   number = "4",
+   pages = "793--810",
+   year = "2012",
+   doi = "10.2112/jcoastres-d-10-00109.1"
 }
-
-@article{LiCirpka2008,
-   author = {Li, W. and Englert, A. and Cirpka, O. A. and Vereecken, H.},
-   title = {Three-dimensional geostatistical inversion of flowmeter and pumping test data},
-   journal = {Ground Water},
-   volume = {46},
-   number = {2},
-   pages = {193-201},
-   year = {2008},
-   doi = {10.1111/j.1745-6584.2007.00419.x|ISSN 0017-467X}
-
+@inbook{Oertel1994,
+   author = "Oertel, G.F. and J.C. Kraft",
+   title = "{New Jersey and Delmarva} barrier islands",
+   booktitle = "Geology of Holocene Barrier Island Systems",
+   editor = "Davis, R.A.",
+   publisher = "Springer-Verlag",
+   address = "New York",
+   pages = "207--232",
+   year = "1994"
 }
 
 
-@article{MIchalak2004,
-   author = {Michalak, Anna M.},
-   title = {A geostatistical approach to surface flux estimation of atmospheric trace gases},
-   journal = {Journal of Geophysical Research},
-   volume = {109},
-   number = {D14},
-   year = {2004},
-   doi = {10.1029/2003jd004422}
-
+@article{oreskes1994,
+   author = "Oreskes, Naomi and Shrader-Frechette, Kristin and Belitz, Kenneth",
+   title = "Verification, Validation, and Confirmation of Numerical Models in the Earth Sciences",
+   journal = "Science",
+   volume = "263",
+   number = "5147",
+   pages = "641--646",
+   year = "1994",
+   doi = "10.1126/science.263.5147.641"
 }
 
-@inbook{MichalakPKK2002a,
-   author = {Michalak, A. M. and Kitanidis, P. K.},
-   title = {Application of {B}ayesian inference methods to inverse modeling for contaminant source identification at {Gloucester Landfill, Canada}},
-   booktitle = {Computational Methods in Water Resources {XIV}},
-   publisher = {Elsevier},
-   address = {Amsterdam},
-   volume = {2},
-   pages = {1259-1266},
-   year = {2002}
+@article{Pollino2007,
+   author = "Pollino, Carmel A. and White, Andrea K. and Hart, Barry T.",
+   title = "Examination of conflicts and improved strategies for the management of an endangered Eucalypt species using Bayesian networks",
+   journal = "Ecological Modelling",
+   volume = "201",
+   number = "1",
+   pages = "37--59",
+   year = "2007",
+   doi = "10.1016/j.ecolmodel.2006.07.032"
+}
+@article{Rahmstorf2007,
+   author = "Rahmstorf, Stefan",
+   title = "A semi-empirical approach to projecting future sea-level rise",
+   journal = "Science",
+   volume = "315",
+   number = "5810",
+   pages = "368--370",
+   year = "2007",
+   doi = "10.1126/science.1135456"
 }
 
-@article{fienenEtal2004,
-   author = {Fienen, MN and Kitanidis, PK and Watson, D and Jardine, P},
-   title = {An application of {B}ayesian inverse methods to vertical deconvolution of hydraulic conductivity in a heterogeneous aquifer at {Oak Ridge National Laboratory}},
-   journal = {Mathematical Geology},
-   volume = {36},
-   number = {1},
-   pages = {101-126},
-   abstract = {A Bayesian inverse method is applied to two electromagnetic flowmeter tests conducted in fractured weathered shale at Oak Ridge National Laboratory. Traditional deconvolution of flowmeter tests is also performed using a deterministic first-difference approach; furthermore, ordinary kriging was applied on the first-difference results to provide an additional method yielding the best estimate and confidence intervals. Depth-averaged bulk hydraulic conductivity information was available from previous testing. The three methods deconvolute the vertical profile of lateral hydraulic conductivity. A linear generalized covariance function combined with a zoning approach was used to describe structure. Nonnegativity was enforced by using a power transformation. Data screening prior to calculations was critical to obtaining reasonable results, and the quantified uncertainty estimates obtained by the inverse method led to the discovery of questionable data at the end of the process. The best estimates obtained using the inverse method and kriging compared favorably with first-difference confirmatory calculations, and all three methods were consistent with the geology at the site.},
-   keywords = {CONTAMINANT SOURCE IDENTIFICATION
-ENTROPY
-GEOSTATISTICAL APPROACH
-INTERPOLATION
-flowmeter
-fractured aquifer
-heterogeneity},
-   year = {2004},
-   doi = {10.1023/B:MATG.0000016232.71993.bd	}
-
+@article{Rheinhardt2001,
+   author = "Rheinhardt, R. D. and Faser, K.",
+   title = "Relationship between hydrology and zonation of freshwater swale wetlands on Lower Hatteras Island, North Carolina, USA",
+   journal = "Wetlands",
+   volume = "21",
+   number = "2",
+   pages = "265--273",
+   year = "2001",
+   doi = "10.1672/0277-5212(2001)021[0265:rbhazo]2.0.co;2"
 }
-@article{MichalakPKK2003,
-   author = {Michalak, A. M. and Kitanidis, P. K.},
-   title = {A method for enforcing parameter nonnegativity in {B}ayesian inverse problems with an application to contaminant source identification},
-   journal = {Water Resources Research},
-   volume = {39},
-   number = {2},
-   pages = {1033},
-   abstract = {[1] When an inverse problem is solved to estimate an unknown function such as the hydraulic conductivity in an aquifer or the contamination history at a site, one constraint is that the unknown function is known to be everywhere nonnegative. In this work, we develop a statistically rigorous method for enforcing function nonnegativity in Bayesian inverse problems. The proposed method behaves similarly to a Gaussian process with a linear variogram (i.e., unrestricted Brownian motion) for parameter values significantly greater than zero. The method uses the method of images to define a prior probability density function based on reflected Brownian motion that implicitly enforces nonnegativity. This work focuses on problems where the unknown is a function of a single variable (e. g., time). A Markov chain Monte Carlo (MCMC) method, specifically, a highly efficient Gibbs sampler, is implemented to generate conditional realizations of the unknown function. The new method is applied to the estimation of the trichloroethylene (TCE) and perchloroethylene (PCE) contamination history in an aquifer at Dover Air Force Base, Delaware, based on concentration profiles obtained from an underlying aquitard.},
-   keywords = {EFFECTIVE RECHARGE
-GEOSTATISTICAL APPROACH
-HEAD SPATIAL VARIABILITY
-HETEROGENEOUS AQUIFERS
-POLLUTION SOURCE IDENTIFICATION
-RELATIVE ENTROPY INVERSION
-RELEASE HISTORY
-STEADY GROUNDWATER-FLOW
-STOCHASTIC IDENTIFICATION
-TRAVEL-TIME PROBABILITIES
-Bayesian inference
-contaminant source identification
-Gibbs sampling
-inference under constraints
-Markov chain Monte Carlo (MCMC)
-stochastic inverse modeling},
-   year = {2003},
-   doi = {10.1029/2002WR001480}
-
-}
-@article{MuellerEtAl2008,
-   author = {Mueller, K. L. and Gourdji, S. M. and Michalak, A. M.},
-   title = {Global monthly averaged {CO}2 fluxes recovered using a geostatistical inverse modeling approach: 1. Results using atmospheric measurements},
-   journal = {Journal of Geophysical Research-Atmospheres},
-   volume = {113},
-   number = {D21},
-   abstract = {This study presents monthly CO2 fluxes from 1997 to 2001 at a 3.75 degrees latitude x 5 degrees longitude resolution, inferred using a geostatistical inverse modeling approach. The approach focuses on quantifying the information content of measurements from the NOAA-ESRL cooperative air sampling network with regard to the global CO2 budget at different spatial and temporal scales. The geostatistical approach avoids the use of explicit prior flux estimates that have formed the basis of previous synthesis Bayesian inversions and does not prescribe spatial patterns of flux for large, aggregated regions. Instead, the method relies strongly on the atmospheric measurements and the inferred spatial autocorrelation of the fluxes to estimate sources and sinks and their associated uncertainties at the resolution of the atmospheric transport model. Results show that grid-scale estimates exhibit high uncertainty and relatively little small-scale variability, but generally reflect reasonable fluxes in areas that are relatively well constrained by measurements. The aggregated continental-scale fluxes are better constrained, and estimates are consistent with results from previous synthesis Bayesian inversion studies for many regions. Observed differences at the continental scale are primarily attributable to the choice of a priori assumptions in the current work relative to those in other synthesis Bayesian studies. Overall, the results indicate that the geostatistical inverse modeling approach is able to estimate global fluxes using the limited atmospheric measurement network without relying on assumptions about a priori estimates of the flux distribution. As such, the method provides a means of isolating the information content of the atmospheric measurements, and thus serves as a valuable tool for reconciling top-down and bottom-up estimates of CO2 flux variability.},
-   year = {2008},
-   doi = {10.1029/2007jd009734}
-
+@article{Sallenger2012,
+   author = "Sallenger, Asbury H. and Doran, Kara S. and Howd, Peter A.",
+   title = "Hotspot of accelerated sea-level rise on the Atlantic coast of North America",
+   journal = "Nature Climate Change",
+   volume = "2",
+   number = "12",
+   pages = "884-888",
+   year = "2012",
+   doi = "10.1038/nclimate1597"
 }
 
-@techreport{FienenPREDUNC2010,
-   author = {Fienen, M.N. and Doherty, J.E. and Hunt, R.J. and Reeves, H.W.},
-   title = {Using Prediction Uncertainty Analysis to Design Hydrologic Monitoring Networks: Example Applications from the Great Lakes Water Availability Pilot Project},
-   institution = {United States Geological Survey},
-   type = {Scientific Investigations Report 2010-5159},
-   year = {2010}
+@article{Scavia2002,
+   author = "Scavia, D. and Field, J. C. and Boesch, D. F. and Buddemeier, R. W. and Burkett, V. and Cayan, D. R. and Fogarty, M. and Harwell, M. A. and Howarth, R. W. and Mason, C. and Reed, D. J. and Royer, T. C. and Sallenger, A. H. and Titus, J. G.",
+   title = "Climate change impacts on US coastal and marine ecosystems",
+   journal = "Estuaries",
+   volume = "25",
+   number = "2",
+   pages = "149--164",
+   year = "2002",
+   doi = "10.1007/bf02691304"
 }
 
-@techreport{GENIE,
-	author = {Muffels, C.T. and Schre\"{u}der, W.A. and Doherty, J.E. and Karanovic, M. and Tonkin, M.J. and Hunt, R.J. and Welter, D.E.},
-	title = {Approaches in highly parameterized inversion--{GENIE, a general model-independent TCP/IP }run manager},
-   institution = {United States Geological Survey},
-   type = {Techniques and Methods, book 7, section C6, 26 p.},
-   year = {2012}
+@article{Weigend1994,
+   author = "Weigend, A. S. and Bhansali, R. J.",
+   title = "PARADIGM CHANGE IN PREDICTION",
+   journal = "Philosophical Transactions of the Royal Society a--Mathematical Physical and Engineering Sciences",
+   volume = "348",
+   number = "1688",
+   pages = "405--420",
+   year = "1994",
+   doi = "10.1098/rsta.1994.0100"
 }
 
-@techreport{TSPROC,
-	author = {Westenbroek, S.M. and Doherty, J.E. and Walker, J.F. and Kelson, V.A. and Hunt, R.J. and Cera, T.B.},
-	title = {Approaches in highly parameterized inversion--{TSPROC}, a general time-series processor to assist in model calibration and result summarization},
-   institution = {United States Geological Survey},
-   type = {Techniques and Methods, book 7, section C7, XX p.},
-   year = {2012}
+@article{Shao1995,
+   author = "Shao, G. F. and Shugart, H. H. and Young, D. R.",
+   title = "SIMULATION OF TRANSPIRATION SENSITIVITY TO ENVIRONMENTAL-CHANGES FOR SHRUB ({M}YRICA-{C}ERIFERA) THICKETS ON A {V}IRGINIA BARRIER-ISLAND",
+   journal = "Ecological Modelling",
+   volume = "78",
+   number = "3",
+   pages = "235--248",
+   year = "1995",
+   doi = "10.1016/0304-3800(93)e0091-g"
 }
-	
-	
-	
-     @Manual{R,
-       title        = {R: A Language and Environment for Statistical
-                       Computing},
-       author       = {{R Development Core Team}},
-       organization = {R Foundation for Statistical Computing},
-       address      = {Vienna, Austria},
-       year         = 2011,
-       note         = {{ISBN} 3-900051-07-0},
-       url          = {http://www.R-project.org}
-     }	
-     
-     
-@article{neupauerWilson1999,
-   author = {Neupauer, Roseanna M. and Wilson, J. L.},
-   title = {Adjoint method for obtaining backward-in-time location and travel time probabilities of a conservative groundwater contaminant},
-   journal = {Water Resources Research},
-   volume = {35},
-   number = {11},
-   pages = {3389-3398},
-   year = {1999}
-
-}
-
-@article{NowakCirpka2004,
-   author = {Nowak, W. and Cirpka, O. A.},
-   title = {A modified {Levenberg-Marquardt} algorithm for quasi-linear geostatistical inversing},
-   journal = {Advances in Water Resources},
-   volume = {27},
-   number = {7},
-   pages = {737-750},
-   year = {2004},
-   doi = {10.1016/j.advwatres.2004.03.004}
-
-}
-
-@article{Nowak2003,
-   author = {Nowak, W. and Tenkleve, S. and Cirpka, O.A.},
-   title = {Efficient computation of linearized cross-covariance and auto-covariance matrices of interdependent quantities},
-   journal = {Mathematical Geology},
-   volume = {35},
-   number = {1},
-   pages = {53-66},
-   abstract = {In many geostatistical applications, spatially discretized unknowns are conditioned on observations that depend on the unknowns in a form that can be linearized. Conditioning takes several matrix-matrix multiplications to compute the cross-covariance matrix of the unknowns and the observations and the auto-covariance matrix of the observations. For large numbers n of discrete values of the unknown, the storage and computational costs for evaluating these matrices, proportional to n 2, become strictly inhibiting. In this paper, we summarize and extend a collection of highly efficient spectral methods to compute these matrices, based on circulant embedding and the fast Fourier transform (FFT). These methods are applicable whenever the unknowns are a stationary random variable discretized on a regular equispaced grid, imposing an exploitable structure onto the auto-covariance matrix of the unknowns. Computational costs are reduced from O (n(2))to O (n log(2) n) and storage requirements are reduced from O (n(2)) to O (n).},
-   keywords = {GAUSSIAN STOCHASTIC SIMULATIONS
-circulant
-convolution
-embedding
-FFT
-spectral
-Toeplitz},
-   year = {2003}
-
-}
-
-@book{Press1992,
-   author = {Press, William H. and Teukolsky, Saul A. and Vetterling, William T. and Flannery, Brian O.},
-   title = {Numerical Recipes in C},
-   publisher = {Cambridge University Press},
-   address = {Cambridge, UK; New York, NY},
-   edition = {second},
-   year = {1992}
-}
-@article{RamaRao1995,
-   author = {Rama{R}ao, B. S. and Lavenue, A. M. and {de Marsily}, G. and Marietta, M. G.},
-   title = {PILOT POINT METHODOLOGY FOR AUTOMATED CALIBRATION OF AN ENSEMBLE OF CONDITIONALLY SIMULATED TRANSMISSIVITY FIELDS .1. THEORY AND COMPUTATIONAL EXPERIMENTS},
-   journal = {Water Resources Research},
-   volume = {31},
-   number = {3},
-   pages = {475-493},
-   abstract = {A new methodology for solution of the inverse problem in groundwater hydrology is proposed and applied to a site in southeastern New Mexico with extensive hydrogeologic data. The methodology addresses the issue of nonuniqueness of the inverse solutions by generating an ensemble of transmissivity fields considered to be equally likely, each of which is in agreement with the measured transmissivity and pressure data. It consists of generating a selected number of conditionally simulated transmissivity fields and then calibrating each of the fields to match the measured steady state or transient pressures, in a least squares sense. The calibration phase involves an iterative implementation of an automated pilot point approach coupled with conditional simulations. Pilot points are the parameters of calibration. They are synthetic transmissivity data which are added to the transmissivity database to produce a revised conditional simulation during calibration. Coupled kriging and adjoint Sensitivity analysis is employed for the optimal location of pilot points, and gradient search methods are used to derive their optimal transmissivities. The pilot point methodology is well suited for characterizing the spatial variability of the transmissivity field in contrast to methods using zonation. Pilot points are located where their potential for minimizing the objective function is the highest. This minimizes the perturbations in the transmissivities which are optimally assigned to the pilot point and results in minimal changes to the covariance structure of the transmissivity field. The calibrated fields honor the transmissivity measurements at their locations, preserve the variogram, and match the measured pressures in a least squares sense. Since there are numerous options in the execution of this methodology, computational experiments have been conducted to identify the most efficient among them. The method has been applied to the Waste Isolation Pilot Plant (WIPP) site, in southeastern New Mexico, where the U.S. Department of Energy is conducting probabilistic system assessment for the permanent disposal of transuranic nuclear waste. The resulting calibrated transmissivity fields are input to a Monte Carlo analysis of the total system performance. The present paper, paper 1 of a two-paper presentation, describes the methodology. Paper 2, a companion paper, presents the methodology's application to the WIPP site.},
-   year = {1995}
-
-}
-
-@book{sgems,
-   author = {Remy, Nicolas and Boucher, Alexandre and Wu, Jianbing},
-   title = {Applied geostatistics with {SGeMS}},
-   publisher = {Cambridge University Press},
-   address = {Cambridge, UK; New York, NY},
-   keywords = {Geological modeling Computer simulation.
-Geological modeling Statistical methods.
-Geology Computer simulation.
-Geology Statistical methods.
-Geology Statistical methods Software.},
-   pages = {264},
-   year = {2009}
-}
-
-@inproceedings{Robbins1956,
-   author = {Robbins, H},
-   title = {An Empirical {B}ayes Approach to Statistics},
-   booktitle = {Proceeding of the Third Berkeley Symposium on Mathematical Statistics},
-   editor = {Neyman, Jerzy},
-   publisher = {University of California Press},
-   volume = {1},
-   pages = {157-163},
-   year = {1956}
-}
-
-@book{Rubin2003,
-   author = {Rubin, Yoram},
-   title = {Applied stochastic hydrogeology},
-   publisher = {Oxford University Press},
-   address = {Oxford; New York},
-   keywords = {Hydrogeology Mathematical models.
-Stochastic analysis.},
-   pages = {391},
-   year = {2003}
-}
-
-@inproceedings{SamperNeuman1986,
-   author = {Samper, F. J. and Neuman, S.P.},
-   title = {Adjoint State Equations for Advective-Dispersive Transport},
-   booktitle = {VI International Conference on Finite Elements in Water Resources},
-   pages = {423-437},
-   year = {1986}
-
+@article{Sherif1999,
+   author = "Sherif, M. M. and Singh, V. P.",
+   title = "Effect of climate change on sea water intrusion in coastal aquifers",
+   journal = "Hydrological Processes",
+   volume = "13",
+   number = "8",
+   pages = "1277--1287",
+   year = "1999",
+   doi = "10.1002/(sici)1099-1085(19990615)13:8<1277::aid-hyp765>3.0.co;2-w"
 }
 
 
-@inproceedings{beoPEST,
-	author={Schre\"{u}der, W.A.},
-	title = {{Running BeoPEST}}, 
-	booktitle = {Proceedings from, PEST Conference 2009, Potomac, Md., November 1-3, 2009: Bethesda, Md., S.S. Papadopulos and Associates, p. 228-240},
-	year = {2009}
-	}
-
-
-@article{SnodgrassPKK1997,
-   author = {Snodgrass, Mark F. and Kitanidis, Peter K.},
-   title = {A geostatistical approach to contaminant source identification},
-   journal = {Water Resources Research},
-   volume = {33},
-   number = {4},
-   pages = {537-546},
-   year = {1997}
-
+@article{Steinschneider2011,
+   author = "Steinschneider, Scott and Polebitski, Austin and Brown, Casey and Letcher, Benjamin H.",
+   title = "Toward a statistical framework to quantify the uncertainties of hydrologic response under climate change",
+   journal = "Water Resources Research",
+   volume = "48",
+   number = "11",
+   year = "2012",
+   doi = "10.1029/2011wr011318"
 }
 
-@article{SnodgrassPKK1998,
-   author = {Snodgrass, M.F. and Kitanidis, P.K.},
-   title = {Transmissivity identification through multi-directional aquifer stimulation},
-   journal = {Stochastic Hydrology and Hydraulics},
-   volume = {12},
-   number = {5},
-   pages = {299-316},
-   abstract = {This paper presents a geostatistical approach to multi-directional aquifer stimulation in order to better identify the transmissivity field. Hydraulic head measurements, taken at a few locations but under a number of different steady-state flow conditions, are used to estimate the transmissivity. Well installation is generally the most costly aspect of obtaining hydraulic head measurements. Therefore, it is advantageous to obtain as many informative measurements from each sampling location as possible. This can be achieved by hydraulically stimulating the aquifer through pumping, in order to set-up a variety of flow conditions. We illustrate the method by applying it to a synthetic aquifer. The simulations provide evidence that a few sampling locations may provide enough information to estimate the transmissivity field. Furthermore, the innovation of, or new information provided by, each measurement can be examined by looking at the corresponding spline and sensitivity matrix. Estimates from multi-directional stimulation are found to be clearly superior to estimates using data taken under one flow condition. We describe the geostatistical methodology for using data from multi-directional simulations and address computational issues.},
-   keywords = {COMPARISON MODEL METHOD
-GROUNDWATER
-IDENTIFIABILITY
-PARAMETERS
-STEADY-STATE
-TIME INVERSE OPERATOR},
-   year = {1998},
-   doi = {10.1007/s004770050023}
+@article{WallaceBoulton1968,
+   author = "Wallace, C. S. and Boulton, D.M.",
+   title = "An information measure for classification",
+   journal = "Computer Journal",
+   volume = "11",
+   number = "2",
+   pages = "185--194",
+   year = "1968",
+   doi = "10.1093/comjnl/11.2.185"
 
 }
-
-@article{SwiftEtAl2003,
-   author = {Swift, D. J. P. and Parsons, B. S. and Foyle, A. and Oertel, G. F.},
-   title = {Between beds and sequences: stratigraphic organization at intermediate scales in the Quaternary of the {V}irginia coast, {USA}},
-   journal = {Sedimentology},
-   volume = {50},
-   number = {1},
-   pages = {81-111},
-   year = {2003},
-   doi = {10.1046/j.1365-3091.2003.00540.x}
-
+@article{WernerSimmons2009,
+   author = "Werner, Adrian D. and Simmons, Craig T.",
+   title = "Impact of Sea-Level Rise on Sea Water Intrusion in Coastal Aquifers",
+   journal = "Ground Water",
+   volume = "47",
+   number = "2",
+   pages = "197--204",
+   year = "2009",
+   doi = "10.1111/j.1745-6584.2008.00535.x"
 }
 
-@article{Sykes1985,
-   author = {Sykes, J. F. and Wilson, J. L. and Andrews, R. W.},
-   title = {Sensitivity Analysis for Steady State Groundwater Flow Using Adjoint Operators},
-   journal = {Water Resources Research},
-   volume = {21},
-   number = {3},
-   pages = {359-371},
-   keywords = {adjoint state},
-   year = {1985},
-   doi = {10.1029/WR021i003p00359}
-
-}
-
-@article{Tikhonov1963a,
-   author = {Tikhonov, A. N.},
-   title = {Solution of incorrectly formulated problems and the regularization method  {(in Russian)}},
-   journal = {Soviet Math. Dokl.},
-   volume = {4},
-   pages = {1035-1038},
-   year = {1963}
-
-}
-
-@article{Tikhonov1963b,
-   author = {Tikhonov, A. N.},
-   title = {Regularization of incorrectly posed problems {(in Russian)}},
-   journal = {Soviet Math. Dokl.},
-   volume = {4},
-   pages = {1624-1637},
-   year = {1963}
-
-}
-
-@article{TownleyWilson1985,
-   author = {Townley, L.R. and Wilson, J.L.},
-   title = {Computationally efficient algorithms for parameter estimation and uncertainty propagation in numerical models of groundwater flow.},
-   journal = {Water Resources Research},
-   volume = {21},
-   number = {12},
-   pages = {1851-60},
-   abstract = {Finite difference and finite element methods are frequently used to study aquifer flow; however, additional analysis is required when model parameters, and hence predicted heads are uncertain. Computational algorithms are presented for steady and transient models in which aquifer storage coefficients, transmissivities, distributed inputs, and boundary values may all be simultaneously uncertain. Innovative aspects of these algorithms include a new form of generalized boundary condition; a concise discrete derivation of the adjoint problem for transient models with variable time steps; an efficient technique for calculating the approximate second derivative during line searches in weighted least squares estimation; and a new efficient first-order second-moment algorithm for calculating the covariance of predicted heads due to a large number of uncertain parameter values. (31 refs.)},
-   keywords = {Aquifer
-Aquifer storage coefficients
-Boundary values
-Computationally efficient algorithm
-Distributed inputs
-Finite difference
-Finite element method
-Groundwater
-Groundwater flow
-Numerical model
-Parameter estimation
-Steady
-Transient models
-Transmissivities
-Uncertainty propagation
-Groundwater (A9240K)
-Theoretical or Mathematical},
-   year = {1985}
-
-}
-
-@inbook{Walker1984,
-   author = {Walker, Roger G.},
-   title = {General Introduction: Facies, facies sequences and facies models.},
-   booktitle = {Facies models},
-   publisher = {Geological Association of Canada},
-   address = {Toronto},
-   edition = {2nd},
-   chapter = {1},
-   pages = {1-9},
-   keywords = {Facies (Geology)},
-   year = {1984}
-}
-
-@inbook{Walker1992,
-   author = {Walker, Roger G.},
-   title = {Facies, facies models and modern stratigraphic concepts.},
-   booktitle = {Facies models : response to sea level change},
-   publisher = {Geological Association of Canada},
-   address = {St. John's, Newfoundland},
-   chapter = {1},
-   pages = {1-14},
-   year = {1992}
+@article{Zickfeld2007,
+   author = "Zickfeld, Kirsten and Levermann, Anders and Morgan, M. Granger and Kuhlbrodt, Till and Rahmstorf, Stefan and Keith, David W.",
+   title = "Expert judgements on the response of the {A}tlantic meridional overturning circulation to climate change",
+   journal = "Climatic Change",
+   volume = "82",
+   number = "3--4",
+   pages = "235--265",
+   year = "2007",
+   doi = "10.1007/s10584-007-9246-3"
 }

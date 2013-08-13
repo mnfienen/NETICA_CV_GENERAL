@@ -151,15 +151,38 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-Motivation for the code and whatnot.
- Here's a ref 
+Over the past 20 years or so, the use of Bayesian Networks has increased
+ greatly, in large measure due to the availability of commercial software
+ packages such as Netica 
 \begin_inset CommandInset citation
-LatexCommand citet
-key "drapersmith66"
+LatexCommand citep
+key "Netica"
 
 \end_inset
 
+ and Hugin 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hugin"
 
+\end_inset
+
+ among many others.
+ Applications in water resources have included groundwater management 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "mdso2007,Molina2010,Molina2013"
+
+\end_inset
+
+, coastal processes 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "plant2011a,plant2011b"
+
+\end_inset
+
+, and 
 \end_layout
 
 \begin_layout Standard
