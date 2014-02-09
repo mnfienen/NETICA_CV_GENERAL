@@ -151,9 +151,16 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-Over the past 20 years or so, the use of Bayesian Networks has increased
- greatly, in large measure due to the availability of commercial software
- packages such as Netica 
+Over the past 20 years or so, the use of Bayesian Networks 
+\begin_inset CommandInset citation
+LatexCommand citep
+before "BN; "
+key "JensenNielsen2001"
+
+\end_inset
+
+ has increased greatly, in large measure due to the availability of commercial
+ software packages such as Netica 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Netica"
@@ -175,14 +182,47 @@ key "mdso2007,Molina2010,Molina2013"
 
 \end_inset
 
-, coastal processes 
+, and model emulation 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "plant2011a,plant2011b"
+key "plant2011a,plant2011b,FienenBNWRR"
 
 \end_inset
 
-, and 
+.
+ This builds on a history of applications in national security, economics,
+ and ecology.
+\end_layout
+
+\begin_layout Standard
+An important topic that is discussed less in the literature than general
+ applications of BNs is the need for formal validation of performance 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Chen2012,Marcot2012"
+
+\end_inset
+
+.
+ Some validation metrics are calculable by the commercial software packages,
+ but substantial gaps in capabilities remain.
+ Fortunately, at least in the case of Netica, an application programming
+ interface exists with versions in multiple programming languages.
+ To create a toolbox of performance metrics, we used Python 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "python"
+
+\end_inset
+
+ with the Netica C APIs.
+ These APIs expose most of Netica's functionality, through functions, to
+ external programming.
+ Among the languages available, C was chosen because the ultimate goal was
+ to interface with Python.
+ We discuss the technical challenges associated with running C APIs using
+ Python and describe the toolbox of validation metrics included in this
+ work.
 \end_layout
 
 \begin_layout Standard
@@ -222,7 +262,15 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-Describe the code in general terms here.
+CVNetica is a Python module that performs cross-validation and calculates
+ other performance metrics on BNs created with the Netica software package.
+ Netica is a commercial package with more power than open-source alternatives.
+ However, CVNetica is open-source and freely available.
+ 
+\end_layout
+
+\begin_layout Standard
+The core functionality of CVNetica is based around the concept of 
 \end_layout
 
 \begin_layout Standard
@@ -264,6 +312,46 @@ begin{linenumbers}
 \begin_layout Standard
 Good opportunity to explain how ctypes works in this context for interaction
  with the C-APIs
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Details about program structure
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+What did we actually implement?
 \end_layout
 
 \begin_layout Standard
