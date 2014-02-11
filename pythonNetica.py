@@ -93,7 +93,7 @@ class pynetica:
 
         #parent indices dictionary for the results
         parent_indices = dict()
-        # now focus in on the repsonse nodes only
+        # now focus in on the response nodes only
         respnodes = self.probpars.scenario.response
         for cr in respnodes:
             parent_indices[cr] = parent_inds()
@@ -153,7 +153,7 @@ class pynetica:
         self.pyt.DeleteStream(outfile_streamer)
         self.pyt.DeleteNet(cnet)
 
-    def PredictBayesNeticaCV(self,cfold,cnetname,calval):
+    def PredictBayesNeticaCV(self, cfold, cnetname, calval):
         '''
         function using Netica built-in testing functionality to evaluate Net
         '''
@@ -167,31 +167,31 @@ class pynetica:
         # first create a caseset with the current leftout indices casefile
         if cfold > -10:
             if calval.upper() == 'CAL':
-                ccasefile = '%s_fold_%d.cas' %(self.probpars.scenario.name,cfold)
-            elif calval.upper()=='VAL':            
-                ccasefile = '%s_fold_%d_leftout.cas' %(self.probpars.scenario.name,cfold)
+                ccasefile = '{0:s}_fold_{1:d}.cas'.format(self.probpars.scenario.name, cfold)
+            elif calval.upper() == 'VAL':
+                ccasefile = '{0:s}_fold_{1:d}_leftout.cas'.format(self.probpars.scenario.name, cfold)
             else:
                 pass
         # unless this is the base case -->
         else:
             ccasefile = self.probpars.baseCAS
-        currcases = self.pyt.NewCaseset('cval%d' %(np.abs(cfold)))
+        currcases = self.pyt.NewCaseset('cval{0:d}'.format(np.abs(cfold)))
         ccaseStreamer = self.pyt.NewFileStreamer(ccasefile)
-        self.pyt.AddFileToCaseset(currcases,ccaseStreamer,100.0)
+        self.pyt.AddFileToCaseset(currcases, ccaseStreamer, 100.0)
             
         # create a set of prediction nodes
         numprednodes = len(self.probpars.scenario.response)
-        cnodelist = self.pyt.NewNodeList2(numprednodes,cnet)
+        cnodelist = self.pyt.NewNodeList2(numprednodes, cnet)
         for i,cn in enumerate(self.probpars.scenario.response):
-            cnode = self.pyt.GetNodeNamed(cn,cnet)
-            self.pyt.SetNthNode(cnodelist,i,cnode)
+            cnode = self.pyt.GetNodeNamed(cn, cnet)
+            self.pyt.SetNthNode(cnodelist, i, cnode)
         # create a tester object
-        ctester = self.pyt.NewNetTester(cnodelist,cnodelist)
+        ctester = self.pyt.NewNetTester(cnodelist, cnodelist)
         self.pyt.DeleteNodeList(cnodelist)
         
         # test the network using the left-out cases
         # first retract all the findings and compile the net
-        self.pyt.TestWithCaseset(ctester,currcases)
+        self.pyt.TestWithCaseset(ctester, currcases)
         self.pyt.DeleteCaseset(currcases)
         #
         # now get the results
@@ -202,23 +202,23 @@ class pynetica:
         ctestresults.confusion_matrix = dict()
         ctestresults.experience = dict()
         for cn in self.probpars.scenario.response:
-            cnode = self.pyt.GetNodeNamed(cn,cnet)
+            cnode = self.pyt.GetNodeNamed(cn, cnet)
             # get log loss
-            ctestresults.logloss[cn] =  self.pyt.GetTestLogLoss(ctester,cnode)
-            print 'LogLoss for %s --> %f' %(cn,ctestresults.logloss[cn])           
+            ctestresults.logloss[cn] = self.pyt.GetTestLogLoss(ctester, cnode)
+            print "LogLoss for {0:s} --> {1:f}".format(cn, ctestresults.logloss[cn])
             # get error rate
-            ctestresults.errrate[cn] = self.pyt.GetTestErrorRate(ctester,cnode)
-            print 'ErrorRate for %s --> %f' %(cn,ctestresults.errrate[cn]) 
+            ctestresults.errrate[cn] = self.pyt.GetTestErrorRate(ctester, cnode)
+            print "ErrorRate for {0:s} --> {1:f}".format(cn, ctestresults.errrate[cn])
             # get quadratic loss
-            ctestresults.quadloss[cn] = self.pyt.GetTestQuadraticLoss(ctester,cnode)
-            print 'QuadLoss for %s --> %f' %(cn,ctestresults.quadloss[cn])    
+            ctestresults.quadloss[cn] = self.pyt.GetTestQuadraticLoss(ctester, cnode)
+            print "QuadLoss for {0:s} --> {1:f}".format(cn, ctestresults.quadloss[cn])
             # write confusion matrix --- only for the base case
             if cfold < 0:
-                print 'Calculating confusion matrix for %s' %(cn)
-                ctestresults.confusion_matrix[cn] = self.pyt.ConfusionMatrix(ctester,cnode)
+                print "Calculating confusion matrix for {0:s}".format(cn)
+                ctestresults.confusion_matrix[cn] = self.pyt.ConfusionMatrix(ctester, cnode)
                 # also calculate the experience for the node
-                print 'Calculating Experience for the base Net, node --> %s' %(cn)
-                ctestresults.experience[cn] = self.pyt.ExperienceAnalysis(cn,cnet)
+                print "Calculating Experience for the base Net, node --> {0:s}".format(cn)
+                ctestresults.experience[cn] = self.pyt.ExperienceAnalysis(cn, cnet)
             
         self.pyt.DeleteNetTester(ctester)
         self.pyt.DeleteNet(cnet)
@@ -241,8 +241,8 @@ class pynetica:
             for ccas in np.arange(self.N):
                 testinds = self.parent_inds[cn].parent_indices[ccas,:]
                 tmp = testinds-self.BaseNeticaTests.experience[cn].parent_states                
-                tmp = np.sum(np.abs(tmp),axis=1)
-                cind = np.where(tmp==0)
+                tmp = np.sum(np.abs(tmp), axis=1)
+                cind = np.where(tmp == 0)
                 self.BaseNeticaTests.experience[cn].case_experience.append(
                     self.BaseNeticaTests.experience[cn].node_experience[cind[0]])
                 
@@ -260,7 +260,7 @@ class pynetica:
         # initialize dictionary of predictions objects
         cpred = dict()
 
-        print 'Making predictions for net named --> %s' %(netName)
+        print "Making predictions for net named --> {0:s}".format(netName)
         cnet = self.pyt.OpenNeticaNet(netName)
         #retract all the findings
         self.pyt.RetractNetFindings(cnet)

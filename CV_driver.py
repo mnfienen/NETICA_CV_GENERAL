@@ -2,7 +2,8 @@ import pythonNetica as pyn
 
 import CV_tools as CVT
 import numpy as np
-import pickle, gzip
+import pickle
+import gzip
 import sys
 
 '''
@@ -28,27 +29,28 @@ cdat.probpars = CVT.input_parameters(parfile)
 
 # Initialize a pynetica instance/env using password in a text file
 cdat.pyt.start_environment(cdat.probpars.pwdfile)
-cdat.pyt.LimitMemoryUsage(5.0e9) # --> crank up the memory available
+cdat.pyt.LimitMemoryUsage(5.0e9)  # --> crank up the memory available
 
 # read in the data from a base cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
 
 # set up the experience node indexing
-cdat.NodeParentIndexing(cdat.probpars.baseNET,cdat.probpars.baseCAS)
+cdat.NodeParentIndexing(cdat.probpars.baseNET, cdat.probpars.baseCAS)
 
 # determine the number of data points
 cdat.numfolds = cdat.probpars.numfolds
+
 # create the folds desired
 cdat.allfolds = CVT.all_folds()
-cdat.allfolds.k_fold_maker(cdat.N,cdat.numfolds)
+cdat.allfolds.k_fold_maker(cdat.N, cdat.numfolds)
 
 # run the predictions using the base net --> 
-cdat.basepred,cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET,cdat.N,cdat.casdata)
+cdat.basepred, cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET, cdat.N, cdat.casdata)
 
-print '*'*5 + 'Making Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+print '*'*5 + 'Making Base Case Testing using built-in Netica Functions' + '*'*5 + '\n\n'
 # ############### Now run the Netica built-in testing stuff ################
-cdat.PredictBayesNeticaCV(-999,cdat.probpars.baseNET,None)
-print '*'*5 + 'Finished --> Base Case Testing using built-in Netica Functions' + '*'*5  + '\n\n'     
+cdat.PredictBayesNeticaCV(-999, cdat.probpars.baseNET, None)
+print '*'*5 + 'Finished --> Base Case Testing using built-in Netica Functions' + '*'*5 + '\n\n'
 
 
 # write the results to a post-processing world
@@ -66,13 +68,15 @@ if cdat.probpars.report_sens:
 
 # if requested, perform K-fold cross validation
 if cdat.probpars.CVflag:
-    print '\n' * 2 + '#'*20 + '\n Performing k-fold cross-validation for %d folds\n' %(cdat.probpars.numfolds) + '#'*20+ '\n' * 2
+    print '\n' * 2 + '#'*20 + '\n Performing k-fold cross-validation for %d folds\n' %(cdat.probpars.numfolds) \
+          + '#'*20+'\n' * 2
     # set up for cross validation
     print '\nSetting up cas files and file pointers for cross validation'
     kfoldOFP_Val,kfoldOFP_Cal = cdat.cross_val_setup()
     # now build all the nets
     for cfold in np.arange(cdat.probpars.numfolds):
-        print ' ' * 10 + '#' * 20 + '\n' + ' ' * 10 +'#  F O L D --> %d  #\n' %(cfold) + ' ' * 10 + '#' * 20
+        print ' ' * 10 + '#' * 20 + '\n' + ' ' * 10 + '#  F O L D --> {0:d}  #\n'.format(cfold)\
+              + ' ' * 10 + '#' * 20
         # rebuild the net
         cname = cdat.allfolds.casfiles[cfold]
         cdat.pyt.rebuild_net(cdat.probpars.baseNET,
@@ -86,7 +90,7 @@ if cdat.probpars.CVflag:
             cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.calN[cfold],
                               cdat.allfolds.caldata[cfold]))
-        print '*'*5 + 'End Calibration predictions' + '*'*5  + '\n\n'      
+        print '*'*5 + 'End Calibration predictions' + '*'*5 + '\n\n'
 
         print '*'*5 + 'Making Calibration Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
         # ############### Now run the Netica built-in testing stuff ################

@@ -3,9 +3,9 @@ import sys
 
 infile = sys.argv[1]
 
-header = open(infile,'r').readlines()[0:3]
+header = open(infile, 'r').readlines()[0:3]
 
-stats = ['min','max','mean','median']
+stats = ['min', 'max', 'mean', 'median']
 
 response_headers = ['skillMean',
                     'rmseMean',
@@ -17,14 +17,14 @@ response_headers = ['skillMean',
                     'meanAbsErrML']
 
 
-indat = np.genfromtxt(infile,skiprows=3,dtype=None, names=True)
+indat = np.genfromtxt(infile, skiprows=3, dtype=None, names=True)
 
 unique_responses = np.unique(indat['Response'])
 numfolds = np.max(indat['Current_Fold'])+1
-outdat = dict() # dictionary of responses
+outdat = dict()  # dictionary of responses
 
 for cres in unique_responses:
-    outdat[cres]=dict()
+    outdat[cres] = dict()
     outdat[cres]['min'] = dict()
     outdat[cres]['max'] = dict()
     outdat[cres]['mean'] = dict()

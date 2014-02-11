@@ -19,7 +19,7 @@ def tf2flag(intxt):
 
 class input_parameters:
     # class and methods to read and parse XML input file
-    def __init__(self,infile):
+    def __init__(self, infile):
         self.infile = infile
         try:
             inpardat = ET.parse(self.infile)
