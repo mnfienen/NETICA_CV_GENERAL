@@ -182,7 +182,7 @@ class pynetica:
         # create a set of prediction nodes
         numprednodes = len(self.probpars.scenario.response)
         cnodelist = self.pyt.NewNodeList2(numprednodes, cnet)
-        for i,cn in enumerate(self.probpars.scenario.response):
+        for i, cn in enumerate(self.probpars.scenario.response):
             cnode = self.pyt.GetNodeNamed(cn, cnet)
             self.pyt.SetNthNode(cnodelist, i, cnode)
         # create a tester object
@@ -313,12 +313,12 @@ class pynetica:
         #
         # Do some postprocessing for just the output nodes
         #
-        currstds = np.ones((N,1))*1.0e-16
+        currstds = np.ones((N, 1))*1.0e-16
         for i in self.probpars.scenario.response:
             print 'postprocessing output node --> %s' %(i)
             # record whether the node is continuous or discrete
             if cpred[i].continuous:
-                curr_continuous='continuous'
+                curr_continuous = 'continuous'
             else:
                 curr_continuous = 'discrete'
             pdfRanges = cpred[i].ranges
@@ -600,8 +600,8 @@ class pynetica:
         function to read in a casfile into a pynetica object.
         '''
         # first read in and strip out all comments and write out to a scratch file
-        tmpdat = open(casfilename,'r').readlines()
-        ofp = open('###tmp###','w')
+        tmpdat = open(casfilename, 'r').readlines()
+        ofp = open('###tmp###', 'w')
         for line in tmpdat:
             #line = re.sub('\?','*',line)
             if '//' not in line:
@@ -609,21 +609,23 @@ class pynetica:
             elif line.strip().split()[0].strip() == '//':
                 pass
             elif '//' in line:
-                line = re.sub('//.*','',line)
+                line = re.sub('//.*', '', line)
                 if len(line.strip()) > 0:
                     ofp.write(line)
         ofp.close()                
-        self.casdata = np.genfromtxt('###tmp###',names=True,
-                                     dtype=None,missing_values = '*,?')
+        self.casdata = np.genfromtxt('###tmp###', names=True,
+                                     dtype=None, missing_values='*,?')
         os.remove('###tmp###')
         self.N = len(self.casdata)
         
     # cross validation driver
     def cross_val_setup(self):
         # open a file pointer to the stats output file for all the folds
-        kfoldOFP_Val = open('%s_kfold_stats_VAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
-        kfoldOFP_Val.write('Validation statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
-                  %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))   
+        kfoldOFP_Val = open(
+            '{0:s}_kfold_stats_VAL_{1:d}_folds.dat'.format(self.probpars.scenario.name, self.probpars.numfolds), 'w')
+        kfoldOFP_Val.write(
+            'Validation statistics for cross validation.\nBase net --> {0:s} and casefile --> {1:s}\n' +
+            'Current scenario is: {0:s}\n'.format(self.probpars.scenario.name))
         kfoldOFP_Val.write('%14s '*13
                   %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
                     'skillML','rmseML','meanErrML','meanAbsErrML','LogLoss','ErrorRate','QuadraticLoss')
@@ -657,8 +659,8 @@ class pynetica:
             self.allfolds.valN.append(len(leftoutinds))
             self.allfolds.calN.append(len(retinds))
             # concatenate together the columns of data that will make up the CAS files
-            for i,chead in enumerate(self.probpars.CASheader):
-                if i>0:
+            for i, chead in enumerate(self.probpars.CASheader):
+                if i > 0:
                     outdat = np.hstack((outdat,np.atleast_2d(self.casdata[chead][retinds]).T))
                     outdatLeftOut = np.hstack((outdatLeftOut,np.atleast_2d(self.casdata[chead][leftoutinds]).T))
             # write out the retained casefile            

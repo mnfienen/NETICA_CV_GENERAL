@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import os, shutil
+import os
+import shutil
 import matplotlib as mpl
 from matplotlib.font_manager import FontProperties
 #--modify default matplotlib settings

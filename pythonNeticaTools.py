@@ -135,7 +135,7 @@ class pyneticaTools:
         self.CompileNet(cnet)      
         return cnet
 
-    def ReadNodeInfo(self,netName):
+    def ReadNodeInfo(self, netName):
         '''
         Read in all information on beliefs, states, and likelihoods for all 
         nodes in the net called netName
@@ -145,11 +145,11 @@ class pyneticaTools:
         #get the nodes and their number
         allnodes = self.GetNetNodes(cnet)
         numnodes = self.LengthNodeList(allnodes)
-        print 'Reading Node information from net --> %s' %(netName)
+        print 'Reading Node information from net --> {0:s}'.format(netName)
         cNETNODES = dict()
         # loop over the nodes
         for cn in np.arange(numnodes):
-            cnode = self.NthNode(allnodes,cn)
+            cnode = self.NthNode(allnodes, cn)
             cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
             cNETNODES[cnodename] =nodestruct()
             cNETNODES[cnodename].name = cth.c_char_p2str(self.GetNodeName(cnode))

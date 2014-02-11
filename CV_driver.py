@@ -72,7 +72,7 @@ if cdat.probpars.CVflag:
           + '#'*20+'\n' * 2
     # set up for cross validation
     print '\nSetting up cas files and file pointers for cross validation'
-    kfoldOFP_Val,kfoldOFP_Cal = cdat.cross_val_setup()
+    kfoldOFP_Val, kfoldOFP_Cal = cdat.cross_val_setup()
     # now build all the nets
     for cfold in np.arange(cdat.probpars.numfolds):
         print ' ' * 10 + '#' * 20 + '\n' + ' ' * 10 + '#  F O L D --> {0:d}  #\n'.format(cfold)\

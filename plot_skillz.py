@@ -31,7 +31,7 @@ allmetrics = ['skillMean',
         'rmseML',
         'meanErrML',
         'meanAbsErrML']
-numsets = 10
+numsets = 0
 numfolds = 10
 # ############################
 figdir = probroot + '_plots'
@@ -49,6 +49,8 @@ class alldat:
     def __init__(self, calval, filenames, numsets, allstats, allmetrics):
         self.calval = calval
         self.allstats = allstats
+        if numsets == 0:
+            numsets = 1
         self.numsets = numsets
         self.allmetrics = allmetrics
         self.infiles = filenames
@@ -82,7 +84,7 @@ def make_plots(CALdat,VALdat,figdir):
     for cstat in CALdat.allstats:
         for cmet in CALdat.allmetrics:
             for cres in CALdat.allresponses:
-                print 'plotting --> %s_%s_%s.pdf' %(cstat,cmet,cres)
+                print 'plotting --> {0:s}_{1:s}_{2:s}.pdf'.format(cstat, cmet, cres)
                 outfig = plt.figure()
                 plt.hold(True)
                 plt.plot(np.arange(CALdat.numsets)+1,CALdat.outdata[cstat][cres][cmet],'r-x')
