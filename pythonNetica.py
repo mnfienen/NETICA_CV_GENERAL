@@ -661,25 +661,31 @@ class pynetica:
             # concatenate together the columns of data that will make up the CAS files
             for i, chead in enumerate(self.probpars.CASheader):
                 if i > 0:
-                    outdat = np.hstack((outdat,np.atleast_2d(self.casdata[chead][retinds]).T))
+                    outdat = np.hstack((outdat, np.atleast_2d(self.casdata[chead][retinds]).T))
                     outdatLeftOut = np.hstack((outdatLeftOut, np.atleast_2d(self.casdata[chead][leftoutinds]).T))
             # write out the retained casefile            
             ofp = open(cname, 'w')
             for cnode in self.probpars.CASheader:
                 ofp.write('{0:s} '.format(cnode))
             ofp.write('\n')
-            np.savetxt(ofp, outdat)
+            for line in outdat:
+                for cv in line:
+                    if np.isnan(cv):
+                        ofp.write(' {0:20s} '.format('*'))
+                    else:
+                        ofp.write(' {0:20.8e} '.format(cv))
+                ofp.write('\n')
             ofp.close()
             
             # write out the leftout casefile for later use with the Netica validation testing functions
             ofpLeftOut = open(cname[:-4] + '_leftout.cas', 'w')
             for cnode in self.probpars.CASheader:
-                ofpLeftOut.write('%s ' %(cnode))
+                ofpLeftOut.write('{0:s} '.format(cnode))
             ofpLeftOut.write('\n')
-            np.savetxt(ofpLeftOut,outdatLeftOut)
+            np.savetxt(ofpLeftOut, outdatLeftOut)
             ofpLeftOut.close()
             ofpLeftOut.close()
-        return kfoldOFP_Val,kfoldOFP_Cal
+        return kfoldOFP_Val, kfoldOFP_Cal
 
 
 
