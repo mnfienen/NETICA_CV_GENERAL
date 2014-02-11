@@ -127,7 +127,7 @@ class pynetica:
         for cr in respnodes:
             print 'making into an array --> %s' %(cr)
             parent_indices[cr].parent_indices = np.array(
-                    parent_indices[cr].parent_indices,dtype=int)
+                    parent_indices[cr].parent_indices, dtype=int)
         # clean up the temporary streamer and net
         self.pyt.DeleteNet(cnet)
         self.pyt.DeleteStream(cas_streamer)
@@ -144,12 +144,12 @@ class pynetica:
             cnodebins = nBT.netica_binning(self.casdata[cbin], self.probpars.binsetup[cbin])
             cnodebins.bin_thresholds()
             cnode = self.pyt.GetNodeNamed(cbin,cnet)
-            print 'Setting node %s to have %d bins' %(cbin,self.probpars.binsetup[cbin])
-            self.pyt.SetNodeLevels(cnode,cnodebins.binlevels)
+            print "Setting node {0:s} to have {1:d} bins".format(cbin, self.probpars.binsetup[cbin])
+            self.pyt.SetNodeLevels(cnode, cnodebins.binlevels)
         outfile_streamer = self.pyt.NewFileStreamer(self.probpars.rebin_file[:-4] + '.neta')
         self.pyt.CompileNet(cnet)
-        print 'Writing new bin configurations for net to: %s' %(self.probpars.rebin_file[:-4] + '.neta')
-        self.pyt.WriteNet(cnet,outfile_streamer)
+        print "Writing new bin configurations for net to: {0:s}{1:s}".format(self.probpars.rebin_file[:-4], '.neta')
+        self.pyt.WriteNet(cnet, utfile_streamer)
         self.pyt.DeleteStream(outfile_streamer)
         self.pyt.DeleteNet(cnet)
 
