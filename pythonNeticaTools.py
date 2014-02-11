@@ -47,9 +47,9 @@ class pyneticaTools:
         # read in the license file information
         self.licensefile = licfile
         if os.path.exists(self.licensefile):
-            self.license = open(self.licensefile,'r').readlines()[0].strip().split()[0]
+            self.license = open(self.licensefile, 'r').readlines()[0].strip().split()[0]
         else:
-            print ("Warning: License File [%s] not found.\n" %(self.licensefile) + 
+            print ("Warning: License File [{0:s}] not found.\n".format(self.licensefile) +
                    "Opening Netica without licence, which will limit size of nets that can be used.\n" +
                    "Window may become unresponsive.")
             self.license = None         
@@ -58,7 +58,7 @@ class pyneticaTools:
     #############################################
     # Major validation and prediction functions #
     #############################################
-    def rebuild_net(self,NetName,newCaseFile,voodooPar,outfilename,EMflag=False):
+    def rebuild_net(self, NetName, newCaseFile, voodooPar, outfilename, EMflag=False):
         '''
          rebuild_net(NetName,newCaseFilename,voodooPar,outfilename)
          a m!ke@usgs joint <mnfienen@usgs.gov>
@@ -73,8 +73,8 @@ class pyneticaTools:
                          incorporate the CPT table directly
          '''   
         # create a Netica environment
-        print 'Rebuilding net: %s using Casefile: %s' %(NetName,newCaseFile)
-        # meke a streamer to the Net file
+        print 'Rebuilding net: {0:s} using Casefile: {1:s}'.format(NetName, newCaseFile)
+        # make a streamer to the Net file
         net_streamer = self.NewFileStreamer(NetName)
         # read in the net using the streamer        
         cnet = self.ReadNet(net_streamer)
@@ -96,18 +96,18 @@ class pyneticaTools:
             print 'Learning new CPTs using EM algorithm'
             # to use EM learning, must first make a learner and set a couple options
             newlearner = self.NewLearner(pnC.learn_method_bn_const.EM_LEARNING)
-            self.SetLearnerMaxTol(newlearner,1.0e-6)
-            self.SetLearnerMaxIters(newlearner,1000)
+            self.SetLearnerMaxTol(newlearner, 1.0e-6)
+            self.SetLearnerMaxIters(newlearner, 1000)
             # now must associate the casefile with a caseset (weighted by unity)
             newcaseset = self.NewCaseset('currcases')
-            self.AddFileToCaseset(newcaseset,new_cas_streamer,1.0)
-            self.LearnCPTs(newlearner,allnodes,newcaseset,voodooPar)
+            self.AddFileToCaseset(newcaseset, new_cas_streamer, 1.0)
+            self.LearnCPTs(newlearner, allnodes, newcaseset, voodooPar)
             self.DeleteCaseset(newcaseset)
             self.DeleteLearner(newlearner)
 
         else:
             print 'Learning new CPTs using ReviseCPTsByCaseFile'
-            self.ReviseCPTsByCaseFile(new_cas_streamer,allnodes,voodooPar)
+            self.ReviseCPTsByCaseFile(new_cas_streamer, allnodes, voodooPar)
         outfile_streamer = self.NewFileStreamer(outfilename)
         self.CompileNet(cnet)
 
@@ -151,7 +151,7 @@ class pyneticaTools:
         for cn in np.arange(numnodes):
             cnode = self.NthNode(allnodes, cn)
             cnodename = cth.c_char_p2str(self.GetNodeName(cnode))
-            cNETNODES[cnodename] =nodestruct()
+            cNETNODES[cnodename] = nodestruct()
             cNETNODES[cnodename].name = cth.c_char_p2str(self.GetNodeName(cnode))
             cNETNODES[cnodename].title = cth.c_char_p2str(self.GetNodeTitle(cnode))
             print '   Parsing node --> %s' %(cNETNODES[cnodename].title)
@@ -162,7 +162,7 @@ class pyneticaTools:
             cNETNODES[cnodename].likelihood = cth.c_float_p2float(
                 self.GetNodeLikelihood(cnode),
                 cNETNODES[cnodename].Nbeliefs)
-            cNETNODES[cnodename].levels =  cth.c_double_p2float(
+            cNETNODES[cnodename].levels = cth.c_double_p2float(
                 self.GetNodeLevels(cnode),
                 cNETNODES[cnodename].Nbeliefs + 1)
 

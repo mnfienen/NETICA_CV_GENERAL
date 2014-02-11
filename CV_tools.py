@@ -94,15 +94,15 @@ class all_folds:
         # allfolds.retained[i] is the kept indices of fold i
         currinds = np.arange(n)
         inds_per_fold = np.int(np.floor(n/k))
-        dingleberry = np.remainder(n,k)
+        dingleberry = np.remainder(n, k)
         for i in np.arange(k-1):
             allinds = currinds.copy()    
             np.random.shuffle(currinds)
             self.leftout.append(currinds[0:inds_per_fold].copy())
-            self.retained.append(np.setdiff1d(np.arange(n),self.leftout[i]))
+            self.retained.append(np.setdiff1d(np.arange(n), self.leftout[i]))
             currinds = currinds[inds_per_fold:]
         self.leftout.append(currinds)
-        self.retained.append(np.setdiff1d(np.arange(n),self.leftout[-1]))
+        self.retained.append(np.setdiff1d(np.arange(n), self.leftout[-1]))
         self.numfolds = k
 
 #################

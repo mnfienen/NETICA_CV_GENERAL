@@ -81,7 +81,7 @@ class pynetica:
     #############################################
 
 
-    def NodeParentIndexing(self,netName,casfile):
+    def NodeParentIndexing(self ,netName, casfile):
         '''
         Find all the configurations of states in the parent nodes for each response node
         '''
@@ -97,12 +97,12 @@ class pynetica:
         respnodes = self.probpars.scenario.response
         for cr in respnodes:
             parent_indices[cr] = parent_inds()
-            crespnode = self.pyt.GetNodeNamed(cr,cnet)
+            crespnode = self.pyt.GetNodeNamed(cr, cnet)
             # get the parent nodes and their names
             cparents = self.pyt.GetNodeParents(crespnode)
             numparents = self.pyt.LengthNodeList(cparents)
             for cp in np.arange(numparents):
-                tmpnode = self.pyt.NthNode(cparents,cp)
+                tmpnode = self.pyt.NthNode(cparents, cp)
                 parent_indices[cr].parent_names.append(
                     cth.c_char_p2str(self.pyt.GetNodeName(tmpnode)))
             
@@ -645,14 +645,14 @@ class pynetica:
             self.allfolds.calpred.append(None)
             self.allfolds.valpred.append(None)
                                     
-            cname = '%s_fold_%d.cas' %(self.probpars.scenario.name,cfold)
+            cname = '{0:s}_fold_{1:d}.cas'.format(self.probpars.scenario.name, cfold)
             self.allfolds.casfiles.append(cname)
-            retinds = np.array(self.allfolds.retained[cfold],dtype=int)
+            retinds = np.array(self.allfolds.retained[cfold], dtype=int)
             # outdat only includes the columns that are in CASheader
             outdat = np.atleast_2d(self.casdata[self.probpars.CASheader[0]][retinds]).T
             # caldata and valdata both include all columns for simplicity
             self.allfolds.caldata.append(self.casdata[retinds])
-            leftoutinds = np.array(self.allfolds.leftout[cfold],dtype=int)
+            leftoutinds = np.array(self.allfolds.leftout[cfold], dtype=int)
             # we will also make a CAS file for the leftout data for using Netica's testing codes
             outdatLeftOut = np.atleast_2d(self.casdata[self.probpars.CASheader[0]][leftoutinds]).T            
             self.allfolds.valdata.append(self.casdata[leftoutinds])
@@ -662,17 +662,17 @@ class pynetica:
             for i, chead in enumerate(self.probpars.CASheader):
                 if i > 0:
                     outdat = np.hstack((outdat,np.atleast_2d(self.casdata[chead][retinds]).T))
-                    outdatLeftOut = np.hstack((outdatLeftOut,np.atleast_2d(self.casdata[chead][leftoutinds]).T))
+                    outdatLeftOut = np.hstack((outdatLeftOut, np.atleast_2d(self.casdata[chead][leftoutinds]).T))
             # write out the retained casefile            
-            ofp = open(cname,'w')
+            ofp = open(cname, 'w')
             for cnode in self.probpars.CASheader:
-                ofp.write('%s ' %(cnode))
+                ofp.write('{0:s} '.format(cnode))
             ofp.write('\n')
-            np.savetxt(ofp,outdat)
+            np.savetxt(ofp, outdat)
             ofp.close()
             
-            # write out the leftout casefile for later use with the NEtica validation testing functions
-            ofpLeftOut = open(cname[:-4] + '_leftout.cas','w')
+            # write out the leftout casefile for later use with the Netica validation testing functions
+            ofpLeftOut = open(cname[:-4] + '_leftout.cas', 'w')
             for cnode in self.probpars.CASheader:
                 ofpLeftOut.write('%s ' %(cnode))
             ofpLeftOut.write('\n')
