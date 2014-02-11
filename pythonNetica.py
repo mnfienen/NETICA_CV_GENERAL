@@ -408,11 +408,11 @@ class pynetica:
 
         cpred[nodename].stats.skMean = statfuns.LSQR_skill(
             cpred[nodename].stats.mean,
-            cpred[nodename].z-np.mean(cpred[nodename].z))
+            cpred[nodename].z-nanmean(cpred[nodename].z))
 
         cpred[nodename].stats.skML = statfuns.LSQR_skill(
             cpred[nodename].stats.mostProb,
-            cpred[nodename].z-np.mean(cpred[nodename].z))
+            cpred[nodename].z-nanmean(cpred[nodename].z))
         Mresid = (cpred[nodename].stats.mean -
                   cpred[nodename].z)
         cpred[nodename].stats.rmseM = (

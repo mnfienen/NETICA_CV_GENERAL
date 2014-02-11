@@ -115,7 +115,7 @@ def LSQR_skill(x,z,w=None):
     b = nplstsq(X,z)[0]
     
     # calculate the variance of the data
-    obsresid = z-np.mean(z)
+    obsresid = z-nanmean(z)
     msz = np.dot(obsresid.T,obsresid)/n
     # calculate the variance of the residuals
     modresid = np.dot(X,b) - z

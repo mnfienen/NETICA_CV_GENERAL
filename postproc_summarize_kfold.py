@@ -36,11 +36,11 @@ for cres in unique_responses:
         outdat[cres]['mean'][cstat] = np.mean(indat[cstat][currinds])                        
         outdat[cres]['median'][cstat] = np.median(indat[cstat][currinds])
                     
-ofp = open(infile[:-4] + '_SUMMARY.dat','w')
+ofp = open(infile[:-4] + '_SUMMARY.dat', 'w')
 ofp.write('SUMMARY STATISTICS-->\n')
 for line in header:
     ofp.write(line)
-ofp.write('%16s%16s' %('Stat','Response'))
+ofp.write('{0:>16s}{1:>16s}'.format('Stat', 'Response'))
 for chead in response_headers:
     ofp.write('%16s' %(chead))
 ofp.write('\n')
