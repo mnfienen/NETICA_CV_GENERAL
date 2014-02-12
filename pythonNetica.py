@@ -546,7 +546,7 @@ class pynetica:
         ofp.write('Base Case Net: %s\nBase Case Casfile: %s\n' %(self.probpars.baseNET,self.probpars.baseCAS))
         # write out the raw variance reduction values        
         ofp.write('#'*10 + '   Raw Variance Reduction Values   ' + '#'*10 + '\n')
-        ofp.write('%-14s' %('Response_node '))
+        ofp.write('{0:<14s}'.format('Response_node '))
         for cn in allnodes:
             ofp.write('%-14s' %(cn))
         ofp.write('\n')
@@ -622,7 +622,8 @@ class pynetica:
         kfoldOFP_Val = open(
             '{0:s}_kfold_stats_VAL_{1:d}_folds.dat'.format(self.probpars.scenario.name, self.probpars.numfolds), 'w')
         kfoldOFP_Val.write(
-            'Validation statistics for cross validation.\nBase net --> {0:s} and casefile --> {1:s}\n' +
+            'Validation statistics for cross validation.\n' +
+            'Base net --> {0:s} and casefile --> {1:s}\n'.format(self.probpars.scenario.name) +
             'Current scenario is: {0:s}\n'.format(self.probpars.scenario.name))
         kfoldOFP_Val.write('%14s '*13
                   %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',

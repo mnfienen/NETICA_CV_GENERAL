@@ -3,14 +3,12 @@ import numpy as np
 import os
 import shutil
 import matplotlib as mpl
+from matplotlib.backends.backend_pdf import PdfPages
+
 from matplotlib.font_manager import FontProperties
 #--modify default matplotlib settings
 mpl.rcParams['font.sans-serif']          = 'Univers 57 Condensed'
 mpl.rcParams['font.serif']               = 'Times'
-mpl.rcParams['font.cursive']             = 'Zapf Chancery'
-mpl.rcParams['font.fantasy']             = 'Comic Sans MS'
-mpl.rcParams['font.monospace']           = 'Courier New'
-mpl.rcParams['mathtext.default']         = 'regular'
 mpl.rcParams['pdf.compression']          = 0
 mpl.rcParams['pdf.fonttype']             = 42
 #--figure text sizes
@@ -21,7 +19,7 @@ mpl.rcParams['ytick.labelsize']  = 18
 
 # ############################
 # USER DATA
-allsets = ['2','3','4','5','6','7','8','4_5','4_6','4_8','4_10','5_6','5_8','5_10']
+allsets = ['2','3','4','5','6','7','8'] # ,'4_5','4_6','4_8','4_10','5_6','5_8','5_10']
 probroot = 'glacialbins'
 allstats = ['min','max','mean','median']
 allmetrics = ['skillMean',
@@ -84,37 +82,39 @@ def make_plots(CALdat,VALdat,figdir):
         print cstat
         for cmet in CALdat.allmetrics:
             print cmet
+            pdf_plots = PdfPages(os.path.join(figdir, '{0:s}_{1:s}.pdf'.format(cstat, cmet)))
             for cres in CALdat.allresponses:
                 print cres
-                print 'plotting --> %s_%s_%s.pdf' %(cstat,cmet,cres)
+                print 'plotting --> {0:s}_{1:s}_{2:s}'.format(cstat, cmet, cres)
                 outfig = plt.figure()
                 ax = outfig.add_subplot(111)
                 plt.hold(True)
-                plt.plot(CALdat.outdata[cstat][cres][cmet],'r-x')
-                plt.plot(VALdat.outdata[cstat][cres][cmet],'b-x')
-                plt.title('%s of %s for %s over bins' %(cstat,cres,cmet))
+                plt.plot(CALdat.outdata[cstat][cres][cmet], 'r-x')
+                plt.plot(VALdat.outdata[cstat][cres][cmet], 'b-x')
+                plt.title('{0:s} of {1:s} for {2:s} over bins'.format(cstat, cres, cmet))
                 plt.xlabel('Sets')
-                plt.xticks(np.arange(len(CALdat.allsets)),CALdat.allsets,rotation=45)
-                plt.yticks(np.linspace(0,1,11))
+                plt.xticks(np.arange(len(CALdat.allsets)), CALdat.allsets, rotation=45)
+                #plt.yticks(np.linspace(0, 1, 11))
                 plt.ylabel(cmet)
                 plt.grid(True)
-                plt.legend(['Calibration','Validation'],loc='best')
+                plt.legend(['Calibration', 'Validation'], loc='best')
                 if 'skill' in cmet:
-                    plt.ylim((0.0,1.0))
-                plt.savefig(os.path.join(figdir,'%s_%s_%s.pdf' %(cstat,cmet,cres)))
-
+                    print 'setting ylim!'
+                    plt.ylim((0.0, 1.0))
+                pdf_plots.savefig(outfig)
+            pdf_plots.close()
 
 CALroots = dict()
 VALroots = dict()
 for cset in allsets:
-    CALroots[cset] = '%s%s_kfold_stats_CAL_%d_folds_SUMMARY.dat' %(probroot,cset,numfolds)
-    VALroots[cset] = '%s%s_kfold_stats_VAL_%d_folds_SUMMARY.dat' %(probroot,cset,numfolds)
+    CALroots[cset] = '{0:s}{1:s}_kfold_stats_CAL_{2:d}_folds_SUMMARY.dat'.format(probroot, cset, numfolds)
+    VALroots[cset] = '{0:s}{1:s}_kfold_stats_VAL_{2:d}_folds_SUMMARY.dat'.format(probroot, cset, numfolds)
 
 # set up preliminary structure to read in all the data
 alldata = dict()
 
-alldata['CAL'] = alldat('CAL',CALroots,allsets,allstats,allmetrics)
-alldata['VAL'] = alldat('VAL',VALroots,allsets,allstats,allmetrics)
+alldata['CAL'] = alldat('CAL', CALroots, allsets, allstats, allmetrics)
+alldata['VAL'] = alldat('VAL', VALroots, allsets, allstats, allmetrics)
 
 # read in the data
 for cset in allsets:
@@ -130,4 +130,4 @@ alldata['CAL'].populate_plotdata()
 alldata['VAL'].populate_plotdata()
 
 # finally make the plots
-make_plots(alldata['CAL'],alldata['VAL'],figdir)
+make_plots(alldata['CAL'], alldata['VAL'], figdir)
