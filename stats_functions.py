@@ -31,8 +31,8 @@ def getPy(p,pdf,ranges):
     '''
     M = len(ranges)
     N,Nbins = pdf.shape
-    f = np.cumsum(pdf,1)
-    f = np.hstack((np.zeros((N,1)),f))
+    f = np.cumsum(pdf, 1)
+    f = np.hstack((np.zeros((N, 1)), f))
     # now make special cases for discrete or continuous
     if Nbins == M:
         # D I S C R E T E ((( NOT TESTED!!!!!)))
@@ -84,9 +84,9 @@ def getMeanStdMostProb(pdf,ranges,continuous,blank):
         retStd[i] = np.dot(pdf[i,:],(((ranges[id1]+ranges[id2])/2.0)-retMean[i])**2.0)
         retStd[i] = np.sqrt(binWidthVariance[i] + retStd[i])
         
-    return retMean, retStd,mostProb,      
+    return retMean, retStd, mostProb,
     
-def LSQR_skill(x,z,w=None):
+def LSQR_skill(x, z, w=None):
     '''
     function to calculate skill of a model. Performs (optionally) weighted
     regression to get the coefficients.
@@ -99,27 +99,32 @@ def LSQR_skill(x,z,w=None):
     output:
     sk  --> the model skill
     '''
+    # first, adjust for NaNs
+    keepinds = np.where(np.isnan(z) == False)[0]
+    x = x[keepinds]
+    z = z[keepinds]
     n = len(x)
-    X = np.hstack((np.ones((n,1)),x))
+    X = np.hstack((np.ones((n, 1)), x))
     
     # handle the weights - assuming uncorrelated errors for now
     if w:
+        w = w[keepinds]
         Q = np.diag(1.0/w)
     else:
         Q = np.diag(np.ones(n))
         
     # form the normal equations including weights
-    XtX = np.dot(np.dot(X.T,Q),X)
+    XtX = np.dot(np.dot(X.T, Q), X)
     
     # solve for b
-    b = nplstsq(X,z)[0]
+    b = nplstsq(X, z)[0]
     
     # calculate the variance of the data
     obsresid = z-nanmean(z)
-    msz = np.dot(obsresid.T,obsresid)/n
+    msz = np.dot(obsresid.T, obsresid)/n
     # calculate the variance of the residuals
-    modresid = np.dot(X,b) - z
-    msr = np.dot(modresid.T,modresid)/n
+    modresid = np.dot(X, b) - z
+    msr = np.dot(modresid.T, modresid)/n
     # calculate the skill
     sk = 1-(msr/msz)
     #print 'sk  --> %f' %(sk)
