@@ -7,8 +7,6 @@ import pythonNeticaTools as pyT
 import cthelper as cth
 import neticaBinTools as nBT
 import stats_functions as statfuns
-from scipy.stats import nanmean
-
 
 class parent_inds:
     def __init__(self):
@@ -408,28 +406,28 @@ class pynetica:
 
         cpred[nodename].stats.skMean = statfuns.LSQR_skill(
             cpred[nodename].stats.mean,
-            cpred[nodename].z-nanmean(cpred[nodename].z))
+            cpred[nodename].z-np.nanmean(cpred[nodename].z))
 
         cpred[nodename].stats.skML = statfuns.LSQR_skill(
             cpred[nodename].stats.mostProb,
-            cpred[nodename].z-nanmean(cpred[nodename].z))
+            cpred[nodename].z-np.nanmean(cpred[nodename].z))
         Mresid = (cpred[nodename].stats.mean -
                   cpred[nodename].z)
         cpred[nodename].stats.rmseM = (
-            np.sqrt(nanmean(Mresid**2)))  
-        cpred[nodename].stats.meaneM = nanmean(Mresid)    
+            np.sqrt(np.nanmean(Mresid**2)))
+        cpred[nodename].stats.meaneM = np.nanmean(Mresid)
         MLresid = (cpred[nodename].stats.mostProb -
                    cpred[nodename].z)
         cpred[nodename].stats.rmseML = (
-            np.sqrt(nanmean(MLresid**2)))  
-        cpred[nodename].stats.meaneML = nanmean(MLresid)   
-        cpred[nodename].stats.meanabserrM = nanmean(np.abs(Mresid))
-        cpred[nodename].stats.meanabserrML = nanmean(np.abs(MLresid))
+            np.sqrt(np.nanmean(MLresid**2)))
+        cpred[nodename].stats.meaneML = np.nanmean(MLresid)
+        cpred[nodename].stats.meanabserrM = np.nanmean(np.abs(Mresid))
+        cpred[nodename].stats.meanabserrML = np.nanmean(np.abs(MLresid))
         
         
         return cpred
     
-    def PredictBayesPostProc(self,cpred,outname,casname,cNeticaTestStats):
+    def PredictBayesPostProc(self, cpred, outname, casname, cNeticaTestStats):
         ofp = open(outname,'w')
         ofp.write('Validation statistics for net --> %s and casefile --> %s\n'
                   %(outname,casname))   

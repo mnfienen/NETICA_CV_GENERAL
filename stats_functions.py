@@ -2,7 +2,6 @@ import numpy as np
 from scipy.stats import norm
 from scipy.interpolate import interp1d
 from numpy.linalg import lstsq as nplstsq
-from scipy.stats import nanmean
 
 def makeInputPdf(pdfRanges, pdfParam,pdfType='norm',cont_discrete='continuous'):
     '''
@@ -120,7 +119,7 @@ def LSQR_skill(x, z, w=None):
     b = nplstsq(X, z)[0]
     
     # calculate the variance of the data
-    obsresid = z-nanmean(z)
+    obsresid = z-np.nanmean(z)
     msz = np.dot(obsresid.T, obsresid)/n
     # calculate the variance of the residuals
     modresid = np.dot(X, b) - z
