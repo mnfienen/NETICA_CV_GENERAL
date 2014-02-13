@@ -43,7 +43,7 @@ class pyneticaTools:
         self.mesg = None
         self.env = None
         
-    def start_environment(self,licfile):
+    def start_environment(self, licfile):
         # read in the license file information
         self.licensefile = licfile
         if os.path.exists(self.licensefile):

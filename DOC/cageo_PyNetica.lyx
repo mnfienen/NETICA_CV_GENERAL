@@ -703,11 +703,83 @@ CVNetica provides Python functions wrapped around Netica C functions and
  helper functions to translate data to and from the Python environment.
  In the remainder of this section, the main aspects of interfacing with
  the Netica APIs are discussed in general terms.
+ These examples use code snippets from the CVNetica codebase.
  Further documentation about 
 \family typewriter
 ctypes
 \family default
- is available from the official documentation 
+ is available from the official documentation (http://docs.python.org/2/library/ct
+ypes.html).
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Accessing the DLL
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first task when accessing the Netica DLL is to make the functions available
+ to Python by assigning the DLL to an object.
+ Note that the filename is not in quotes, nor is the 
+\family typewriter
+.dll
+\family default
+ extension required.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+import ctypes as ct
+\end_layout
+
+\begin_layout Plain Layout
+
+self.n = ct.windll.Netica
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After this, self.n is an object with all 
 \end_layout
 
 \begin_layout Standard

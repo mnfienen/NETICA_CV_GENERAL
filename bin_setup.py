@@ -13,17 +13,18 @@ print os.getcwd()
 # set the base CAS and NETA file names
 indat = np.genfromtxt('glacial4433.cas', dtype=None, names=True)
 basenet = 'glacial4433.neta'
-
+parfileroot = 'glacial'
 cdat = pyn.pynetica()
 
 # set the bin arrangements --> note that there must be already
 # created XML files for these, including the bin XML files
-bins = ['4_5', '4_6', '4_8', '4_10', '5_6', '5_8', '5_10']
+# loop through parameter control xmls files like this...
+sets = ['4_5', '4_6', '4_8', '4_10', '5_6', '5_8', '5_10']
 
-# now loop over each
-for cbin in bins:
+# now loop over each set
+for cset in sets:
     # read in the parameters from the XML file
-    cdat.probpars = CVT.input_parameters('glacial{0:s}.xml'.format(cbin))
+    cdat.probpars = CVT.input_parameters('{0:s}{1:s}.xml'.format(parfileroot, cset))
 
     # copy over the base neta file to the one named in the XML file for this bin set
     shutil.copyfile(basenet, cdat.probpars.baseNET)

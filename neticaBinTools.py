@@ -3,7 +3,7 @@ import scipy.stats.mstats as scpstat
 
 class netica_binning:
     def __init__(self, x, n):
-        x=x[np.isnan(x)==False]
+        x = x[np.isnan(x) == False]  # only retain values in x that are not NaN
         self.x = x  #vector of values to bin
         self.n = n  # number of bins
 
