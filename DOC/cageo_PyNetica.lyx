@@ -207,7 +207,7 @@ key "Chen2012,Marcot2012"
  Some validation metrics are calculable by the commercial software packages,
  but substantial gaps in capabilities remain.
  Fortunately, at least in the case of Netica, an application programming
- interface exists with versions in multiple programming languages.
+ interface (API) exists with versions in multiple programming languages.
  To create a toolbox of performance metrics, we used Python 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -219,10 +219,33 @@ key "python"
  These APIs expose most of Netica's functionality, through functions, to
  external programming.
  Among the languages available, C was chosen because the ultimate goal was
- to interface with Python.
+ to interface with Python 2.7.6.
  We discuss the technical challenges associated with running C APIs using
  Python and describe the toolbox of validation metrics included in this
  work.
+\end_layout
+
+\begin_layout Standard
+Building on techniques introduced by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+, we developed tools addressing two fundamental questions of Bayesian network
+ performance: how does predictive performance compare with calibration quality?;
+ and how does the complexity of the underlying network impact predictive
+ and calibration performance? Cross-validation is used to answer both questions,
+ and the number of bins per node is used as a metric of complexity to answer
+ the second.
+ These specific questions are evaluated in this work but the framework is
+ presented to allow for other validation metrics and techniques beyond those
+ presented here.
+\end_layout
+
+\begin_layout Standard
+Model 
 \end_layout
 
 \begin_layout Standard
@@ -239,6 +262,245 @@ end{linenumbers}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+Bayesian Networks
+\end_layout
+
+\begin_layout Standard
+A Bayesian network (BN) is a directed acyclic graph 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Korb2004"
+
+\end_inset
+
+, composed of nodes and edges.
+ Nodes represent states of parameters or outcomes and can be Boolean or
+ discrete bins.
+ Continuous values of parameters must be discretized into bins.
+ Edges form the connections between nodes and represent a correlated connection
+ between the properties represented by the nodes.
+ The entire catalog of these correlations make up conditional probability
+ tables (CPTs).
+ Nodes can be thought of as input (e.g.
+ forcing) nodes and output (e.g.
+ response) nodes, although this distinction is not a sharp one as the correlatio
+ns learned by the BN are ambivalent with respect to direction.
+ Nodes can also be intermediate.
+\end_layout
+
+\begin_layout Standard
+An example of a BN created and visualized using Netica is presented in figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exampleBN"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{center}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/net_Example.pdf
+	lyxscale 35
+	scale 35
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:exampleBN"
+
+\end_inset
+
+Example of a Netica BN showing input (outlined in a red box) and output
+ (outlined in a blue box) nodes, edges (black lines) and, in this case,
+ a single intermediate node (recharge).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Calculations are made using the BN based on conditional probabilities using
+ Bayes’ Theorem 
+\begin_inset Formula 
+\begin{equation}
+p\left(F_{i}|O_{j}\right)=\frac{p\left(O_{j}|F_{i}\right)p\left(F_{i}\right)}{p\left(O_{j}\right)}\label{eq:bayesthm}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p\left(F_{i}|O_{j}\right)$
+\end_inset
+
+ is the updated (posterior) probability of a forecast 
+\begin_inset Formula $\left(F_{i}\right)$
+\end_inset
+
+ given (conditional on) a set of observations 
+\begin_inset Formula $\left(O_{j}\right)$
+\end_inset
+
+; 
+\begin_inset Formula $p\left(O_{j}|F_{i}\right)$
+\end_inset
+
+ is the likelihood function, 
+\begin_inset Formula $p\left(F_{i}\right)$
+\end_inset
+
+ is the prior probability of the forecast, and 
+\begin_inset Formula $p\left(O_{j}\right)$
+\end_inset
+
+ is a normalizing constant.
+ As discussed above, the calibration to field measurements was necessarily
+ loose due to the paucity of data in both space and time.
+ For training a BN, it would be ideal to use direct observations of the
+ underlying system, but that level of information is rarely possible and
+ the model must serve as a proxy for the real system.
+ In cases with sufficient data, a direct correspondence between the BN ability
+ to reproduce process model ‘‘observations’’ and the process model ability
+ to reproduce field observations could be assessed.
+ The underlying process model is required to link the observations that
+ can be made (such as island width and island elevation) to those that must
+ be inferred by using the model (such as ground- water position and recharge).
+ The posterior probability reflects an updating that is achieved by considering
+ the entire chain of conditional probabilities of all bins connected to
+ the node representing Fi.
+ The likelihood function represents the probability that the observations
+ (Oj) would be observed given that the forecast was perfectly known.
+ This is a metric of the ability of the BN to function as a forecasting
+ device and imperfections in such forecasts are a function of epistemic
+ uncertainty.
+ Epistemic uncertainty includes uncertainty due to model imperfection, data
+ errors, and other sources.
+ The prior probability of the forecast, p(Fi), is the probability of a forecast
+ without the benefit of the observations and the BN (or a process model
+ or other experiment).
+ p(Fi) may be calculated by using expert knowledge, or may be assumed relatively
+ uninformative to make the entire process as objective as practical (similar
+ to an ignorance prior as in Jaynes and Bretthorst [2003]).
+ A common prior often used in BNs is the division of a node into bins of
+ equal probability.
+ This is the approach generally followed in this work, resulting in bins
+ of equal probability or ‘‘belief’’ although it is not exactly an ignorance
+ prior because the probability mass in each bin may differ due to variable
+ bin widths.
+ Figure 3 shows the layout of the Assateague island Bayesian network with
+ prior probabilities expressed like histograms as ‘‘belief bars.’’ It is
+ possible to evaluate the contribution to all uncertainty values calculated
+ by the BN by expressing the uncertainty in the prior probabilities.
+ In this work, the model is assumed (for the sake of proving the concept)
+ to be perfect and the only prior variability is a function of sampling
+ each value and assigning it to bins.
+ [26] Once a system is cast in a BN, new observations of system state are
+ applied and propagated through the BN using Bayes’ theorem such that all
+ forecasts made in the model are contingent upon the specific observations
+ of system state.
+ In other words, each forecast is associated with a specific configuration
+ of observations of system state.
+ Observations are indicated by selecting a bin and forcing the probability
+ of a value in the node to be 100% (Figure 4).
+ When this operation is performed, the Bayesian update propagates in each
+ direction among nodes that are d-connected [Jensen and Nielsen, 2001],
+ updating the probabilities regardless of causal direction.
+ In this way, correlations are expressed as well as causal responses.
+ By selecting a suite of observations of state, the BN functions like a
+ transfer function by providing an estimate of the fore- cast of interest
+ and associated uncertainty.
+ [27] A key piece of a priori information is the establishment of edges
+ connecting the nodes.
+ Edges should reflect a cascade of causality grounded in an understanding
+ of the underlying process being modeled.
+ If multiple processes from different models are to be linked, the selection
+ of edge relationships defines the linkage.
+ Similarly, a BN emulating a numerical model could be linked to a simpli-
+ fied BN based on expert knowledge or empirical observations representing
+ a different process.
+ While machine learning can be used to teach a BN which parameters are connected
+ to each other and to outputs, we adopt the more common method in which
+ expert system understanding is used to specify these connections through
+ the identification of nodes and edges.
+ In this way, the BN honors the physical conditions known by the modeler,
+ incorporated as soft knowledge.
+ [28] In Figure 3, arrows on the edges indicate the direction of causal
+ dependence.
+ When all nodes are d-connected, the direction of the edge arrows serve
+ no purpose.
+ However, in the context of d-separation, the direction of causality has
+ important ramifications on the propagation of uncertainty from observations
+ to forecasts.
+ [29] When computational conditions and problem size permit, a conditional
+ probability table (CPT) can be created that directly enumerates the conditional
+ probabilities of all nodes in the BN.
+ This becomes impractical rapidly, how- ever, because the size of the CPT
+ scales on the order of n dkþ1 where n is the number of nodes, d is the
+ number of bins, and k is the number of parents for a node.
+ In the case, where full enumeration is impractical due to this rapid increase
+ in computational expense with complexity, an iterative expectation-maximization
+ (EM) algorithm is used [Dempster et al., 1977] to calculate approximate
+ probabilities and maximum-likelihood values for the BN without full enumeration
+ of the CPT.
+ The EM algorithm iterates between estimating the maximum log likelihood
+ of the function and finding the set of parameters resulting in that maximum
+ log likelihood.
 \end_layout
 
 \begin_layout Section
@@ -310,8 +572,12 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-Good opportunity to explain how ctypes works in this context for interaction
- with the C-APIs
+The Netica software provides APIs for accessing and using the functions
+ within it.
+ Several versions of these APIs are available as precompiled libraries.
+ To interface with Python, the C programming language APIs can be interfaced
+ with using ctypes which is built-in to Python 2.7+.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -470,7 +736,7 @@ References
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "GW"
-options "agufull04"
+options "elsarticle-num-names"
 
 \end_inset
 
