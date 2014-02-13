@@ -28,7 +28,7 @@ for cset in sets:
     cdat.probpars = CVT.input_parameters('{0:s}{1:s}.xml'.format(parfileroot,cset))
 
     # copy over the base neta file to the one named in the XML file for this bin set
-    shutil.copyfile(basenet, cdat.probpars.baseNET)
+    # shutil.copyfile(basenet, cdat.probpars.baseNET)
 
     # Initialize a pynetica instance/env using password in a text file
     cdat.pyt.start_environment(cdat.probpars.pwdfile)
@@ -37,5 +37,5 @@ for cset in sets:
     cdat.read_cas_file(cdat.probpars.baseCAS)
     
     # sets equiprobable bins for each node
-    cdat.UpdateNeticaBinThresholds()
+    cdat.UpdateNeticaBinThresholds(basenet)
 

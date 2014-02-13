@@ -132,13 +132,13 @@ class pynetica:
         self.pyt.DeleteStream(cas_streamer)
         self.parent_inds = parent_indices
 
-    def UpdateNeticaBinThresholds(self):
+    def UpdateNeticaBinThresholds(self, basenet):
         '''
         Function that reads in new numbers of bins and sets each node to
         have equiprobable bins in that number
         '''
         # first open the net
-        cnet = self.pyt.OpenNeticaNet(self.probpars.baseNET)
+        cnet = self.pyt.OpenNeticaNet(basenet)
         for cbin in self.probpars.binsetup:
             cnodebins = nBT.netica_binning(self.casdata[cbin], self.probpars.binsetup[cbin])
             cnodebins.bin_thresholds()
