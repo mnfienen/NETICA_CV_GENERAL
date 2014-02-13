@@ -269,6 +269,22 @@ Bayesian Networks
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 A Bayesian network (BN) is a directed acyclic graph 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -389,7 +405,7 @@ where
 \begin_inset Formula $p\left(F_{i}|O_{j}\right)$
 \end_inset
 
- is the updated (posterior) probability of a forecast 
+ is the posterior (updated) probability of a forecast 
 \begin_inset Formula $\left(F_{i}\right)$
 \end_inset
 
@@ -410,97 +426,177 @@ where
 \end_inset
 
  is a normalizing constant.
- As discussed above, the calibration to field measurements was necessarily
- loose due to the paucity of data in both space and time.
- For training a BN, it would be ideal to use direct observations of the
- underlying system, but that level of information is rarely possible and
- the model must serve as a proxy for the real system.
- In cases with sufficient data, a direct correspondence between the BN ability
- to reproduce process model ‘‘observations’’ and the process model ability
- to reproduce field observations could be assessed.
- The underlying process model is required to link the observations that
- can be made (such as island width and island elevation) to those that must
- be inferred by using the model (such as ground- water position and recharge).
  The posterior probability reflects an updating that is achieved by considering
  the entire chain of conditional probabilities of all bins connected to
- the node representing Fi.
+ the node representing 
+\begin_inset Formula $F_{i}$
+\end_inset
+
+.
  The likelihood function represents the probability that the observations
- (Oj) would be observed given that the forecast was perfectly known.
+ 
+\begin_inset Formula $\left(O_{j}\right)$
+\end_inset
+
+ would be observed given that the forecast was perfectly known.
  This is a metric of the ability of the BN to function as a forecasting
  device and imperfections in such forecasts are a function of epistemic
  uncertainty.
  Epistemic uncertainty includes uncertainty due to model imperfection, data
  errors, and other sources.
- The prior probability of the forecast, p(Fi), is the probability of a forecast
- without the benefit of the observations and the BN (or a process model
- or other experiment).
- p(Fi) may be calculated by using expert knowledge, or may be assumed relatively
+ The prior probability of the forecast, 
+\begin_inset Formula $p\left(F_{i}\right)$
+\end_inset
+
+, is the probability of a forecast without the benefit of the observations
+ and the BN (or a process model or other experiment).
+ 
+\begin_inset Formula $p\left(F_{i}\right)$
+\end_inset
+
+ may be calculated by using expert knowledge, or may be assumed relatively
  uninformative to make the entire process as objective as practical (similar
- to an ignorance prior as in Jaynes and Bretthorst [2003]).
+ to an ignorance prior 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "jaynesBook"
+
+\end_inset
+
+).
  A common prior often used in BNs is the division of a node into bins of
  equal probability.
  This is the approach generally followed in this work, resulting in bins
  of equal probability or ‘‘belief’’ although it is not exactly an ignorance
  prior because the probability mass in each bin may differ due to variable
  bin widths.
- Figure 3 shows the layout of the Assateague island Bayesian network with
- prior probabilities expressed like histograms as ‘‘belief bars.’’ It is
- possible to evaluate the contribution to all uncertainty values calculated
- by the BN by expressing the uncertainty in the prior probabilities.
- In this work, the model is assumed (for the sake of proving the concept)
- to be perfect and the only prior variability is a function of sampling
- each value and assigning it to bins.
- [26] Once a system is cast in a BN, new observations of system state are
- applied and propagated through the BN using Bayes’ theorem such that all
- forecasts made in the model are contingent upon the specific observations
- of system state.
+ It is possible to evaluate the contribution to all uncertainty values calculate
+d by the BN by expressing the uncertainty in the prior probabilities.
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exampleBN"
+
+\end_inset
+
+, the horizontal bars correspond to relative probabilities associated with
+ bins outlined by the numbers listed to the left of them.
+ These bars form a histogram and are commonly referred to as ``belief bars.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Once a system is cast in a BN, new observations of system state are applied
+ and propagated through the BN using Bayes’ theorem such that all forecasts
+ made in the model are contingent upon the specific observations of system
+ state.
  In other words, each forecast is associated with a specific configuration
  of observations of system state.
  Observations are indicated by selecting a bin and forcing the probability
- of a value in the node to be 100% (Figure 4).
+ of a value in the node to be 100%.
  When this operation is performed, the Bayesian update propagates in each
- direction among nodes that are d-connected [Jensen and Nielsen, 2001],
- updating the probabilities regardless of causal direction.
+ direction among nodes that are d-connected 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "JensenNielsen2001"
+
+\end_inset
+
+, updating the probabilities regardless of causal direction.
  In this way, correlations are expressed as well as causal responses.
  By selecting a suite of observations of state, the BN functions like a
- transfer function by providing an estimate of the fore- cast of interest
+ transfer function by providing an estimate of the forecast of interest
  and associated uncertainty.
- [27] A key piece of a priori information is the establishment of edges
- connecting the nodes.
+ 
+\end_layout
+
+\begin_layout Standard
+A key piece of a priori information is the establishment of edges connecting
+ the nodes.
  Edges should reflect a cascade of causality grounded in an understanding
  of the underlying process being modeled.
  If multiple processes from different models are to be linked, the selection
  of edge relationships defines the linkage.
- Similarly, a BN emulating a numerical model could be linked to a simpli-
- fied BN based on expert knowledge or empirical observations representing
- a different process.
  While machine learning can be used to teach a BN which parameters are connected
  to each other and to outputs, we adopt the more common method in which
  expert system understanding is used to specify these connections through
  the identification of nodes and edges.
  In this way, the BN honors the physical conditions known by the modeler,
  incorporated as soft knowledge.
- [28] In Figure 3, arrows on the edges indicate the direction of causal
- dependence.
+ 
+\end_layout
+
+\begin_layout Standard
+In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exampleBN"
+
+\end_inset
+
+, arrows on the edges indicate the direction of causal dependence.
  When all nodes are d-connected, the direction of the edge arrows serve
  no purpose.
  However, in the context of d-separation, the direction of causality has
  important ramifications on the propagation of uncertainty from observations
  to forecasts.
- [29] When computational conditions and problem size permit, a conditional
- probability table (CPT) can be created that directly enumerates the conditional
- probabilities of all nodes in the BN.
- This becomes impractical rapidly, how- ever, because the size of the CPT
- scales on the order of n dkþ1 where n is the number of nodes, d is the
- number of bins, and k is the number of parents for a node.
- In the case, where full enumeration is impractical due to this rapid increase
+\end_layout
+
+\begin_layout Standard
+When computational conditions and problem size permit, a conditional probability
+ table (CPT) can be created that directly enumerates the conditional probabiliti
+es of all nodes in the BN.
+ This becomes impractical rapidly, however, because the size of the CPT
+ scales on the order of 
+\begin_inset Formula $n\times d^{k+1}$
+\end_inset
+
+ where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of nodes, 
+\begin_inset Formula $d$
+\end_inset
+
+ is the number of bins, and 
+\begin_inset Formula $k$
+\end_inset
+
+ is the number of parents for a node.
+ In the case where full enumeration is impractical due to this rapid increase
  in computational expense with complexity, an iterative expectation-maximization
- (EM) algorithm is used [Dempster et al., 1977] to calculate approximate
- probabilities and maximum-likelihood values for the BN without full enumeration
- of the CPT.
+ (EM) algorithm is used 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Dempster1977"
+
+\end_inset
+
+ to calculate approximate probabilities and maximum-likelihood values for
+ the BN without full enumeration of the CPT.
  The EM algorithm iterates between estimating the maximum log likelihood
  of the function and finding the set of parameters resulting in that maximum
  log likelihood.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -576,8 +672,42 @@ The Netica software provides APIs for accessing and using the functions
  within it.
  Several versions of these APIs are available as precompiled libraries.
  To interface with Python, the C programming language APIs can be interfaced
- with using ctypes which is built-in to Python 2.7+.
+ with using the 
+\family typewriter
+ctypes
+\family default
+ which is built-in to Python 2.7+.
+ The 
+\family typewriter
+ctypes
+\family default
+ module enables the use of functions from a dynamic library of C code (a
+ DLL on Windows) in the Python environment.
+ In addition to making the functions accessible, some translation of variables
+ is required--for example, C often refers to data using pointers whereas
+ Python does not explicitly do so.
+ To pass a Python array to a C function, then, the variable must be passed
+ by reference (this is not explicitly done in Python) as a pointer.
+ Similarly, C functions often return pointers to memory space of the resulting
+ arrays so 
+\family typewriter
+ctypes
+\family default
+ must be used to read the correct amount of data from memory to populate
+ an array for further use in Python.
  
+\end_layout
+
+\begin_layout Standard
+CVNetica provides Python functions wrapped around Netica C functions and
+ helper functions to translate data to and from the Python environment.
+ In the remainder of this section, the main aspects of interfacing with
+ the Netica APIs are discussed in general terms.
+ Further documentation about 
+\family typewriter
+ctypes
+\family default
+ is available from the official documentation 
 \end_layout
 
 \begin_layout Standard
@@ -726,6 +856,17 @@ This work was funded by (ASIS and GLAS others depending on which example
  application we use).
  We are deeply grateful to Steven Mascaro for his initial PyNetica.py code
  which he kindly shared as a starting point for this work.
+\end_layout
+
+\begin_layout Section
+Disclaimer
+\end_layout
+
+\begin_layout Standard
+Any use of trade, product, or firm names is for descriptive purposes only
+ and does not imply endorsement by the U.S.
+ Government.
+ 
 \end_layout
 
 \begin_layout Section
