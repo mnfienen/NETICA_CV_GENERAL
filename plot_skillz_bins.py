@@ -5,6 +5,8 @@ import shutil
 import matplotlib as mpl
 from matplotlib.backends.backend_pdf import PdfPages
 
+print os.getcwd()
+
 from matplotlib.font_manager import FontProperties
 #--modify default matplotlib settings
 mpl.rcParams['font.sans-serif']          = 'Univers 57 Condensed'
@@ -19,7 +21,7 @@ mpl.rcParams['ytick.labelsize']  = 18
 
 # ############################
 # USER DATA
-allsets = ['2','3','4','5','6','7','8'] # ,'4_5','4_6','4_8','4_10','5_6','5_8','5_10']
+allsets = ['2', '3', '4', '4_5', '4_6', '4_8', '4_10', '5', '5_6', '5_8', '5_10', '6', '7', '8', '10']
 probroot = 'glacialbins'
 allstats = ['min','max','mean','median']
 allmetrics = ['skillMean',

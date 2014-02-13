@@ -148,7 +148,7 @@ class pynetica:
         outfile_streamer = self.pyt.NewFileStreamer(self.probpars.rebin_file[:-4] + '.neta')
         self.pyt.CompileNet(cnet)
         print "Writing new bin configurations for net to: {0:s}{1:s}".format(self.probpars.rebin_file[:-4], '.neta')
-        self.pyt.WriteNet(cnet, utfile_streamer)
+        self.pyt.WriteNet(cnet, outfile_streamer)
         self.pyt.DeleteStream(outfile_streamer)
         self.pyt.DeleteNet(cnet)
 

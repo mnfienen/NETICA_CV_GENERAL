@@ -86,35 +86,43 @@ if cdat.probpars.CVflag:
                          cdat.probpars.EMflag)
         # make predictions for both validation and calibration data sets
         print '*'*5 + 'Calibration predictions' + '*'*5
-        cdat.allfolds.calpred[cfold],cdat.allfolds.calNODES[cfold] = (
-            cdat.predictBayes(cname[:-4] + '.neta',
+        cdat.allfolds.calpred[cfold], cdat.allfolds.calNODES[cfold] = (
+                              cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.calN[cfold],
                               cdat.allfolds.caldata[cfold]))
         print '*'*5 + 'End Calibration predictions' + '*'*5 + '\n\n'
 
-        print '*'*5 + 'Making Calibration Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+        print '*'*5 + 'Making Calibration Testing using built-in Netica Functions' + '*'*5 + '\n\n'
         # ############### Now run the Netica built-in testing stuff ################
-        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta','CAL')
-        print '*'*5 + 'Finished --> Calibration Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta', 'CAL')
+        print '*'*5 + 'Finished --> Calibration Testing using built-in Netica Functions' + '*'*5 + '\n\n'
        
 
         print '*'*5 + 'Start Validation predictions' + '*'*5        
-        cdat.allfolds.valpred[cfold],cdat.allfolds.valNODES[cfold] = (
-            cdat.predictBayes(cname[:-4] + '.neta',
+        cdat.allfolds.valpred[cfold], cdat.allfolds.valNODES[cfold] = (
+                              cdat.predictBayes(cname[:-4] + '.neta',
                               cdat.allfolds.valN[cfold],
                               cdat.allfolds.valdata[cfold]))
-        print '*'*5 + 'End Validation predictions' + '*'*5   + '\n\n'     
+        print '*'*5 + 'End Validation predictions' + '*'*5 + '\n\n'
        
-        print '*'*5 + 'Making Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+        print '*'*5 + 'Making Validation Testing using built-in Netica Functions' + '*'*5 + '\n\n'
         # ############### Now run the Netica built-in testing stuff ################
-        cdat.PredictBayesNeticaCV(cfold,cname[:-4] + '.neta','VAL')
-        print '*'*5 + 'Finished --> Validation Testing using built-in Netica Functions' + '*'*5  + '\n\n'      
+        cdat.PredictBayesNeticaCV(cfold, cname[:-4] + '.neta', 'VAL')
+        print '*'*5 + 'Finished --> Validation Testing using built-in Netica Functions' + '*'*5 + '\n\n'
 
     print "write out validation"
-    cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,cdat.probpars.numfolds,kfoldOFP_Val,'Validation',cdat.NeticaTests['VAL'])
+    cdat.PredictBayesPostProcCV(cdat.allfolds.valpred,
+                                cdat.probpars.numfolds,
+                                kfoldOFP_Val,
+                                'Validation',
+                                cdat.NeticaTests['VAL'])
         
     print "write out calibration"     
-    cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,cdat.probpars.numfolds,kfoldOFP_Cal,'Calibration',cdat.NeticaTests['CAL'])
+    cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,
+                                dat.probpars.numfolds,
+                                kfoldOFP_Cal,
+                                'Calibration',
+                                cdat.NeticaTests['CAL'])
 
     kfoldOFP_Cal.close()
     kfoldOFP_Val.close()
@@ -127,7 +135,7 @@ cdat.pyt.CloseNetica()
 cdat.pyt.sanitize()
 # now dump into a pickle file
 outfilename = parfile[:-4] + '_cdat.pklz'
-print 'Dumping cdat to pickle file --> %s' %(outfilename)
-ofp = gzip.open(outfilename,'wb')
-pickle.dump(cdat,ofp)
+print 'Dumping cdat to pickle file --> {0:s}'.format(outfilename)
+ofp = gzip.open(outfilename, 'wb')
+pickle.dump(cdat, ofp)
 ofp.close()
