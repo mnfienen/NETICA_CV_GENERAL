@@ -134,7 +134,7 @@ if cdat.probpars.CVflag:
                                 cdat.NeticaTests['CAL'])
     kfoldOFP_Cal.close()
     kfoldOFP_Val.close()
-    
+
     # summarize over all the folds to make a consolidated text file
     cdat.SumarizePostProcCV()
 

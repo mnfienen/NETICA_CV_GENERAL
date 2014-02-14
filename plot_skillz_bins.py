@@ -23,6 +23,7 @@ mpl.rcParams['ytick.labelsize']  = 18
 # USER DATA
 allsets = ['2', '3', '4', '4_5', '4_6', '4_8', '4_10', '5', '5_6', '5_8', '5_10', '6', '7', '8', '10']
 probroot = 'glacialbins'
+numfolds = 10
 allstats = ['min','max','mean','median']
 allmetrics = ['skillMean',
         'rmseMean',
@@ -32,9 +33,9 @@ allmetrics = ['skillMean',
         'rmseML',
         'meanErrML',
         'meanAbsErrML']
-numsets = 8
-numfolds = 10
 # ############################
+
+numsets = len(allsets)
 figdir = probroot + '_plots'
 if os.path.exists(os.path.join(os.getcwd(),figdir)):
     shutil.rmtree(os.path.join(os.getcwd(),figdir))
