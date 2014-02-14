@@ -114,6 +114,8 @@ begin{linenumbers}
 
 Bayesian networks (BNs) are powerful tools for probabilistically simulating
  natural systems and emulating process models.
+ Cross validation is an important technique to avoid overfitting that can
+ result from overly complex BNs such that model predictions have true skill.
  Formal cross-validation procedures to evaluate relative performance in
  prediction outside of calibration data has been discussed in various studies
  but rarely implemented.
@@ -122,8 +124,11 @@ Bayesian networks (BNs) are powerful tools for probabilistically simulating
  CVNetica is an open-source package written in Python that extends the Netica
  software package to include cross-validation and a framework to read, rebuild,
  and learn BNs from data in a Python scripting environment.
+ Optimal BN complexity can be identified through exploration of numbers
+ of bins, nodes, and edges making up a BN using predictive skill as a metric
+ of performance.
  The insights gained from cross-validation and implications on predictive
- versus descriptive skill are explored through two applications: a data-driven
+ versus descriptive skill are illustrated with two applications: a data-driven
  oceanographic application in which wave height predictions are made from
  time series data learned from nearby buoys and weather stations; and a
  model-emulation application in which the source of water to groundwater
@@ -333,6 +338,33 @@ key "Korb2004"
  response) nodes, although this distinction is not a sharp one as the correlatio
 ns learned by the BN are ambivalent with respect to direction.
  Nodes can also be intermediate.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+khgfjhgf
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -664,9 +696,117 @@ key "NeticaAPI"
 \end_layout
 
 \begin_layout Standard
-The core functionality of CVNetica is based around the concept of 
+The core functionality of CVNetica is based around the concept of using
+ cross-validation metrics to asses the quality of predictions made by a
+ BN.
+ 
 \end_layout
 
+\begin_layout Itemize
+k-fold
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+what metrics (focus on skill for this paper, include ref.
+ to WRR and general CV lit.)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+predictive vs.
+ descriptive
+\end_layout
+
+\begin_layout Itemize
+the role and nature of model complexity
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+bins bins bins
+\end_layout
+
+\begin_layout Itemize
+edges? nodes? 
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Details about program structure
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+What did we actually implement?
+\end_layout
+
+\begin_layout Itemize
+CV_driver.py -- the main entry point and options
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+config XML
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+pyNeticaTools --> these are the general hooks into the DLL and could be
+ a starting point for non-CV related projects
+\end_layout
+
+\begin_layout Itemize
+PostProcessing
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+what's included in CV_driver.py?
+\end_layout
+
+\begin_layout Itemize
+what's outside of that?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+including plotting
+\end_layout
+
+\end_deeper
+\end_deeper
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -984,47 +1124,7 @@ The most straightforward retrieval of of information from a Netica function
  the Netica environment, a node, or a net).
  These values can be assigned to variables in Python and then passed to
  Netica functions without any alteration, as illustrated above.
-  
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-end{linenumbers}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section
-Details about program structure
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-begin{linenumbers}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-What did we actually implement?
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1048,6 +1148,15 @@ Example Results
 \end_layout
 
 \begin_layout Standard
+Here we talk about two applications mostly referencing other papers for
+ the description.
+\end_layout
+
+\begin_layout Subsection
+Data driven ocean waves
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1064,8 +1173,48 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-What do we get out of this kind of analysis? Use the Lake Michigan Basin
- model or maybe the Navy stuff?
+What do we get out of this kind of analysis? Berm example of data driven,
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Model emulation source of groundwater to wells
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and LMB example for model emulation.
 \end_layout
 
 \begin_layout Standard
@@ -1085,7 +1234,7 @@ end{linenumbers}
 \end_layout
 
 \begin_layout Section
-Discussion
+Discussion and Conclusions
 \end_layout
 
 \begin_layout Standard
@@ -1104,8 +1253,20 @@ begin{linenumbers}
 
 \end_layout
 
-\begin_layout Standard
-Wrap it all up here
+\begin_layout Itemize
+how does the code work?
+\end_layout
+
+\begin_layout Itemize
+what did we learn in data-driven areas?
+\end_layout
+
+\begin_layout Itemize
+what are ramifications for model emulation design?
+\end_layout
+
+\begin_layout Itemize
+is CV really all that or a waste of time?
 \end_layout
 
 \begin_layout Standard
