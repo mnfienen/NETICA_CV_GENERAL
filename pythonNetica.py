@@ -498,7 +498,7 @@ class pynetica:
         Method to consolidate metrics accross all folds in a cross-validation into a single file
         This is done after the fully detailed files are already written
         '''
-        for infile in [self.probpars.Cal_outfile, self.probpars.Cal_outfile]:
+        for infile in [self.probpars.Cal_outfile, self.probpars.Val_outfile]:
             header = open(infile, 'r').readlines()[0:3]
             stats = ['min', 'max', 'mean', 'median']
 
