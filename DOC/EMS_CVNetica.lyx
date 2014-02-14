@@ -112,9 +112,23 @@ begin{linenumbers}
 
 \end_inset
 
-Popular use of Netica for various applications.
- Lip service to cross-validation but few implementations.
- Filling that gap with open-souce tools in Python.
+Bayesian networks (BNs) are powerful tools for probabilistically simulating
+ natural systems and emulating process models.
+ Formal cross-validation procedures to evaluate relative performance in
+ prediction outside of calibration data has been discussed in various studies
+ but rarely implemented.
+ The lack of widespread cross-validation is due in part to a lack of software
+ tools designed to work with available BN packages.
+ CVNetica is an open-source package written in Python that extends the Netica
+ software package to include cross-validation and a framework to read, rebuild,
+ and learn BNs from data in a Python scripting environment.
+ The insights gained from cross-validation and implications on predictive
+ versus descriptive skill are explored through two applications: a data-driven
+ oceanographic application in which wave height predictions are made from
+ time series data learned from nearby buoys and weather stations; and a
+ model-emulation application in which the source of water to groundwater
+ wells is evaluated using a BN trained to the results of a large, regional
+ groundwater process model.
 \begin_inset ERT
 status open
 
