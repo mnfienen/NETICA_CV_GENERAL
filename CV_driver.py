@@ -132,9 +132,11 @@ if cdat.probpars.CVflag:
                                 kfoldOFP_Cal,
                                 'Calibration',
                                 cdat.NeticaTests['CAL'])
-
     kfoldOFP_Cal.close()
     kfoldOFP_Val.close()
+    
+    # summarize over all the folds to make a consolidated text file
+    cdat.SumarizePostProcCV()
 
 # Done with Netica so shut it down
 cdat.pyt.CloseNetica()
@@ -148,3 +150,4 @@ print 'Dumping cdat to pickle file --> {0:s}'.format(outfilename)
 ofp = gzip.open(outfilename, 'wb')
 pickle.dump(cdat, ofp)
 ofp.close()
+

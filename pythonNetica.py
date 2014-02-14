@@ -476,12 +476,12 @@ class pynetica:
 
 
 
-    def PredictBayesPostProcCV(self,cpred,numfolds,ofp,calval,cNeticaTestStats):
+    def PredictBayesPostProcCV(self, cpred, numfolds, ofp, calval, cNeticaTestStats):
         for cfold in np.arange(numfolds):
             for j in self.probpars.scenario.response:
-                print 'writing %s cross-validation output for --> %s' %(calval,j)
+                print 'writing %s cross-validation output for --> %s' %(calval, j)
                 ofp.write('%14d %14s %14.4f %14.6e %14.6e %14.6e %14.4f %14.6e %14.6e %14.6e %14.6e %14.6e %14.6e\n'
-                      %(cfold,j,cpred[cfold][j].stats.skMean,
+                      %(cfold, j, cpred[cfold][j].stats.skMean,
                         cpred[cfold][j].stats.rmseM,
                         cpred[cfold][j].stats.meaneM,
                         cpred[cfold][j].stats.meanabserrM,
@@ -493,8 +493,56 @@ class pynetica:
                         cNeticaTestStats[cfold].errrate[j],
                         cNeticaTestStats[cfold].quadloss[j]))
 
+    def SumarizePostProcCV(self):
+        '''
+        Method to consolidate metrics accross all folds in a cross-validation into a single file
+        This is done after the fully detailed files are already written
+        '''
+        for infile in [self.probpars.Cal_outfile, self.probpars.Cal_outfile]:
+            header = open(infile, 'r').readlines()[0:3]
+            stats = ['min', 'max', 'mean', 'median']
 
+            response_headers = ['skillMean', 'rmseMean', 'meanErrMean', 'meanAbsErrMean',
+                                'skillML', 'rmseML', 'meanErrML', 'meanAbsErrML']
 
+            indat = np.genfromtxt(infile, skiprows=3, dtype=None, names=True)
+            unique_responses = np.unique(indat['Response'])
+            numfolds = np.max(indat['Current_Fold'])+1
+            outdat = dict()  # dictionary of responses
+
+            for cres in unique_responses:
+                outdat[cres] = dict()
+                outdat[cres]['min'] = dict()
+                outdat[cres]['max'] = dict()
+                outdat[cres]['mean'] = dict()
+                outdat[cres]['median'] = dict()
+                currinds = np.where(indat['Response'] == cres)[0]
+                for cstat in response_headers:
+                    outdat[cres]['min'][cstat] = np.min(indat[cstat][currinds])
+                    outdat[cres]['max'][cstat] = np.max(indat[cstat][currinds])
+                    outdat[cres]['mean'][cstat] = np.mean(indat[cstat][currinds])
+                    outdat[cres]['median'][cstat] = np.median(indat[cstat][currinds])
+
+                ofp = open(infile[:-4] + '_SUMMARY.dat', 'w')
+                ofp.write('SUMMARY STATISTICS-->\n')
+                for line in header:
+                    ofp.write(line)
+                ofp.write('{0:>16s}{1:>16s}'.format('Stat', 'Response'))
+                for chead in response_headers:
+                    ofp.write('{0:>16s}'.format(chead))
+                ofp.write('\n')
+                for currstat in stats:
+                    for cresp in unique_responses:
+                        ofp.write('{0:>16s}'.format(currstat))
+                        ofp.write('{0:>16s}'.format(cresp))
+                        for cval in response_headers:
+                            if 'skill' in cval:
+                                ofp.write('{0:16.5f}'.format(outdat[cresp][currstat][cval]))
+                            else:
+                                ofp.write('{0:16.5e}'.format(outdat[cresp][currstat][cval]))
+                        ofp.write('\n')
+                    ofp.write('\n')
+                ofp.close()
 
     def SensitivityAnalysis(self):
         '''
@@ -621,8 +669,9 @@ class pynetica:
     # cross validation driver
     def cross_val_setup(self):
         # open a file pointer to the stats output file for all the folds
-        kfoldOFP_Val = open(
-            '{0:s}_kfold_stats_VAL_{1:d}_folds.dat'.format(self.probpars.scenario.name, self.probpars.numfolds), 'w')
+        self.probpars.Val_outfile = '{0:s}_kfold_stats_VAL_{1:d}_folds.dat'.format(
+            self.probpars.scenario.name, self.probpars.numfolds)
+        kfoldOFP_Val = open(self.probpars.Val_outfile, 'w')
         kfoldOFP_Val.write(
             'Validation statistics for cross validation.\n' +
             'Base net --> {0:s} and casefile --> {1:s}\n'.format(self.probpars.baseNET,self.probpars.baseCAS) +
@@ -631,10 +680,12 @@ class pynetica:
                   %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
                     'skillML','rmseML','meanErrML','meanAbsErrML','LogLoss','ErrorRate','QuadraticLoss')
                   + '\n')
-
-        kfoldOFP_Cal = open('%s_kfold_stats_CAL_%d_folds.dat' %(self.probpars.scenario.name,self.probpars.numfolds),'w')
+        self.probpars.Cal_outfile = '%s_kfold_stats_CAL_%d_folds.dat' %(
+            self.probpars.scenario.name,self.probpars.numfolds)
+        kfoldOFP_Cal = open(self.probpars.Cal_outfile, 'w')
         kfoldOFP_Cal.write('Calibration statistics for cross validation.\nBase net --> %s and casefile --> %s\n'
-                  %(self.probpars.baseNET,self.probpars.baseCAS) + 'Current scenario is: %s\n' %(self.probpars.scenario.name))
+                  %(self.probpars.baseNET, self.probpars.baseCAS) +
+                  'Current scenario is: %s\n' %(self.probpars.scenario.name))
         kfoldOFP_Cal.write('%14s '*13
                 %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
                   'skillML','rmseML','meanErrML','meanAbsErrML','LogLoss','ErrorRate','QuadraticLoss')
