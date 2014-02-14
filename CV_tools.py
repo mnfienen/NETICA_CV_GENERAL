@@ -26,9 +26,22 @@ class input_parameters:
         except:
             raise(FileOpenFail(self.infile)) 
         inpars = inpardat.getroot()
-        self.baseNET = inpars.findall('.//input_files/baseNET')[0].text
-        self.baseCAS = inpars.findall('.//input_files/baseCAS')[0].text
-        self.pwdfile = inpars.findall('.//input_files/pwdfile')[0].text
+        self.baseNET = inpars.findall('.//control_data/baseNET')[0].text
+        self.baseCAS = inpars.findall('.//control_data/baseCAS')[0].text
+        self.pwdfile = inpars.findall('.//control_data/pwdfile')[0].text
+        # see if rebinning is required and, if so, read in the relevant information
+        try:
+            self.rebin_flag = tf2flag(inpars.findall('.//control_data/rebin_flag')[0].text)
+            self.originalNET = inpars.findall('.//control_data/originalNET')[0].text
+        except IndexError:
+            self.rebin_flag = False  # this is the default
+        if self.rebin_flag:
+            self.binsetup = dict()
+            allbins = inpardat.findall('.//newbins/node')
+            for cbin in allbins:
+                tmp = cbin.attrib
+                self.binsetup[cbin.text] = int(tmp['numbins'])
+
         self.CVflag = tf2flag(inpars.findall('.//kfold_data/CVflag')[0].text)
         self.numfolds = int(inpars.findall('.//kfold_data/numfolds')[0].text)
         self.scenario = netica_scenario()
@@ -45,19 +58,8 @@ class input_parameters:
         self.report_sens = False
         self.report_sens = tf2flag(inpars.findall('.//sensitivity/report_sens')[0].text)
         self.voodooPar = float(inpars.findall('.//learnCPTdata/voodooPar')[0].text)
-        self.rebin_flag = False
-        self.rebin_flag = tf2flag(inpars.findall('.//rebinning/rebin_flag')[0].text)
-        if self.rebin_flag:
-            self.rebin_file = inpars.findall('.//rebinning/rebin_file')[0].text
-            try:
-                inpardat = ET.parse(self.rebin_file)
-            except:
-                raise(FileOpenFail(self.rebin_file))
-            self.binsetup = dict()
-            allbins = inpardat.findall('.//newbins/node')
-            for cbin in allbins:
-                tmp = cbin.attrib
-                self.binsetup[cbin.text] = int(tmp['numbins'])
+
+
 
 ###################
 # Tools for k-fold setup

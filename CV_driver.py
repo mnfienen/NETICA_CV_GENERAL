@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 import gzip
 import sys
+import shutil
 
 '''
 CV_driver.py
@@ -33,6 +34,14 @@ cdat.pyt.LimitMemoryUsage(5.0e9)  # --> crank up the memory available
 
 # read in the data from a base cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
+
+# perform rebinning if requested
+if cdat.probpars.rebin_flag:
+    # copy over the originalNET neta file to be the baseNET for this work
+    shutil.copyfile(cdat.probpars.originalNET, cdat.probpars.baseNET)
+
+    # sets equiprobable bins for each node
+    cdat.UpdateNeticaBinThresholds()
 
 # set up the experience node indexing
 cdat.NodeParentIndexing(cdat.probpars.baseNET, cdat.probpars.baseCAS)

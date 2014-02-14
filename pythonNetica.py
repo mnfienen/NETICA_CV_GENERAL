@@ -132,22 +132,24 @@ class pynetica:
         self.pyt.DeleteStream(cas_streamer)
         self.parent_inds = parent_indices
 
-    def UpdateNeticaBinThresholds(self, basenet):
+    def UpdateNeticaBinThresholds(self):
         '''
         Function that reads in new numbers of bins and sets each node to
         have equiprobable bins in that number
         '''
         # first open the net
-        cnet = self.pyt.OpenNeticaNet(basenet)
+        print "*"*5 + "Setting up a rebinned net {0:s} copying nodes from {1:s}".format(self.probpars.baseNET,
+                                                                                self.probpars.originalNET) + "*"*5
+        cnet = self.pyt.OpenNeticaNet(self.probpars.originalNET)
         for cbin in self.probpars.binsetup:
             cnodebins = nBT.netica_binning(self.casdata[cbin], self.probpars.binsetup[cbin])
             cnodebins.bin_thresholds()
-            cnode = self.pyt.GetNodeNamed(cbin,cnet)
+            cnode = self.pyt.GetNodeNamed(cbin, cnet)
             print "Setting node {0:s} to have {1:d} bins".format(cbin, self.probpars.binsetup[cbin])
             self.pyt.SetNodeLevels(cnode, cnodebins.binlevels)
-        outfile_streamer = self.pyt.NewFileStreamer(self.probpars.rebin_file[:-4] + '.neta')
+        outfile_streamer = self.pyt.NewFileStreamer(self.probpars.baseNET)
         self.pyt.CompileNet(cnet)
-        print "Writing new bin configurations for net to: {0:s}{1:s}".format(self.probpars.rebin_file[:-4], '.neta')
+        print "Writing new bin configurations for net to: {0:s}".format(self.probpars.baseNET)
         self.pyt.WriteNet(cnet, outfile_streamer)
         self.pyt.DeleteStream(outfile_streamer)
         self.pyt.DeleteNet(cnet)
