@@ -233,7 +233,21 @@ key "python"
  These APIs expose most of Netica's functionality, through functions, to
  external programming.
  Among the languages available, C was chosen because the ultimate goal was
- to interface with Python 2.7.6.
+ to interface with Python 2.7.6 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "python"
+
+\end_inset
+
+ and Numpy 1.9 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "scipy"
+
+\end_inset
+
+.
  We discuss the technical challenges associated with running C APIs using
  Python and describe the toolbox of validation metrics included in this
  work.
@@ -638,7 +652,15 @@ CVNetica is a Python module that performs cross-validation and calculates
  other performance metrics on BNs created with the Netica software package.
  Netica is a commercial package with more power than open-source alternatives.
  However, CVNetica is open-source and freely available.
- 
+ The APIs for Netica are described in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "NeticaAPI"
+
+\end_inset
+
+.
+ Pyth
 \end_layout
 
 \begin_layout Standard
@@ -770,6 +792,24 @@ The first task when accessing the Netica DLL is to make the functions available
 .dll
 \family default
  extension required.
+ The 
+\family typewriter
+ctypes
+\family default
+ module is imported as 
+\family typewriter
+ct
+\family default
+ so in future code descriptions, 
+\family typewriter
+ct.<>
+\family default
+ implies a method or property from 
+\family typewriter
+ctypes
+\family default
+.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -793,7 +833,158 @@ self.n = ct.windll.Netica
 \end_layout
 
 \begin_layout Standard
-After this, self.n is an object with all 
+After this, 
+\family typewriter
+self.n
+\family default
+ is an object with all of the Netica API functions available.
+ To call a function from the DLL, the function name is dereferenced from
+ self.n and in CVNetica, a wrapper function is created as an interface to
+ the Netica function.
+ In the following example, the Netica function to be called is 
+\family typewriter
+EnterNodeValue_bn
+\family default
+.
+ This function takes two arguments as defined by Netica: 
+\family typewriter
+void EnterNodeValue_bn (node_bn* node, double value)
+\family default
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "NeticaAPI"
+
+\end_inset
+
+.
+ The two arguments are of the custom C type defined by Netica as 
+\family typewriter
+node_bn* node
+\family default
+ and a double-precision float 
+\family typewriter
+double value
+\family default
+.
+ A wrapper around this function must then make type conversions as appropriate.
+ The CVNetica variable 
+\family typewriter
+cnode
+\family default
+ was returned by a Netica function, so it is already of the type required
+ (a pointer).
+ However, the CVNetica variable 
+\family typewriter
+cval
+\family default
+ is a Python float and must be converted to a C double using a 
+\family typewriter
+ctypes
+\family default
+ conversion.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def EnterNodeValue(self,cnode,cval):
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.n.EnterNodeValue_bn(cnode,ct.c_double(cval))         
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.chkerr()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+chkerr
+\family default
+ method polls the Netica DLL for current error status and, if an error is
+ encountered, kills CVNetica and displays the error from Netica to standard
+ output.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Exchanging information with the Netica DLL
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The functions in Netica can accept a variety of argument types.
+ The easiest type is a pointer to an object returned by another Netica function.
+ In this case, a Python variable represents the pointer--just a memory address--
+so no conversion is necessary.
+ For single Python floats and ints, the conversions are 
+\family typewriter
+ct.c_double(cval)
+\family default
+ and 
+\family typewriter
+ct.c_int(cval)
+\family default
+, respectively, where 
+\family typewriter
+cval
+\family default
+ is the Python variable.
+ 
+\end_layout
+
+\begin_layout Standard
+The most straightforward retrieval of of information from a Netica function
+ is when the returned value is a pointer to a Netica object (for example,
+ the Netica environment, a node, or a net).
+ These values can be assigned to variables in Python and then passed to
+ Netica functions without any alteration, as illustrated above.
+  
 \end_layout
 
 \begin_layout Standard

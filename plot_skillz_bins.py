@@ -24,7 +24,7 @@ mpl.rcParams['ytick.labelsize']  = 18
 allsets = ['2', '3', '4', '4_5', '4_6', '4_8', '4_10', '5', '5_6', '5_8', '5_10', '6', '7', '8', '10']
 probroot = 'glacialbins'
 numfolds = 10
-allstats = ['min','max','mean','median']
+allstats = ['min', 'max', 'mean', 'median']
 allmetrics = ['skillMean',
         'rmseMean',
         'meanErrMean',
@@ -58,8 +58,8 @@ class alldat:
         self.outdata = dict()
         self.indat = dict()
         
-    def readinfile(self,cset):
-        self.indat[cset] = np.genfromtxt(self.infiles[cset],dtype=None,names=True,skiprows=4)
+    def readinfile(self, cset):
+        self.indat[cset] = np.genfromtxt(self.infiles[cset], dtype=None, names=True, skiprows=4)
         if cset == self.allsets[0]:
             self.allresponses = np.unique(self.indat[cset]['Response'])
     
@@ -75,12 +75,12 @@ class alldat:
             for cset in self.allsets:
                 for cmet in self.allmetrics:
                     for cres in self.allresponses:
-                        crow = np.intersect1d(np.where(self.indat[cset]['Stat']==cstat)[0], 
-                                    np.where(self.indat[cset]['Response']==cres)[0])
+                        crow = np.intersect1d(np.where(self.indat[cset]['Stat'] == cstat)[0],
+                                    np.where(self.indat[cset]['Response'] == cres)[0])
                         self.outdata[cstat][cres][cmet] = np.hstack((self.outdata[cstat][cres][cmet],
                                                                      self.indat[cset][cmet][crow]))
                     
-def make_plots(CALdat,VALdat,figdir):
+def make_plots(CALdat, VALdat, figdir):
     for cstat in CALdat.allstats:
         print cstat
         for cmet in CALdat.allmetrics:

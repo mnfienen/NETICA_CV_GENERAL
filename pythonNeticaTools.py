@@ -238,7 +238,7 @@ class pyneticaTools:
         except:
             raise(dllFail(platform.system()))
         #next try to establish an environment for Netica
-        self.env = ct.c_void_p(self.n.NewNeticaEnviron_ns(self.license,None,None))
+        self.env = ct.c_void_p(self.n.NewNeticaEnviron_ns(self.license, None, None))
         # try to intialize Netica
         res = self.n.InitNetica2_bn(self.env, ct.byref(self.mesg))
         if res >= 0:
@@ -478,12 +478,12 @@ class pyneticaTools:
         self.n.LearnCPTs_bn(learner,nodes,caseset,ct.c_double(voodooPar))
         self.chkerr()
 
-    def LengthNodeList(self,nodelist):
+    def LengthNodeList(self, nodelist):
         res = self.n.LengthNodeList_bn(nodelist)
         self.chkerr()
         return res    
 
-    def LimitMemoryUsage(self,memlimit):
+    def LimitMemoryUsage(self, memlimit):
         self.n.LimitMemoryUsage_ns(ct.c_double(memlimit),self.env)
         print 'set memory limit to ---> %f bytes' %memlimit
         self.chkerr()
