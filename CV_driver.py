@@ -128,7 +128,7 @@ if cdat.probpars.CVflag:
         
     print "write out calibration"     
     cdat.PredictBayesPostProcCV(cdat.allfolds.calpred,
-                                dat.probpars.numfolds,
+                                cdat.probpars.numfolds,
                                 kfoldOFP_Cal,
                                 'Calibration',
                                 cdat.NeticaTests['CAL'])

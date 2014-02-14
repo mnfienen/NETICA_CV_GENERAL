@@ -625,7 +625,7 @@ class pynetica:
             '{0:s}_kfold_stats_VAL_{1:d}_folds.dat'.format(self.probpars.scenario.name, self.probpars.numfolds), 'w')
         kfoldOFP_Val.write(
             'Validation statistics for cross validation.\n' +
-            'Base net --> {0:s} and casefile --> {1:s}\n'.format(self.probpars.scenario.name) +
+            'Base net --> {0:s} and casefile --> {1:s}\n'.format(self.probpars.baseNET,self.probpars.baseCAS) +
             'Current scenario is: {0:s}\n'.format(self.probpars.scenario.name))
         kfoldOFP_Val.write('%14s '*13
                   %('Current_Fold','Response','skillMean','rmseMean','meanErrMean','meanAbsErrMean',
