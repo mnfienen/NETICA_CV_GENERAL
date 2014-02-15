@@ -793,23 +793,19 @@ key "FienenBNWRR"
 
 \end_inset
 
- 
+ the number of bins was assumed the same for each node but in CVNetica the
+ number of bins in each node can be varied independently to allow for exploratio
+n of various assumptions of complexity.
+ The user can also establish scenarios manually varying the number and nature
+ of edges connecting nodes and even the number of nodes themselves.
+ A group of these scenarios is defined by CVNetica as a ``set.
+\begin_inset Quotes erd
+\end_inset
+
+ Each set can be evaluated as a batch and then plots generated of performance
+ metrics across the sets.
 \end_layout
 
-\begin_layout Itemize
-the role and nature of model complexity
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-bins bins bins
-\end_layout
-
-\begin_layout Itemize
-edges? nodes? 
-\end_layout
-
-\end_deeper
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -826,7 +822,7 @@ end{linenumbers}
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Subsection
 Details about program structure
 \end_layout
 
