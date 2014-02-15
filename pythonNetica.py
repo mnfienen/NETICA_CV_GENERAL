@@ -500,7 +500,7 @@ class pynetica:
         '''
         for infile in [self.probpars.Cal_outfile, self.probpars.Val_outfile]:
             header = open(infile, 'r').readlines()[0:3]
-            stats = ['min', 'max', 'mean', 'median']
+            stats = ['min', 'max', 'mean', 'median', 'std']
 
             response_headers = ['skillMean', 'rmseMean', 'meanErrMean', 'meanAbsErrMean',
                                 'skillML', 'rmseML', 'meanErrML', 'meanAbsErrML']
@@ -516,13 +516,14 @@ class pynetica:
                 outdat[cres]['max'] = dict()
                 outdat[cres]['mean'] = dict()
                 outdat[cres]['median'] = dict()
+                outdat[cres]['std'] = dict()
                 currinds = np.where(indat['Response'] == cres)[0]
                 for cstat in response_headers:
                     outdat[cres]['min'][cstat] = np.min(indat[cstat][currinds])
                     outdat[cres]['max'][cstat] = np.max(indat[cstat][currinds])
                     outdat[cres]['mean'][cstat] = np.mean(indat[cstat][currinds])
                     outdat[cres]['median'][cstat] = np.median(indat[cstat][currinds])
-
+                    outdat[cres]['std'][cstat] = np.std(indat[cstat][currinds])
                 ofp = open(infile[:-4] + '_SUMMARY.dat', 'w')
                 ofp.write('SUMMARY STATISTICS-->\n')
                 for line in header:

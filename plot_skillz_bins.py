@@ -24,7 +24,10 @@ mpl.rcParams['ytick.labelsize']  = 18
 allsets = ['2', '3', '4', '4_5', '4_6', '4_8', '4_10', '5', '5_6', '5_8', '5_10', '6', '7', '8', '10']
 probroot = 'glacialbins'
 numfolds = 10
-allstats = ['min', 'max', 'mean', 'median']
+confidence_interval_flag = True
+
+
+allstats = ['min', 'max', 'mean', 'median', 'std']
 allmetrics = ['skillMean',
         'rmseMean',
         'meanErrMean',
@@ -76,36 +79,55 @@ class alldat:
                 for cmet in self.allmetrics:
                     for cres in self.allresponses:
                         crow = np.intersect1d(np.where(self.indat[cset]['Stat'] == cstat)[0],
-                                    np.where(self.indat[cset]['Response'] == cres)[0])
+                                              np.where(self.indat[cset]['Response'] == cres)[0])
                         self.outdata[cstat][cres][cmet] = np.hstack((self.outdata[cstat][cres][cmet],
                                                                      self.indat[cset][cmet][crow]))
                     
 def make_plots(CALdat, VALdat, figdir):
     for cstat in CALdat.allstats:
-        print cstat
-        for cmet in CALdat.allmetrics:
-            print cmet
-            pdf_plots = PdfPages(os.path.join(figdir, '{0:s}_{1:s}.pdf'.format(cstat, cmet)))
-            for cres in CALdat.allresponses:
-                print cres
-                print 'plotting --> {0:s}_{1:s}_{2:s}'.format(cstat, cmet, cres)
-                outfig = plt.figure()
-                ax = outfig.add_subplot(111)
-                plt.hold(True)
-                plt.plot(CALdat.outdata[cstat][cres][cmet], 'r-x')
-                plt.plot(VALdat.outdata[cstat][cres][cmet], 'b-x')
-                plt.title('{0:s} of {1:s} for {2:s} over bins'.format(cstat, cres, cmet))
-                plt.xlabel('Sets')
-                plt.xticks(np.arange(len(CALdat.allsets)), CALdat.allsets, rotation=45)
-                #plt.yticks(np.linspace(0, 1, 11))
-                plt.ylabel(cmet)
-                plt.grid(True)
-                plt.legend(['Calibration', 'Validation'], loc='best')
-                if 'skill' in cmet:
-                    print 'setting ylim!'
-                    plt.ylim((0.0, 1.0))
-                pdf_plots.savefig(outfig)
-            pdf_plots.close()
+        if cstat != 'std':
+            print cstat
+            for cmet in CALdat.allmetrics:
+                print cmet
+                pdf_plots = PdfPages(os.path.join(figdir, '{0:s}_{1:s}.pdf'.format(cstat, cmet)))
+
+                for cres in CALdat.allresponses:
+                    print cres
+                    print 'plotting --> {0:s}_{1:s}_{2:s}'.format(cstat, cmet, cres)
+                    outfig = plt.figure()
+                    ax = outfig.add_subplot(111)
+                    plt.plot(CALdat.outdata[cstat][cres][cmet], 'r-x')
+                    plt.hold(True)
+                    plt.plot(VALdat.outdata[cstat][cres][cmet], 'b-x')
+                    if confidence_interval_flag:
+                        #  plot 95% CIs
+                        plt.fill_between(np.arange(len(CALdat.outdata[cstat][cres][cmet])),
+                                         (CALdat.outdata[cstat][cres][cmet] -
+                                                   2.0*CALdat.outdata['std'][cres][cmet]),
+                                                   (CALdat.outdata[cstat][cres][cmet] +
+                                                   2.0*CALdat.outdata['std'][cres][cmet]),
+                                                   color='red',
+                                                   alpha=0.2)
+                        plt.fill_between(np.arange(len(VALdat.outdata[cstat][cres][cmet])),
+                                         (VALdat.outdata[cstat][cres][cmet] -
+                                                   2.0*VALdat.outdata['std'][cres][cmet]),
+                                                   (VALdat.outdata[cstat][cres][cmet] +
+                                                   2.0*VALdat.outdata['std'][cres][cmet]),
+                                                   color='blue',
+                                                   alpha=0.2)
+                    plt.title('{0:s} of {1:s} for {2:s} over bins'.format(cstat, cres, cmet))
+                    plt.xlabel('Sets')
+                    plt.xticks(np.arange(len(CALdat.allsets)), CALdat.allsets, rotation=45)
+                    #plt.yticks(np.linspace(0, 1, 11))
+                    plt.ylabel(cmet)
+                    plt.grid(True)
+                    plt.legend(['Calibration', 'Validation'], loc='best')
+                    if 'skill' in cmet:
+                        print 'setting ylim!'
+                        plt.ylim((0.0, 1.0))
+                    pdf_plots.savefig(outfig)
+                    del outfig
+                pdf_plots.close()
 
 CALroots = dict()
 VALroots = dict()
