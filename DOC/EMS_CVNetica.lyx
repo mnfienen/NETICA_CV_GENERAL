@@ -725,7 +725,7 @@ key "FienenBNWRR"
  In this work, we will focus on skill
 \begin_inset Formula 
 \begin{equation}
-sk=\left[1-\frac{\sigma_{e}^{2}}{\sigma_{o}^{2}}\right]\times100\%\label{skill}
+sk=\left[1-\frac{\sigma_{e}^{2}}{\sigma_{o}^{2}}\right]\label{skill}
 \end{equation}
 
 \end_inset
@@ -747,23 +747,53 @@ key "Gutierrez2011,plant2011a,Weigend1994"
 \end_inset
 
 .
- Skill is evaluated by comparing BN predictions to observations 
+ Skill is evaluated by comparing BN predictions to observations with a value
+ of unity indicating perfect correspondence and a value of zero indicating
+ substantial discrepancy between BN predictions and observations.
 \end_layout
 
-\begin_layout Itemize
-k-fold
+\begin_layout Standard
+By evaluating skill over both the calibration data sets and prediction data
+ sets, the value of a BN as a descriptive or predictive tool can be evaluated.
+ As BN complexity- increases, so does 
+\begin_inset Formula $sk$
+\end_inset
+
+ and with sufficient complexity, 
+\begin_inset Formula $sk$
+\end_inset
+
+ over the calibration data converges on unity (perfection).
+ However, greater descriptive value in a BN comes at a cost in predictive
+ value.
+ This is the classic condition of overfitting as cast in the context of
+ information theory by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+.
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-what metrics (focus on skill for this paper, include ref.
- to WRR and general CV lit.)
-\end_layout
+\begin_layout Standard
+One way to systematically evaluate BN complexity is to systematically adjust
+ the number of bins for each node with more bins meaning a greater level
+ of complexity.
+ CVNetica has the capability to make this type of analysis efficient by
+ allowing the user to specify an original BN and a configuration of bin
+ for each node.
+ CVNetica then builds a new BN with the requested number of bins and assigning
+ equiprobable prior distributions for each bin.
+ In 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
 
-\end_deeper
-\begin_layout Itemize
-predictive vs.
- descriptive
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Itemize
