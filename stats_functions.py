@@ -110,10 +110,12 @@ def LSQR_skill(x, z, w=None):
         w = w[keepinds]
         Q = np.diag(1.0/w)
     else:
-        Q = np.diag(np.ones(n))
-        
+        pass
+        # form weighted covariance if using weights
+        # Q = np.diag(np.ones(n))
+
     # form the normal equations including weights
-    XtX = np.dot(np.dot(X.T, Q), X)
+    # reserved --> XtX = np.dot(np.dot(X.T, Q), X)
     
     # solve for b
     b = nplstsq(X, z)[0]

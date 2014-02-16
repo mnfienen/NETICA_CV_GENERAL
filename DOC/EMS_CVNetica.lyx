@@ -245,7 +245,7 @@ key "python"
 
 \end_inset
 
- and Numpy 1.9 
+ and Numpy 1.8 and Scipy 0.13.2 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "scipy"
@@ -267,11 +267,11 @@ key "FienenBNWRR"
 \end_inset
 
 , we developed tools addressing two fundamental questions of Bayesian network
- performance: how does predictive performance compare with calibration quality?;
- and how does the complexity of the underlying network impact predictive
- and calibration performance? Cross-validation is used to answer both questions,
- and the number of bins per node is used as a metric of complexity to answer
- the second.
+ performance: how does predictive performance compare with descriptive calibrati
+on quality?; and how does the complexity of the underlying network impact
+ predictive and descriptive performance? Cross-validation is used to answer
+ both questions, and the number of bins per node is used as a metric of
+ complexity to answer the second.
  These specific questions are evaluated in this work but the framework is
  presented to allow for other validation metrics and techniques beyond those
  presented here.
@@ -338,33 +338,6 @@ key "Korb2004"
  response) nodes, although this distinction is not a sharp one as the correlatio
 ns learned by the BN are ambivalent with respect to direction.
  Nodes can also be intermediate.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float table
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-khgfjhgf
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -660,7 +633,7 @@ end{linenumbers}
 \end_layout
 
 \begin_layout Section
-CVNetica Code
+Cross validation tool
 \end_layout
 
 \begin_layout Standard
@@ -691,47 +664,148 @@ key "NeticaAPI"
 
 \end_inset
 
-.
- Pyth
+ and are provided as a dynamic linked library (DLL) for Windows.
+ Static libraries are also available for Macintosh and *nix platforms, but
+ to use them with Python, dynamic interface wrappers would be necessary
+ in addition to the Python function wrappers written in CVNetica.
+ 
 \end_layout
 
 \begin_layout Standard
 The core functionality of CVNetica is based around the concept of using
- cross-validation metrics to asses the quality of predictions made by a
- BN.
+ cross-validation 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "StatLearning2009,Marcot2012,FienenBNWRR"
+
+\end_inset
+
+ metrics to asses the quality of predictions made by a BN.
+ In 
+\begin_inset Formula $k$
+\end_inset
+
+-fold cross validation used in this work, the calibration dataset is, randomly
+ without replacement, divided into 
+\begin_inset Formula $k$
+\end_inset
+
+ fold or partitions where 
+\begin_inset Formula $k$
+\end_inset
+
+ typically is between 2 and 10.
+ For each fold, the BN is trained using the dataset without the data in
+ the fold, then the BN is used to make predictions on the left-out data.
+ In this way, performance of the BN is evaluated on data not used in calibration
+ to simulate how performance in true future prediction.
+ Several performance metrics can be used for this purpose, as discussed
+ in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Netica"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "plant2011a"
+
+\end_inset
+
+, and 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+.
+ In this work, we will focus on skill
+\begin_inset Formula 
+\begin{equation}
+sk=\left[1-\frac{\sigma_{e}^{2}}{\sigma_{o}^{2}}\right]\label{skill}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\sigma_{e}^{2}$
+\end_inset
+
+ is the mean squared error between observations and BN predictions, and
  
+\begin_inset Formula $\sigma_{o}^{2}$
+\end_inset
+
+ is the variance of the observations 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Gutierrez2011,plant2011a,Weigend1994"
+
+\end_inset
+
+.
+ Skill is evaluated by comparing BN predictions to observations with a value
+ of unity indicating perfect correspondence and a value of zero indicating
+ substantial discrepancy between BN predictions and observations.
 \end_layout
 
-\begin_layout Itemize
-k-fold
+\begin_layout Standard
+By evaluating skill over both the calibration data sets and prediction data
+ sets, the value of a BN as a descriptive or predictive tool can be evaluated.
+ As BN complexity- increases, so does 
+\begin_inset Formula $sk$
+\end_inset
+
+ and with sufficient complexity, 
+\begin_inset Formula $sk$
+\end_inset
+
+ over the calibration data converges on unity (perfection).
+ However, greater descriptive value in a BN comes at a cost in predictive
+ value.
+ This is the classic condition of overfitting as cast in the context of
+ information theory by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+.
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-what metrics (focus on skill for this paper, include ref.
- to WRR and general CV lit.)
+\begin_layout Standard
+One way to systematically evaluate BN complexity is to systematically adjust
+ the number of bins for each node with more bins meaning a greater level
+ of complexity.
+ CVNetica has the capability to make this type of analysis efficient by
+ allowing the user to specify an original BN and a configuration of bin
+ for each node.
+ CVNetica then builds a new BN with the requested number of bins and assigning
+ equiprobable prior distributions for each bin.
+ In 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+ the number of bins was assumed the same for each node but in CVNetica the
+ number of bins in each node can be varied independently to allow for exploratio
+n of various assumptions of complexity.
+ The user can also establish scenarios manually varying the number and nature
+ of edges connecting nodes and even the number of nodes themselves.
+ A group of these scenarios is defined by CVNetica as a ``set.
+\begin_inset Quotes erd
+\end_inset
+
+ Each set can be evaluated as a batch and then plots generated of performance
+ metrics across the sets.
 \end_layout
 
-\end_deeper
-\begin_layout Itemize
-predictive vs.
- descriptive
-\end_layout
-
-\begin_layout Itemize
-the role and nature of model complexity
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-bins bins bins
-\end_layout
-
-\begin_layout Itemize
-edges? nodes? 
-\end_layout
-
-\end_deeper
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -748,7 +822,7 @@ end{linenumbers}
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Subsection
 Details about program structure
 \end_layout
 
@@ -1125,6 +1199,51 @@ The most straightforward retrieval of of information from a Netica function
  These values can be assigned to variables in Python and then passed to
  Netica functions without any alteration, as illustrated above.
  
+\end_layout
+
+\begin_layout Standard
+Some Netica functions return a double value but also write another result
+ to memory at a location indicated by a pointer passed to the function.
+ An example is 
+\family typewriter
+GetNodeExpectedValue_bn
+\family default
+.
+ The structure of this function in C is
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double GetNodeExpectedValue_bn (node_bn* node, 
+\end_layout
+
+\begin_layout Plain Layout
+
+	double* std_dev, double* x3, double* x4)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the returned value is the expected value (double precision) of the
+ node identified by 
+\family typewriter
+node_bn*
+\family default
+, the standard deviation if written to the memory location identified by
+ the pointer 
+\family typewriter
+double* std_dev
 \end_layout
 
 \begin_layout Standard
