@@ -136,7 +136,7 @@ if cdat.probpars.CVflag:
     kfoldOFP_Val.close()
 
     # summarize over all the folds to make a consolidated text file
-    cdat.SumarizePostProcCV()
+    cdat.SummarizePostProcCV()
 
 # Done with Netica so shut it down
 cdat.pyt.CloseNetica()

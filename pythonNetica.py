@@ -493,7 +493,7 @@ class pynetica:
                         cNeticaTestStats[cfold].errrate[j],
                         cNeticaTestStats[cfold].quadloss[j]))
 
-    def SumarizePostProcCV(self):
+    def SummarizePostProcCV(self):
         '''
         Method to consolidate metrics accross all folds in a cross-validation into a single file
         This is done after the fully detailed files are already written
@@ -524,26 +524,26 @@ class pynetica:
                     outdat[cres]['mean'][cstat] = np.mean(indat[cstat][currinds])
                     outdat[cres]['median'][cstat] = np.median(indat[cstat][currinds])
                     outdat[cres]['std'][cstat] = np.std(indat[cstat][currinds])
-                ofp = open(infile[:-4] + '_SUMMARY.dat', 'w')
-                ofp.write('SUMMARY STATISTICS-->\n')
-                for line in header:
-                    ofp.write(line)
-                ofp.write('{0:>16s}{1:>16s}'.format('Stat', 'Response'))
-                for chead in response_headers:
-                    ofp.write('{0:>16s}'.format(chead))
-                ofp.write('\n')
-                for currstat in stats:
-                    for cresp in unique_responses:
-                        ofp.write('{0:>16s}'.format(currstat))
-                        ofp.write('{0:>16s}'.format(cresp))
-                        for cval in response_headers:
-                            if 'skill' in cval:
-                                ofp.write('{0:16.5f}'.format(outdat[cresp][currstat][cval]))
-                            else:
-                                ofp.write('{0:16.5e}'.format(outdat[cresp][currstat][cval]))
-                        ofp.write('\n')
+            ofp = open(infile[:-4] + '_SUMMARY.dat', 'w')
+            ofp.write('SUMMARY STATISTICS-->\n')
+            for line in header:
+                ofp.write(line)
+            ofp.write('{0:>16s}{1:>16s}'.format('Stat', 'Response'))
+            for chead in response_headers:
+                ofp.write('{0:>16s}'.format(chead))
+            ofp.write('\n')
+            for currstat in stats:
+                for cresp in unique_responses:
+                    ofp.write('{0:>16s}'.format(currstat))
+                    ofp.write('{0:>16s}'.format(cresp))
+                    for cval in response_headers:
+                        if 'skill' in cval:
+                            ofp.write('{0:16.5f}'.format(outdat[cresp][currstat][cval]))
+                        else:
+                            ofp.write('{0:16.5e}'.format(outdat[cresp][currstat][cval]))
                     ofp.write('\n')
-                ofp.close()
+                ofp.write('\n')
+            ofp.close()
 
     def SensitivityAnalysis(self):
         '''
