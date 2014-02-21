@@ -117,7 +117,7 @@ def make_plots(CALdat, VALdat, figdir):
                                                    alpha=0.2)
                     plt.title('{0:s} of {1:s} for {2:s} over bins'.format(cstat, cres, cmet))
                     plt.xlabel('Sets')
-                    plt.xticks(np.arange(len(CALdat.allsets)), CALdat.allsets, rotation=45)
+                    plt.xticks(np.arange(len(CALdat.allsets)), CALdat.allsets, rotation=90)
                     #plt.yticks(np.linspace(0, 1, 11))
                     plt.ylabel(cmet)
                     plt.grid(True)
@@ -125,7 +125,7 @@ def make_plots(CALdat, VALdat, figdir):
                     if 'skill' in cmet:
                         print 'setting ylim!'
                         plt.ylim((0.0, 1.0))
-                    pdf_plots.savefig(outfig)
+                    pdf_plots.savefig(outfig, bbox_inches='tight')
                     del outfig
                 pdf_plots.close()
 
