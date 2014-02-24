@@ -1353,7 +1353,197 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-and LMB example for model emulation.
+In the Great Lakes Region of the United States, the interactions between
+ groundwater and surface water are of important management interest.
+ Specifically, as extraction wells are installed, the baseflow in streams
+ can be reduced with important ramifications on fish habitat and associated
+ societal concern 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Ruswick2010"
+
+\end_inset
+
+.
+ An efficient method to determine the source of water to wells has the potential
+ to improve management in the region by quickly screening proposed wells.
+ If the source of water emanating from surface water (either through diversion
+ or depletion) reaches a management threshold, then further management actions
+ may be triggered.
+ Using a numerical groundwater model, managers could conceivably explicitly
+ model each proposed well location but run times and technical background
+ may be prohibitive for that task.
+ A more efficient option is model emulation as performed on a groundwater
+ model by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In this case, using MODFLOW-2005 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "mf05"
+
+\end_inset
+
+ (REFERENCE USG!!!), extraction wells were simulated on multiple staggered
+ grids at sufficient distances that they would not interact in individual
+ model runs.
+ A base case was also simulated without extraction wells and, through superposit
+ion, the sources of water to the wells was evaluated and mappable characteristic
+s of each well location were used to create the BN in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exampleBN"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+An important question--similar to that evaluated by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+--is what level of complexity provides the best tradeoff between descriptive
+ and predictive power of the BN.
+ Using CVNetica, it was possible to quickly evaluate 
+\begin_inset Formula $k$
+\end_inset
+
+--fold cross validation for a variety of combinations of bins in the node
+ arrangement depicted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exampleBN"
+
+\end_inset
+
+.
+ For the most important response variable--SW_SRC which is surface water
+ source--Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:CVglacial"
+
+\end_inset
+
+ depicts the change in both calibration and validation performance for 10-fold
+ cross validation performed over an increasingly complex set of bin configuratio
+n.
+ While increasing complexity monotonically improves calibration (description)
+ over the training set, the skill improves at first for validation (prediction)
+ but then degrades dramatically after three or four bins on the input nodes.
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:CVglacial"
+
+\end_inset
+
+, sets identified by a single value indicate the number of bins used to
+ discretize each node.
+ When a second number is present, the first number indicates bins used for
+ the input nodes while the second indicates bins used for the output nodes.
+ Little degradation and possibly a slight improvement in validation skill
+ is seen with increasing output bins for a given complexity of input.
+ This highlights that the main fitting of the BN takes place with respect
+ to input and output complexity is more a matter of convenience than a source
+ of real BN complexity.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{center}
+\end_layout
+
+\end_inset
+
+
+
+\begin_inset Graphics
+	filename figures/glacial_CV.pdf
+	scale 50
+
+\end_inset
+
+
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:CVglacial"
+
+\end_inset
+
+Calibration (descriptive) and Validation (predictive) skill values for various
+ arrangments of bins on the glacial aquifer BN.
+ For sets identified by a single number, that number of bins was used to
+ discretize all nodes.
+ For sets identified by two numbers separated by an underscore, the first
+ and second numbers indicate the number of bins the input and output nodes,
+ respectively, were discretized.
+ The color shading indicates the 95% credible interval based on adding and
+ subtraction 
+\begin_inset Formula $2\sigma$
+\end_inset
+
+ to and from the median value of each metric over the 10 folds evaluated.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
