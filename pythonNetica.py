@@ -145,8 +145,12 @@ class pynetica:
             cnodebins = nBT.netica_binning(self.casdata[cbin], self.probpars.binsetup[cbin])
             cnodebins.bin_thresholds()
             cnode = self.pyt.GetNodeNamed(cbin, cnet)
-            print "Setting node {0:s} to have {1:d} bins".format(cbin, self.probpars.binsetup[cbin])
-            self.pyt.SetNodeLevels(cnode, cnodebins.binlevels)
+            if self.probpars.binsetup[cbin] != 0:
+                # only do this if requested bins not zero. Else, use same bins as input net
+                print "Setting node {0:s} to have {1:d} bins".format(cbin, self.probpars.binsetup[cbin])
+                self.pyt.SetNodeLevels(cnode, cnodebins.binlevels)
+            else:
+                print "NOT Setting node {0:s} to have {1:d} bins".format(cbin, self.probpars.binsetup[cbin])
         outfile_streamer = self.pyt.NewFileStreamer(self.probpars.baseNET)
         self.pyt.CompileNet(cnet)
         print "Writing new bin configurations for net to: {0:s}".format(self.probpars.baseNET)
