@@ -40,18 +40,15 @@ if cdat.probpars.rebin_flag:
     # copy over the originalNET neta file to be the baseNET for this work
     shutil.copyfile(cdat.probpars.originalNET, cdat.probpars.baseNET)
 
-    # sets equiprobable bins for each node
+    # sets equiprobable bins for each node as requested
     cdat.UpdateNeticaBinThresholds()
 
 # set up the experience node indexing
 cdat.NodeParentIndexing(cdat.probpars.baseNET, cdat.probpars.baseCAS)
 
-# determine the number of data points
-cdat.numfolds = cdat.probpars.numfolds
-
 # create the folds desired
 cdat.allfolds = CVT.all_folds()
-cdat.allfolds.k_fold_maker(cdat.N, cdat.numfolds)
+cdat.allfolds.k_fold_maker(cdat.N, cdat.probpars.numfolds)
 
 # run the predictions using the base net --> 
 cdat.basepred, cdat.NETNODES = cdat.predictBayes(cdat.probpars.baseNET, cdat.N, cdat.casdata)

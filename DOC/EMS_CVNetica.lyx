@@ -278,10 +278,6 @@ on quality?; and how does the complexity of the underlying network impact
 \end_layout
 
 \begin_layout Standard
-Model 
-\end_layout
-
-\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -807,6 +803,11 @@ n of various assumptions of complexity.
 \end_layout
 
 \begin_layout Standard
+NATHANIEL - do we need an appendix with all other metrics identified? I
+ DON'T KNOW HOW MUCH DETAIL WE NEED TO INCLUDE ON ALL THAT.
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -843,19 +844,261 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-What did we actually implement?
+There are two levels at which CVNetica performs.
+ At the highest level, a script in 
+\begin_inset Formula $\mathtt{CV\_driver.py}$
+\end_inset
+
+ performs the cross validation protocol described in this manuscript.
+ This script is driven by an XML-based configuration file and should general
+ require minimal editing, save for identifying the configuration file to
+ use in the 
+\begin_inset Formula $\mathtt{parfile}$
+\end_inset
+
+ variable name.
+ At a lower level, 
+\begin_inset Formula $\mathtt{pythonNeticaTools.py}$
+\end_inset
+
+ provides the 
+\begin_inset Formula $\mathtt{pyneticaTools}$
+\end_inset
+
+ class that interacts with the Netica DLL directly with wrappers around
+ many essential Netica functions.
+ Examples of how these methods work are discussed in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Accessing-the-DLL"
+
+\end_inset
+
+.
+ At an intermediate level, 
+\begin_inset Formula $\mathtt{pythonNetica.py}$
+\end_inset
+
+ provides the 
+\begin_inset Formula $\mathtt{pynetica}$
+\end_inset
+
+ class that combines several Netica functions for tasks such as starting
+ a Netica environment, rebinning nodes, and other intermediate level tasks.
+\end_layout
+
+\begin_layout Subsubsection
+Cross Validation Driver
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $\mathtt{CV\_driver.py}$
+\end_inset
+
+ script drives a cross-validation exercise over the number of folks specified
+ in the XML based configuration file (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:XMLinput"
+
+\end_inset
+
+).
+ If no rebinning is requested (
+\begin_inset Formula $\mathtt{<rebin\_flag>False</rebin\_flag>}$
+\end_inset
+
+), the BN specified in the 
+\begin_inset Formula $\mathtt{baseNET}$
+\end_inset
+
+ element is used for analysis along with the casefile identified by the
+ 
+\begin_inset Formula $\mathtt{baseCAS}$
+\end_inset
+
+ element and metrics of performance.
+ If the 
+\begin_inset Formula $\mathtt{rebin\_flag}$
+\end_inset
+
+ element is True, then the nodes from the BN identified in the 
+\begin_inset Formula $\mathtt{originalNET}$
+\end_inset
+
+ element are rediscretized using the information on rebinning provided at
+ the end of the input file.
+ For each node listed, if 
+\begin_inset Formula $\mathtt{numbins>0}$
+\end_inset
+
+ the node is discretized into bins 
+\begin_inset Formula $\mathtt{numbins}$
+\end_inset
+
+ bins of equal probability.
+ In the special case where 
+\begin_inset Formula $\mathtt{numbins=0}$
+\end_inset
+
+, the node is not rediscretized but it is used either as input or response
+ as described by the 
+\begin_inset Formula $\mathtt{input}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathtt{response}$
+\end_inset
+
+ elements above.
+ This special case allows for other discretization strategies (such as threshold
+s) to be implemented for nodes that are to be treated as input or response
+ nodes but without equiprobable discretization.
+ Nodes that are not identified as either input or response should not have
+ 
+\begin_inset Formula $\mathtt{node}$
+\end_inset
+
+ elements provided and are unaltered by CVNetica in the analysis.
+\end_layout
+
+\begin_layout Standard
+If the 
+\begin_inset Formula $\mathtt{CVflag}$
+\end_inset
+
+ element is False, only a single run using all the data in the 
+\begin_inset Formula $\mathtt{baseCAS}$
+\end_inset
+
+ file and the BN identified in the 
+\begin_inset Formula $\mathtt{baseNET}$
+\end_inset
+
+ is performed and metrics are calculated.
+ The predictions for each configuration of input are recorded in a compressed
+ Python pickle file (NATHANIEL - SHOULD WE SPIT OUT A MEASURED AND MODELED
+ TEXT FILE AS WELL YOU THINK? A COLUMN FOR EACH INPUT, AND EACH OUTPUT GETS
+ TWO COLUMNS -- ONE MEAS ONE MOD?).
+\end_layout
+
+\begin_layout Standard
+If the 
+\begin_inset Formula $\mathtt{CVflag}$
+\end_inset
+
+ element is True, then k-fold cross validation is performed using the number
+ of folds indicated in the 
+\begin_inset Formula $\mathtt{numfolds}$
+\end_inset
+
+ element.
+ For each fold, 
+\begin_inset Formula $\frac{n}{k}$
+\end_inset
+
+ (where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the total number of data points and 
+\begin_inset Formula $k$
+\end_inset
+
+ is the number of folds) data points are separated from the rest of the
+ data points to be left out of the calibration.
+ The BN is then retrained on the 
+\begin_inset Formula $n-\frac{n}{k}$
+\end_inset
+
+ retained data and metrics of performance are calculated for both the left
+ out data (referred to as ``validation
+\begin_inset Quotes erd
+\end_inset
+
+) and the training data (referred to as ``calibration
+\begin_inset Quotes erd
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Itemize
 CV_driver.py -- the main entry point and options
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-config XML
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{center}
 \end_layout
 
-\end_deeper
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/imputfileexample.pdf
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:XMLinput"
+
+\end_inset
+
+Example XML configuration file for defining problem parameters.
+ Blue text identifies syntax of element names, green text indicates comments
+ in the file, and bold black text indicates element values.
+ In the special case of the 
+\begin_inset Formula $\mathtt{node}$
+\end_inset
+
+ element, an attribute (numbins) is indicated in red text.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Itemize
 pyNeticaTools --> these are the general hooks into the DLL and could be
  a starting point for non-CV related projects
@@ -922,7 +1165,7 @@ The Netica software provides APIs for accessing and using the functions
  within it.
  Several versions of these APIs are available as precompiled libraries.
  To interface with Python, the C programming language APIs can be interfaced
- with using the 
+ using the 
 \family typewriter
 ctypes
 \family default
@@ -979,6 +1222,12 @@ end{linenumbers}
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Accessing-the-DLL"
+
+\end_inset
+
 Accessing the DLL
 \end_layout
 
@@ -1173,7 +1422,31 @@ begin{linenumbers}
 
 \begin_layout Standard
 The functions in Netica can accept a variety of argument types.
- The easiest type is a pointer to an object returned by another Netica function.
+ In the 
+\begin_inset Formula $\mathtt{pyneticaTools}$
+\end_inset
+
+ class, methods that function as wrappers around Netica functions are written.
+ The names are the same as the Netica functions with the 
+\begin_inset Formula $\mathtt{\_bn}$
+\end_inset
+
+, 
+\begin_inset Formula $\mathtt{\_cs}$
+\end_inset
+
+, and 
+\begin_inset Formula $\mathtt{\_ns}$
+\end_inset
+
+ suffixes removed.
+ This class is not specific to cross validation applications and is meant
+ to also serve as a starting point for other applications in which Netica
+ functions must be used in Python.
+\end_layout
+
+\begin_layout Standard
+The easiest type is a pointer to an object returned by another Netica function.
  In this case, a Python variable represents the pointer--just a memory address--
 so no conversion is necessary.
  For single Python floats and ints, the conversions are 
@@ -1232,18 +1505,124 @@ double GetNodeExpectedValue_bn (node_bn* node,
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
+\family default
 where the returned value is the expected value (double precision) of the
  node identified by 
 \family typewriter
 node_bn*
 \family default
-, the standard deviation if written to the memory location identified by
+, the standard deviation is written to the memory location identified by
  the pointer 
 \family typewriter
 double* std_dev
+\family default
+, and 
+\begin_inset Formula $\mathtt{x3}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathtt{x4}$
+\end_inset
+
+ are NULL pointers reserved for future implementation.
+ To collect the main returned value of the function, we must set 
+\begin_inset Formula $\mathtt{restype}$
+\end_inset
+
+ of the function--often accomplished through making an alias temporary function-
+-and accepting the value as normally with a function.
+ To make use of the returned second value in Python--the value written to
+ a memory location identified by a pointer--we must pass a 
+\begin_inset Formula $\mathtt{double}$
+\end_inset
+
+ variable by reference (in other words, a pointer to the 
+\begin_inset Formula $\mathtt{double}$
+\end_inset
+
+).
+ The Python wrapper for 
+\family typewriter
+GetNodeExpectedValue_bn
+\family default
+ illustrates this process 
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def GetNodeExpectedValue(self,cnode): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	std_dev = ct.c_double() 
+\end_layout
+
+\begin_layout Plain Layout
+
+	tmpNeticaFun = self.n.GetNodeExpectedValue_bn
+\end_layout
+
+\begin_layout Plain Layout
+
+	tmpNeticaFun.restype=ct.c_double 
+\end_layout
+
+\begin_layout Plain Layout
+
+	expected_val = tmpNeticaFun(cnode,ct.byref(std_dev), 
+\end_layout
+
+\begin_layout Plain Layout
+
+                                None,None) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.chkerr() 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return expected_val, std_dev.value
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Some Netica functions return either a character array or a numerical array.
+ In both cases, the C code in Netica returns a pointer to the data.
+ The Python code must, then, read a specified amount of data from that pointer
+ location.
+ Unlike pure Python, it is possible to read off the end of the information
+ starting at the pointer location, so we must also specify the number of
+ values to read from the memory location.
+ Helper functions in 
+\begin_inset Formula $\mathtt{cthelper.py}$
+\end_inset
+
+ read the character pointers, and single and double precision pointers.
+ An example of this being used in CVNetica is in the 
+\begin_inset Formula $\mathtt{ReadNodeInfo}$
+\end_inset
+
+ method of the 
+\begin_inset Formula $\mathtt{pyneticaTools}$
+\end_inset
+
+ class.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1263,12 +1642,49 @@ end{linenumbers}
 \end_layout
 
 \begin_layout Section
-Example Results
+Example Applications
 \end_layout
 
 \begin_layout Standard
-Here we talk about two applications mostly referencing other papers for
- the description.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{linenumbers}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The CVNetica code was applied to two different applications to evaluate
+ predictive performance and guide the appropriate level of complexity for
+ BN design.
+ The two applications are a data-driven application with ocean waves (NATHANIEL
+ -- you can explain better) and a model emulation application using a BN
+ to make predictions trained on results of a groundwater flow model.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{linenumbers}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1482,15 +1898,12 @@ begin{center}
 \end_inset
 
 
-
 \begin_inset Graphics
 	filename figures/glacial_CV.pdf
 	scale 50
 
 \end_inset
 
-
-\lang english
 
 \begin_inset ERT
 status open
@@ -1525,7 +1938,7 @@ Calibration (descriptive) and Validation (predictive) skill values for various
  and second numbers indicate the number of bins the input and output nodes,
  respectively, were discretized.
  The color shading indicates the 95% credible interval based on adding and
- subtraction 
+ subtracting 
 \begin_inset Formula $2\sigma$
 \end_inset
 
