@@ -507,7 +507,8 @@ class pynetica:
             stats = ['min', 'max', 'mean', 'median', 'std']
 
             response_headers = ['skillMean', 'rmseMean', 'meanErrMean', 'meanAbsErrMean',
-                                'skillML', 'rmseML', 'meanErrML', 'meanAbsErrML']
+                                'skillML', 'rmseML', 'meanErrML', 'meanAbsErrML',
+                                'LogLoss', 'ErrorRate', 'QuadraticLoss']
 
             indat = np.genfromtxt(infile, skiprows=3, dtype=None, names=True)
             unique_responses = np.unique(indat['Response'])
