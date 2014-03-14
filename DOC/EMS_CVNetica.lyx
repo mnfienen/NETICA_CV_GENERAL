@@ -1708,28 +1708,148 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-What do we get out of this kind of analysis? Berm example of data driven,
+Weather forecasting and modeling has achieved sufficiently high accuracy
+ that it is possible to replace observations with models if models are intialize
+d well and have good boundary condtion data.
+ However, weather forecasts are not routinely available for periods extending
+ more than a few days ahead, and they become less accurate.
+ We would like to allow the climatological prior information to inform predictio
+ns when observations or forecasts are not availabble or are uncertain.
+ As an exampe, we would like to predict wave height just offshore of the
+ coast where there are not persistent observations.
+ This could be done with laborious Monte Carlo simulations using models
+ and previous climatology for model initialization and boundary-condition
+ forcing.
+ Or, we could use extant model output or observations to learn both the
+ sensitivity of a specific prediction to changes in boundary condtions and
+ include uncertainty in this sensitivity (the joint correlation) as well
+ as uncertainty in the boundary conditions.
+ This approach has been implemented before using bayesian networks (2 plant
+ papers, who else), but the fidelity of the of the resulting BN models was
+ not examined in detail, other than to note that to maximize the consistency
+ of the BN predictions with new observations, the BN inputs should include
+ input parameter-value or data uncertainties.
+ Were these BN models over-fit to the data?
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Users/nplant/Documents/work/mfienenBayesPython/Feb2014/bermPy_v3.svg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, we explore the level of overfitting with a simplified ocean-wave predictio
+n model based on a BN.
+ The specific BN has been used to drive subsequent predictions of morphologic
+ evolution of a man-made sand berm constructed near the Chandeleur Islands
+ (Plant 2014 paper).
+ Here, we simplify the original model, which included information from two
+ wave buoys, one tide gage, and Monte Carlo simulation of a wave-runup model
+ (Stockdon 2006 paper).
+ The first two columns of network nodes (Figure) correspond to observations
+ from an offshore buoy (NOAA 42040) collected from 1996 to 2011.
+ The variables are wind speed and direction and wave height, period, and
+ direction.
+ The third column has just one variable, wave height, that was observed
+ at a nearshore buoy between 2000 and 2008.
+ The nearshore buoy was subsequently lost.
+ The BN describing the prior probabbiliies of each variable and the conditional
+ probabilities between variables was designed to resolve boundary condtions
+ at the offshore location and the prediction at the nearshore location accuratel
+y enough to support the morphologic evolution application.
+ While this BN had very good hindcast skill (about 0.8), it is not clear
+ that it has equally good forecast skill and whether fewer probability bins
+ could be retained to give a skillful prediction with optimal numerical
+ efficiency.
  
 \end_layout
 
 \begin_layout Standard
-NATHANIEL works here! Track changes on if I work anywhere else!
+Our calibration/validation skill analysis was applied to this net by varying
+ the number of bins in all variables except for the wave heights.
+ We chose to resolve these variables consistently with the original model
+ to ensure that probability predictions spanned a wide range conditions,
+ rather than focusing on the most probable but extremely low wave-height
+ range that was most common (i.e., 1-3 m).
+ The variable bin number ranged from 2 to 10 for the remaining variables.
+ The calibration (i.e., hindcast) skill increased for all choices of bin numbers.
+ However, the validation skill, averaged over 5 folds, reached its peak
+ value at 4 bins and then decreased dramatically after 6 bins.
+ The optimal bin resolutioni likely varied for each variable type (wind
+ speed, wind and wave directions, wave period) and this may explain the
+ flattening of the validation curve between 4 and 6 bins, as it is possible
+ that increasing bin resolution was advantageous, adding necessary resolution,
+ for some variables but a disadvantage for others.
+ The rapid decline after 6 bins suggests that none of the variables needed
+ to be better resolved past this point.
+ 
 \end_layout
 
 \begin_layout Standard
-styles in drop-down on left of menu
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename //Igsafpesws132/SVN/pythonTools/bermBuoyExample/bermTest_k5_bdir_plots_fiexedwavhgt1&2bins_noNaN/mean_skillMean.pdf
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Standard
-insert figure as a float/figure and insert a tag as label
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 bibTex is the biliography foramt to export and copy into the GW.bib
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \begin_layout Standard
@@ -2008,7 +2128,39 @@ what are ramifications for model emulation design?
 \end_layout
 
 \begin_layout Itemize
+Comment on other skill metrics?
+\end_layout
+
+\begin_layout Itemize
 is CV really all that or a waste of time?
+\end_layout
+
+\begin_layout Standard
+We show that CV provides an objective method for determining when a BN is
+ being overfit to the data.
+ And, it appears that overfitting is likely when the BN is designed to resolve
+ physical processes, either observed or modeled.
+ In the cases presented here, the BN design was guided by distribution of
+ the priors of each variable as well as by the intended application of the
+ BN predictions.
+ For instance, in the ocean wave example, the intended application focused
+ on reslolving large storm events that were likely to cause erosion.
+ This guided a a choice of fairly high resolution of the input data a the
+ offshore buoy.
+ While phyisically consistent, a price needed to be paid for the over-resloved
+ output in order to achive true predictive skill.
+ That price was to greatly reduce the resolution of the input varaibles
+ from as many as 12 bins to no more than 6 bins.
+ While a price is paid in terms of input detail, there is a numerical benefit
+ to reducing the bin resolution.
+ For instance, the original ocean wave BN maintained over a million possible
+ combinations of inputs and outputs scenarios within its conditional probabililt
+y tables while the optimal 4-bin BN maintained 44 times fewer scenarios,
+ reduced memory requirements, and had increased training and prediction
+ speeds.
+ For instace, the CV processing took 25 minutes for the 4-bin net compared
+ to over 8 hours for the original net (a foctor of 20 difference).
+ Cool!
 \end_layout
 
 \begin_layout Standard
@@ -2033,7 +2185,7 @@ Acknowledgements
 
 \begin_layout Standard
 This work was funded by (ASIS and GLAS others depending on which example
- application we use).
+ application we use) and the USGS Coastal and Marine Geology Program.
  We are deeply grateful to Steven Mascaro for his initial PyNetica.py code
  which he kindly shared as a starting point for this work.
 \end_layout
