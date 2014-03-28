@@ -120,8 +120,8 @@ def LSQR_skill(x, z, w=None):
     # solve for b
     b = nplstsq(X, z)[0]
     
-    # calculate the variance of the data
-    obsresid = z-np.nanmean(z)
+    # calculate the variance of the data N.B. the mean is assumed already subtracted off from z
+    obsresid = z
     msz = np.dot(obsresid.T, obsresid)/n
     # calculate the variance of the residuals
     modresid = np.dot(X, b) - z
