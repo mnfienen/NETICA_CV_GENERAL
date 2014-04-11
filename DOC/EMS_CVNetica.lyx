@@ -62,6 +62,7 @@
 \html_css_as_file 0
 \html_be_strict false
 \author -74556787 "Michael Fienen" 
+\author 278795922 "nplant" 
 \end_header
 
 \begin_body
@@ -123,8 +124,18 @@ Bayesian networks (BNs) are powerful tools for probabilistically simulating
  The lack of widespread cross-validation is due in part to a lack of software
  tools designed to work with available BN packages.
  CVNetica is an open-source package written in Python that extends the Netica
- software package to include cross-validation and a framework to read, rebuild,
- and learn BNs from data in a Python scripting environment.
+ software package to 
+\change_deleted 278795922 1397058556
+include
+\change_inserted 278795922 1397058557
+perform
+\change_unchanged
+ cross-validation and 
+\change_inserted 278795922 1397058562
+includes 
+\change_unchanged
+a framework to read, rebuild, and learn BNs from data in a Python scripting
+ environment.
  Optimal BN complexity can be identified through exploration of numbers
  of bins, nodes, and edges making up a BN using predictive skill as a metric
  of performance.
@@ -244,8 +255,17 @@ key "python"
  with the Netica C APIs.
  These APIs expose most of Netica's functionality, through functions, to
  external programming.
- Among the languages available, C was chosen because the ultimate goal was
- to interface with Python 2.7.6 
+ Among the languages available, C was chosen because 
+\change_deleted 278795922 1397065271
+the ultimate 
+\change_inserted 278795922 1397065272
+one of our 
+\change_unchanged
+goal
+\change_inserted 278795922 1397065275
+s
+\change_unchanged
+ was to interface with Python 2.7.6 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "python"
@@ -279,9 +299,23 @@ on quality?; and how does the complexity of the underlying network impact
  predictive and descriptive performance? Cross-validation is used to answer
  both questions, and the number of bins per node is used as a metric of
  complexity to answer the second.
- These specific questions are evaluated in this work but the framework is
- presented to allow for other validation metrics and techniques beyond those
- presented here.
+ These specific questions are evaluated in this work but 
+\change_deleted 278795922 1397065700
+the
+\change_inserted 278795922 1397065700
+our
+\change_unchanged
+ framework 
+\change_deleted 278795922 1397065707
+is presented to allow
+\change_inserted 278795922 1397065708
+allows
+\change_unchanged
+ for 
+\change_inserted 278795922 1397065726
+consideration and analysis of 
+\change_unchanged
+other validation metrics and techniques beyond those presented here.
 \end_layout
 
 \begin_layout Standard
@@ -329,18 +363,73 @@ key "Korb2004"
 \end_inset
 
 , composed of nodes and edges.
- Nodes represent states of parameters or outcomes and can be Boolean or
- discrete bins.
- Continuous values of parameters must be discretized into bins.
+ Nodes represent 
+\change_inserted 278795922 1397065877
+variables whos 
+\change_deleted 278795922 1397065985
+states of 
+\change_unchanged
+parameter
+\change_inserted 278795922 1397065888
+ values may include
+\change_deleted 278795922 1397065974
+s or outcomes and can be 
+\change_unchanged
+Boolean
+\change_inserted 278795922 1397066006
+, discrete states,
+\change_unchanged
+ or
+\change_inserted 278795922 1397066064
+, for continuous variables,
+\change_unchanged
+ discrete
+\change_inserted 278795922 1397066067
+ ranges that are 
+\change_deleted 278795922 1397066071
+ bins.
+ Continuous values of parameters must be
+\change_unchanged
+ discretized into bins.
  Edges form the connections between nodes and represent a correlated connection
  between the properties represented by the nodes.
  The entire catalog of these correlations make up conditional probability
  tables (CPTs).
- Nodes can be thought of as input (e.g.
- forcing) nodes and output (e.g.
- response) nodes, although this distinction is not a sharp one as the correlatio
-ns learned by the BN are ambivalent with respect to direction.
- Nodes can also be intermediate.
+ 
+\change_inserted 278795922 1397066127
+In a predictive context, 
+\change_deleted 278795922 1397066128
+N
+\change_inserted 278795922 1397066128
+n
+\change_unchanged
+odes can be thought of as 
+\change_inserted 278795922 1397066150
+either 
+\change_unchanged
+input (e.g.
+ forcing) 
+\change_deleted 278795922 1397066154
+nodes
+\change_unchanged
+ 
+\change_deleted 278795922 1397066161
+and
+\change_inserted 278795922 1397066161
+or
+\change_unchanged
+ output (e.g.
+ response) 
+\change_deleted 278795922 1397066164
+nodes
+\change_unchanged
+, although this distinction is not a sharp one as the correlations learned
+ by the BN are ambivalent with respect to direction.
+ Nodes can also be intermediate
+\change_inserted 278795922 1397066566
+ if they act as constraints or model coefficients
+\change_unchanged
+.
 \end_layout
 
 \begin_layout Standard
@@ -408,9 +497,13 @@ name "fig:exampleBN"
 
 \end_inset
 
-Example of a Netica BN showing input (outlined in a red box) and output
- (outlined in a blue box) nodes, edges (black lines) and, in this case,
- a single intermediate node (recharge).
+Example 
+\change_inserted 278795922 1397067076
+groundwater application 
+\change_unchanged
+of a Netica BN showing input (outlined in a red box) and output (outlined
+ in a blue box) nodes, edges (black lines) and, in this case, a single intermedi
+ate node (recharge).
 \end_layout
 
 \end_inset
@@ -484,8 +577,13 @@ where
 \begin_inset Formula $p\left(F_{i}\right)$
 \end_inset
 
-, is the probability of a forecast without the benefit of the observations
- and the BN (or a process model or other experiment).
+, is the probability of a forecast without the benefit of 
+\change_deleted 278795922 1397067150
+the
+\change_inserted 278795922 1397067151
+updated
+\change_unchanged
+ observations and the BN (or a process model or other experiment).
  
 \begin_inset Formula $p\left(F_{i}\right)$
 \end_inset
@@ -536,8 +634,24 @@ s
  of observations
 \change_unchanged
  of system state.
- Observations are indicated by selecting a bin and forcing the probability
+ 
+\change_inserted 278795922 1397067317
+In our approach, 
+\change_deleted 278795922 1397067319
+O
+\change_inserted 278795922 1397067319
+o
+\change_unchanged
+bservations are indicated by selecting a bin and forcing the probability
  of a value in the node to be 100%.
+
+\change_inserted 278795922 1397068283
+ This implies that observational uncertainty does not exceed the width of
+ the specified bin (for continuous variables) or that the discrete or Boolian
+ state is known perfectly.
+ (It is straigtforward to relax this assumption to consider inputs that
+ are uncertain.)
+\change_unchanged
  When this operation is performed, the Bayesian update propagates in each
  direction among nodes that are d-connected 
 \begin_inset CommandInset citation
@@ -570,7 +684,12 @@ a Bayesian approach
 \change_unchanged
  in which expert system understanding is used to specify these connections
  through the identification of nodes and edges.
- In this way, the BN honors the physical conditions known by the modeler,
+ In this way, the BN honors the physical conditions known by the modeler
+\change_inserted 278795922 1397068345
+ and these are
+\change_deleted 278795922 1397068342
+,
+\change_unchanged
  incorporated as soft knowledge.
  
 \end_layout
@@ -715,7 +834,11 @@ s
  For each fold, the BN is trained using the dataset without the data in
  the fold, then the BN is used to make predictions on the left-out data.
  In this way, performance of the BN is evaluated on data not used in calibration
- to simulate how performance in true future prediction.
+ to simulate 
+\change_deleted 278795922 1397068496
+how
+\change_unchanged
+ performance in true future prediction.
  Several performance metrics can be used for this purpose, as discussed
  in 
 \begin_inset CommandInset citation
@@ -785,9 +908,30 @@ key "Netica,NeticaAPI"
 
 .
  Expected values are reported either as mean or most likely (ML).
- For ML values, the value corresponding to the center of a bin is reported.
- For mean values, the value is interpolated to a discrete value within the
- response bin.
+ For ML values, the value corresponding to the center of 
+\change_deleted 278795922 1397068815
+a
+\change_inserted 278795922 1397068815
+the
+\change_inserted -74556787 1396027631
+ bin
+\change_inserted 278795922 1397068825
+ with the highest predicted probability
+\change_inserted -74556787 1396027631
+ is reported.
+ 
+\change_deleted 278795922 1397068791
+For
+\change_inserted 278795922 1397068792
+The
+\change_inserted -74556787 1396027631
+ mean values, 
+\change_inserted 278795922 1397068871
+are computed as 
+\change_inserted -74556787 1396027631
+the 
+\change_deleted 278795922 1397068853
+value is interpolated to a discrete value within the response bin.
  
 \begin_inset Note Note
 status open
@@ -803,6 +947,24 @@ NATHANIEL - did I get this right?
 \end_inset
 
 
+\change_inserted 278795922 1397068997
+product of the bin centers and the probability in each bin, consistent wtih
+ a typical expectation operation.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1397069079
+--the interpolation was introduced only to make pleasing plots in ArcGIS--not
+ relevant to what we do and should be isolated (and destroyed?)
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
 \change_unchanged
 
 \end_layout
@@ -810,15 +972,29 @@ NATHANIEL - did I get this right?
 \begin_layout Standard
 By evaluating skill over both the calibration data sets and prediction data
  sets, the value of a BN as a descriptive or predictive tool can be evaluated.
- As BN complexity- increases, so does 
+ As BN complexity- increases, so does
+\change_inserted 278795922 1397069164
+ the calibration
+\change_unchanged
+ 
 \begin_inset Formula $sk$
 \end_inset
 
- and with sufficient complexity, 
+ and with sufficient complexity,
+\change_inserted 278795922 1397069181
+ calibration
+\change_unchanged
+ 
 \begin_inset Formula $sk$
 \end_inset
 
- over the calibration data converges on unity (perfection).
+ 
+\change_deleted 278795922 1397069197
+over the calibration data converges
+\change_inserted 278795922 1397069202
+approaches
+\change_unchanged
+ on unity (perfection).
  However, greater descriptive value in a BN comes at a cost in predictive
  value.
  This is the classic condition of overfitting as cast in the context of
@@ -851,9 +1027,17 @@ key "FienenBNWRR"
 
 \end_inset
 
- the number of bins was assumed the same for each node but in CVNetica the
- number of bins in each node can be varied independently to allow for exploratio
-n of various assumptions of complexity.
+ the number of bins was assumed the same for each node
+\change_inserted 278795922 1397069270
+.
+ 
+\change_deleted 278795922 1397069272
+ b
+\change_inserted 278795922 1397069272
+B
+\change_unchanged
+ut in CVNetica the number of bins in each node can be varied independently
+ to allow for exploration of various assumptions of complexity.
  The user can also establish scenarios manually varying the number and nature
  of edges connecting nodes and even the number of nodes themselves.
  A group of these scenarios is defined by CVNetica as a ``set.
@@ -865,8 +1049,29 @@ n of various assumptions of complexity.
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 278795922 1397069303
 NATHANIEL - do we need an appendix with all other metrics identified? I
  DON'T KNOW HOW MUCH DETAIL WE NEED TO INCLUDE ON ALL THAT.
+\change_inserted 278795922 1397069306
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1397069318
+lets try simple.
+ if reviewers complain we add more 
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -911,7 +1116,13 @@ There are two levels at which CVNetica performs.
 \begin_inset Formula $\mathtt{CV\_driver.py}$
 \end_inset
 
- performs the cross validation protocol described in this manuscript.
+ performs the cross validation protocol described 
+\change_deleted 278795922 1397069353
+in this manuscript
+\change_inserted 278795922 1397069353
+below
+\change_unchanged
+.
  This script is driven by an XML-based configuration file and should general
 \change_inserted -74556787 1396027714
 ly
@@ -930,8 +1141,13 @@ ly
 \begin_inset Formula $\mathtt{pyneticaTools}$
 \end_inset
 
- class that interacts with the Netica DLL directly with wrappers around
- many essential Netica functions.
+ class that interacts with the Netica DLL 
+\change_deleted 278795922 1397069385
+directly with
+\change_inserted 278795922 1397069385
+via
+\change_unchanged
+ wrappers around many essential Netica functions.
  Examples of how these methods work are discussed in Section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -961,8 +1177,11 @@ The
 \begin_inset Formula $\mathtt{CV\_driver.py}$
 \end_inset
 
- script drives a cross-validation exercise over the number of folks specified
- in the XML based configuration file (Figure 
+ script drives a cross-validation exercise 
+\change_deleted 278795922 1397069454
+over the number of folks
+\change_unchanged
+ specified in the XML based configuration file (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:XMLinput"
@@ -1043,9 +1262,34 @@ If the
 
  is performed and metrics are calculated.
  The predictions for each configuration of input are recorded in a compressed
- Python pickle file (NATHANIEL - SHOULD WE SPIT OUT A MEASURED AND MODELED
- TEXT FILE AS WELL YOU THINK? A COLUMN FOR EACH INPUT, AND EACH OUTPUT GETS
- TWO COLUMNS -- ONE MEAS ONE MOD?).
+ Python pickle file
+\change_deleted 278795922 1397069562
+ (NATHANIEL - SHOULD WE SPIT OUT A MEASURED AND MODELED TEXT FILE AS WELL
+ YOU THINK? A COLUMN FOR EACH INPUT, AND EACH OUTPUT GETS TWO COLUMNS --
+ ONE MEAS ONE MOD?)
+\change_unchanged
+.
+\change_inserted 278795922 1397069565
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1397069930
+I think that there are too many possible outputs.
+ all of them are possible with the framwork.
+ only the ones we produce so far are required for illustrating the framework's
+ value
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -1072,7 +1316,12 @@ If the
 \end_inset
 
  is the number of folds) data points are separated from the rest of the
- data points to be left out of the calibration.
+ data points to be left out of the calibration
+\change_inserted 278795922 1397070095
+, selecting from a randomnized list such that each folds samples across
+ the training set to span spatial or temporal trends or patterns
+\change_unchanged
+.
  The BN is then retrained on the 
 \begin_inset Formula $n-\frac{n}{k}$
 \end_inset
@@ -1248,10 +1497,18 @@ ctypes
  In addition to making the functions accessible, some translation of variables
  is required--for example, C often refers to data using pointers whereas
  Python does not explicitly do so.
- To pass a Python array to a C function, then, the variable must be passed
- by reference (this is not explicitly done in Python) as a pointer.
- Similarly, C functions often return pointers to memory space of the resulting
- arrays so 
+ 
+\change_deleted 278795922 1397070169
+To pass a Python array to a C function, then, the variable must be passed
+ by reference (this is not explicitly done in Python) as a pointer
+\change_unchanged
+.
+ 
+\change_deleted 278795922 1397070178
+Similarly, 
+\change_unchanged
+C functions often return pointers to memory space of the resulting arrays
+ so 
 \family typewriter
 ctypes
 \family default
@@ -1742,9 +1999,12 @@ begin{linenumbers}
 The CVNetica code was applied to two different applications to evaluate
  predictive performance and guide the appropriate level of complexity for
  BN design.
- The two applications are a data-driven application with ocean waves (NATHANIEL
- -- you can explain better) and a model emulation application using a BN
- to make predictions trained on results of a groundwater flow model.
+ The two applications are a data-driven application with ocean waves 
+\change_deleted 278795922 1397070528
+(NATHANIEL -- you can explain better)
+\change_unchanged
+ and a model emulation application using a BN to make predictions trained
+ on results of a groundwater flow model.
  
 \end_layout
 
@@ -1924,12 +2184,93 @@ reference "fig:BNocean"
 \change_unchanged
  has been used to drive subsequent predictions of morphologic evolution
  of a man-made sand berm constructed near the Chandeleur Islands (Plant
- 2014 paper).
+ 2014 paper)
+\change_inserted 278795922 1397070599
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1397070821
+Plant, N.
+ G., J.
+ Flocks, H.
+ F.
+ Stockdon, J.
+ W.
+ Long, K.
+ Guy, D.
+ M.
+ Thompson, J.
+ M.
+ Cormier, C.
+ G.
+ Smith, J.
+ L.
+ Miselis, and P.
+ S.
+ Dalyander (2014), Predictions of barrier island berm evolution in a time-varyin
+g storm climatology, Journal of Geophysical Research Earth Surface, 119,
+ 300–316.
+ 
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+.
  Here, we simplify the original model, which included information from two
  wave buoys, one tide gage, and Monte Carlo simulation of a wave-runup model
- (Stockdon 2006 paper).
- The first two columns of network nodes (Figure) correspond to observations
- from an offshore buoy (NOAA 42040) collected from 1996 to 2011.
+ (Stockdon 2006 paper)
+\change_inserted 278795922 1397070629
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1397070632
+Stockdon, H.
+ F., R.
+ A.
+ Holman, P.
+ A.
+ Howd, and J.
+ Sallenger A.
+ H.
+ (2006), Empirical parameterization of setup, swash, and runup, Coastal
+ Engineering, 53, 573-588.
+ 
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+.
+ The first two columns of network nodes (
+\change_inserted 278795922 1397072541
+figure 
+\change_deleted 278795922 1397072518
+Figure
+\change_inserted 278795922 1397072518
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:BNocean"
+
+\end_inset
+
+
+\change_unchanged
+) correspond to observations from an offshore buoy (NOAA 42040) collected
+ from 1996 to 2011.
  The variables are wind speed and direction and wave height, period, and
  direction.
  The third column has just one variable, wave height, that was observed
@@ -2110,11 +2451,41 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-In the Great Lakes Region of the United States, the interactions between
- groundwater and surface water are of important management interest.
+In the Great Lakes Region of the United States, 
+\change_inserted 278795922 1397227371
+understanding 
+\change_unchanged
+the interactions between groundwater and surface water are 
+\change_deleted 278795922 1397227279
+of
+\change_unchanged
+ important 
+\change_inserted 278795922 1397227426
+inputs to ecological 
+\change_unchanged
+management interest
+\change_inserted 278795922 1397227384
+s
+\change_unchanged
+.
  Specifically, as extraction wells are installed, the baseflow in streams
- can be reduced with important ramifications on fish habitat and associated
- societal concern 
+ can be reduced
+\change_inserted 278795922 1397227446
+ and these reductions 
+\change_deleted 278795922 1397227451
+ with important ramifications on
+\change_inserted 278795922 1397227453
+can affect
+\change_unchanged
+ fish habitat and associated societal 
+\change_inserted 278795922 1397227485
+and economic 
+\change_unchanged
+concern
+\change_inserted 278795922 1397227487
+s
+\change_unchanged
+ 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Ruswick2010"
@@ -2146,8 +2517,24 @@ MIKE add refs to Howard Reeves' new GW article and Stan/Barlow cirulcar
  or depletion) reaches a management threshold, then further management actions
  may be triggered.
  Using a numerical groundwater model, managers could conceivably explicitly
- model each proposed well location but run times and technical background
- may be prohibitive for that task.
+ 
+\change_deleted 278795922 1397227550
+model
+\change_inserted 278795922 1397227554
+asssess the impact of
+\change_unchanged
+ each proposed well location
+\change_inserted 278795922 1397227563
+.
+ But computational
+\change_deleted 278795922 1397227565
+ but
+\change_unchanged
+ run times and technical background may be prohibitive
+\change_inserted 278795922 1397227578
+ly expensive
+\change_unchanged
+ for that task.
  A more efficient option is model emulation as performed on a groundwater
  model by 
 \begin_inset CommandInset citation
@@ -2215,10 +2602,22 @@ reference "fig:CVglacial"
 
  depicts the change in both calibration and validation performance for 10-fold
  cross validation performed over an increasingly complex set of bin configuratio
-n.
- While increasing complexity monotonically improves calibration (description)
- over the training set, the skill improves at first for validation (prediction)
- but then degrades dramatically after three or four bins on the input nodes.
+n
+\change_inserted 278795922 1397227656
+s
+\change_unchanged
+.
+ While increasing complexity 
+\change_inserted 278795922 1397227735
+(e.g., number of bins per node) 
+\change_unchanged
+monotonically improves calibration (description) over the training set,
+ the skill improves at first for validation (prediction) but then degrades
+ dramatically after 
+\change_deleted 278795922 1397227751
+three or
+\change_unchanged
+ four bins on the input nodes.
  In Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
