@@ -2044,6 +2044,14 @@ reference "fig:exampleBN"
 \end_inset
 
 .
+ For further discussion of the model used in this work see 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FeinsteinGLAS"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
