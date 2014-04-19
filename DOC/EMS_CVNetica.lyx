@@ -7,6 +7,7 @@
 \usepackage{lineno}
 \renewcommand\[{\begin{equation}}
 \renewcommand\]{\end{equation}}
+\bibpunct{(}{)}{,}{a}{,}{,}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -27,7 +28,7 @@
 \graphics default
 \default_output_format default
 \output_sync 0
-\bibtex_command default
+\bibtex_command bibtex
 \index_command default
 \paperfontsize default
 \spacing double
@@ -56,13 +57,11 @@
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes true
+\tracking_changes false
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author -74556787 "Michael Fienen" 
-\author 278795922 "nplant" 
 \end_header
 
 \begin_body
@@ -79,6 +78,10 @@ Michael N.
 \begin_layout Address
 US Geological Survey, Wisconsin Water Science Center, 8505 Research Way,
  Middleton WI 53562 USA
+\end_layout
+
+\begin_layout Address
++001 (608) 821-3894
 \end_layout
 
 \begin_layout Email
@@ -101,6 +104,11 @@ US Geological Survey, St.
 nplant@usgs.gov
 \end_layout
 
+\begin_layout Keywords
+Cross-validation; Bayesian networks; uncertainty; probability; Python; Netica;
+ prediction
+\end_layout
+
 \begin_layout Abstract
 \begin_inset ERT
 status open
@@ -117,61 +125,19 @@ begin{linenumbers}
 Bayesian networks (BNs) are powerful tools for probabilistically simulating
  natural systems and emulating process models.
  Cross validation is an important technique to avoid overfitting that can
- result from overly complex BNs
-\change_inserted 278795922 1397835133
-.
- Overfitting 
-\change_deleted 278795922 1397835163
- such that
-\change_inserted 278795922 1397835185
-results in a reduction of true predictives skill
-\change_deleted 278795922 1397835193
- model predictions have true skill
-\change_unchanged
-.
- Formal cross-validation procedures to evaluate relative performance in
- prediction outside of calibration data has been discussed in various studies
- but rarely implemented.
- The lack of widespread cross-validation is due in part to a lack of software
+ result from overly complex BNs.
+ Overfitting results in a reduction of true predictive skill.
+ Formal cross-validation for BNs has been discussed but rarely implemented.
+ The lack of widespread cross-validation is due partly to a lack of software
  tools designed to work with available BN packages.
  CVNetica is an open-source package written in Python that extends the Netica
- software package to perform cross-validation and includes a framework to
- read, rebuild, and learn BNs from data 
-\change_deleted 278795922 1397835244
-in a Python scripting environment
-\change_inserted 278795922 1397835255
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted 278795922 1397835268
-redundant
-\change_unchanged
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-.
- Optimal BN complexity can be identified through exploration of numbers
- of bins, nodes, and edges making up a BN using predictive skill as a metric
- of performance.
- The insights gained from cross-validation and implications on predictive
- versus descriptive skill are illustrated with two 
-\change_deleted 278795922 1397835325
-applications
-\change_inserted 278795922 1397835327
-examples
-\change_unchanged
-: a data-driven oceanographic application in which wave height predictions
- are made from time series data learned from nearby buoys and weather stations;
- and a model-emulation application in which the source of water to groundwater
- wells is evaluated using a BN trained to the results of a large, regional
- groundwater process model.
+ software package to perform cross-validation and to read, rebuild, and
+ learn BNs from data.
+ Optimal BN complexity can be identified through exploration of BN complexity
+ using predictive skill as a performance metric.
+ Insights gained from cross-validation and implications on predictive versus
+ descriptive skill are illustrated with two examples: a data-driven oceanographi
+c application; and a model-emulation application.
 \begin_inset ERT
 status open
 
@@ -185,6 +151,20 @@ end{linenumbers}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section*
+Review Disclaimer
+\end_layout
+
+\begin_layout Standard
+This manuscript draft is preliminary, deliberative, and predecisional, released
+ for the sole purpose of peer review.
+ This document should be treated as confidential by journal staff and reviewers
+ until a final version is approved for publication by the United States
+ Geological Survey.
+ This disclaimer will be removed if and when a publication version of the
+ manuscript is approved.
 \end_layout
 
 \begin_layout Section
@@ -252,37 +232,9 @@ key "plant2011a,plant2011b,FienenBNWRR"
 \end_layout
 
 \begin_layout Standard
-An important topic that is 
-\change_inserted 278795922 1397835541
-not always 
-\change_unchanged
-discussed 
-\change_deleted 278795922 1397835386
-less in the literature than general
-\change_inserted 278795922 1397835386
-in
-\change_unchanged
+An important topic that is not always discussed in the literature is that
+ applications of BNs need formal tests and validation of prediction performance
  
-\change_inserted 278795922 1397835573
-the lituratur is that 
-\change_unchanged
-applications of BNs
-\change_deleted 278795922 1397835582
- is the 
-\change_unchanged
-need 
-\change_deleted 278795922 1397835583
-for
-\change_unchanged
- formal 
-\change_inserted 278795922 1397835593
-tests ad 
-\change_unchanged
-validation of 
-\change_inserted 278795922 1397835598
-prediction 
-\change_unchanged
-performance 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Chen2012,Marcot2012"
@@ -381,7 +333,15 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-A Bayesian network (BN) is a directed acyclic graph 
+This background section on Bayesian networks (BNs) is derived from 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FienenBNWRR"
+
+\end_inset
+
+.
+ A Bayesian network is a directed acyclic graph 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Korb2004"
@@ -397,11 +357,7 @@ key "Korb2004"
  The entire catalog of these correlations make up conditional probability
  tables (CPTs).
  In a predictive context, nodes can be thought of as either input (e.g.
- forcing)
-\change_deleted -74556787 1397314448
- 
-\change_unchanged
- or output (e.g.
+ forcing) or output (e.g.
  response) , although this distinction is not a sharp one as the correlations
  learned by the BN are ambivalent with respect to direction.
  Nodes can also be intermediate if they act as constraints or model coefficients.
@@ -610,14 +566,9 @@ key "JensenNielsen2001"
 
 , updating the probabilities regardless of causal direction.
  In this way, correlations are expressed as well as causal responses.
- By selecting a suite of observations of state, the BN 
-\change_deleted 278795922 1397836880
-functions
-\change_inserted 278795922 1397836881
-acts
-\change_unchanged
- like a transfer function by providing an estimate of the forecast of interest
- and associated uncertainty.
+ By selecting a suite of observations of state, the BN acts like a transfer
+ function by providing an estimate of the forecast of interest and associated
+ uncertainty.
  
 \end_layout
 
@@ -871,12 +822,8 @@ key "FienenBNWRR"
 \end_layout
 
 \begin_layout Standard
-One way to systematically evaluate BN complexity is to 
-\change_deleted 278795922 1397837059
-systematically
-\change_unchanged
- adjust the number of bins for each node with more bins meaning a greater
- level of complexity.
+One way to systematically evaluate BN complexity is to adjust the number
+ of bins for each node with more bins meaning a greater level of complexity.
  CVNetica has the capability to make this type of analysis efficient by
  allowing the user to specify an original BN and a configuration of bins
  for each node.
@@ -898,15 +845,8 @@ key "FienenBNWRR"
 \begin_inset Quotes erd
 \end_inset
 
- Each set can be evaluated as a batch and then 
-\change_inserted 278795922 1397837112
-tabulated and graphical 
-\change_deleted 278795922 1397837114
-plots
-\change_inserted 278795922 1397837119
-results are
-\change_unchanged
- generated of performance metrics across the sets.
+ Each set can be evaluated as a batch and then tabulated and graphical results
+ are generated of performance metrics across the sets.
 \end_layout
 
 \begin_layout Standard
@@ -1148,6 +1088,7 @@ begin{center}
 
 \begin_inset Graphics
 	filename figures/imputfileexample.pdf
+	scale 130
 
 \end_inset
 
@@ -1732,54 +1673,9 @@ begin{linenumbers}
 The CVNetica code was applied to two different applications to evaluate
  predictive performance and guide the appropriate level of complexity for
  BN design.
- The two applications are 
-\change_deleted 278795922 1397837317
-a
-\change_inserted 278795922 1397837373
-(1) a
-\change_unchanged
- data-driven 
-\change_deleted 278795922 1397837322
-application
-\change_inserted 278795922 1397837382
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\change_inserted 278795922 1397837397
-style: use word application once
-\change_unchanged
-
-\end_layout
-
-\end_inset
-
-
-\change_deleted 278795922 1397837322
- with
-\change_unchanged
- 
-\change_inserted 278795922 1397837358
-prediction of 
-\change_unchanged
-ocean wave
-\change_inserted 278795922 1397837363
- evolution
-\change_deleted 278795922 1397837366
-s
-\change_unchanged
- and 
-\change_inserted 278795922 1397837332
-(2) 
-\change_unchanged
-a model emulation 
-\change_deleted 278795922 1397837403
-application
-\change_unchanged
- using a BN to make predictions trained on results of a groundwater flow
- model.
+ The two applications are (1) a data-driven prediction of ocean wave evolution
+ and (2) a model emulation using a BN to make predictions trained on results
+ of a groundwater flow model.
  
 \end_layout
 
@@ -1836,21 +1732,14 @@ ns when observations or forecasts are not available or are uncertain.
  sensitivity of a specific prediction to changes in boundary conditions
  and include uncertainty in this sensitivity (the joint correlation) as
  well as uncertainty in the boundary conditions.
- This approach has been implemented before using Bayesian networks (
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-2 plant papers, Nathaniel - can you add these two refs? 
-\change_inserted 278795922 1397837486
-YES-you have these in bib already as plant2011a,b
-\change_unchanged
-
-\end_layout
+ This approach has been implemented before using Bayesian networks 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "plant2011a,plant2011b"
 
 \end_inset
 
-), but the fidelity of the of the resulting BN models was not examined in
+, but the fidelity of the of the resulting BN models was not examined in
  detail, other than to note that to maximize the consistency of the BN predictio
 ns with new observations, the BN inputs should include input parameter-value
  or data uncertainties.
@@ -1924,13 +1813,7 @@ BN for the wave height prediction model.
 \end_layout
 
 \begin_layout Standard
-
-\change_deleted 278795922 1397837514
-Here, w
-\change_inserted 278795922 1397837514
-W
-\change_unchanged
-e explore the level of overfitting with a simplified ocean-wave prediction
+We explore the level of overfitting with a simplified ocean-wave prediction
  model based on a BN.
  The specific BN, illustrated in figure 
 \begin_inset CommandInset ref
@@ -2391,11 +2274,8 @@ We show that CV provides an objective method for determining when a BN is
  output in order to achieve true predictive skill.
  That price was to greatly reduce the resolution of the input variables
  from as many as 12 bins to no more than 6 bins.
- While a price is paid in terms of input detail, there is a numerical
-\change_inserted 278795922 1397837719
- as well as statistical
-\change_unchanged
- benefit to reducing the bin resolution.
+ While a price is paid in terms of input detail, there is a numerical as
+ well as statistical benefit to reducing the bin resolution.
  For instance, the original ocean wave BN maintained over a million possible
  combinations of inputs and outputs scenarios within its conditional probability
  tables while the optimal 4-bin BN maintained 44 times fewer scenarios,
