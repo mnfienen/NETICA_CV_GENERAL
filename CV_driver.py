@@ -30,7 +30,7 @@ cdat.probpars = CVT.input_parameters(parfile)
 
 # Initialize a pynetica instance/env using password in a text file
 cdat.pyt.start_environment(cdat.probpars.pwdfile)
-cdat.pyt.LimitMemoryUsage(5.0e9)  # --> crank up the memory available
+cdat.pyt.LimitMemoryUsage(5.0e16)  # --> crank up the memory available
 
 # read in the data from a base cas file
 cdat.read_cas_file(cdat.probpars.baseCAS)
