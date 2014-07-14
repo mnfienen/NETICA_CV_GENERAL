@@ -2326,8 +2326,8 @@ Acknowledgements
 \end_layout
 
 \begin_layout Standard
-This work was funded by (ASIS and GLAS others depending on which example
- application we use) and the USGS Coastal and Marine Geology Program.
+This work was funded by the USGS Groundwater Resources Program and the USGS
+ Coastal and Marine Geology Program.
  We are deeply grateful to Steven Mascaro for his initial PyNetica.py code
  which he kindly shared as a starting point for this work.
 \end_layout

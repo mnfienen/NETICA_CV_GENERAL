@@ -1,0 +1,291 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\renewcommand\[{\begin{equation}}
+\renewcommand\]{\end{equation}}
+\end_preamble
+\use_default_options true
+\begin_modules
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing double
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Response to Reviewer #2 on Review of: 
+\emph on
+CVNetica--A cross-validation package driving Netica with Python 
+\emph default
+ 
+\end_layout
+
+\begin_layout Author
+Mike Fienen and Nathaniel Plant
+\end_layout
+
+\begin_layout Standard
+We appreciate the positive review from Reviewer #2 and appreciate the constructi
+ve suggestions for improving the manuscript.
+ In the following document, we have repeated all major comments in 
+\emph on
+italics 
+\emph default
+and responded to them in normal type.
+ 
+\end_layout
+
+\begin_layout Subsection*
+Specific Comments
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Page 4, figure 1.
+ The edges in this diagram are difficult to trace because many flow behind
+ the actual notes.
+ I suspect it will be even harder to see in the final publication.
+ I suggest using the GUI in Netica to redraw all the agents in a less confusing
+ way that shows that each of the output nodes is connected to all of the
+ input nodes plus "Recharge." I would also note that this network is unusual
+ in that all the output nodes are directly connected to the inputs, with
+ a single intermediate node.
+ As such, there is very little explanatory value in this network.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Page 4, lines 67 to 70.
+ My personal opinion is that imperfections in forecasts involve more than
+ simply epistemic uncertainty.
+ Real-life stochastic events in nature also play a role.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Page 5, lines 76 to 79.
+ Although it's true that it is common to create bins of equal probability,
+ naïvely doing so can create a raft of potential problems.
+ I would argue based on personal experience that careful consideration of
+ the number of bins and their boundaries is one of the more important aspects
+ of creating a useful belief network.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Page 6, line 109-110.
+ I disagree that edge arrows served no purpose, regardless of connectedness.
+ They may not be essential in calculation of conditional probabilities,
+ but their explanatory value should not be dismissed.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Pages 7-8, description of model skill (sk).
+ Using skill as a measure of performance seems appropriate if the variables
+ of interest are continuous and a single predicted value is the motivation
+ of the network.
+ I can imagine lots of circumstances, however, were the output of interest
+ is the entire probability distribution of the output nodes.
+ It seems that one would be more interested in some measure of goodness
+ of fit rather than how close the expected or most likely value agreed with
+ observations.
+ I also wonder if the statement that skill is restricted to the range 0
+ to 1 is strictly true for Bayesian networks that use discrete approximations
+ for continuous variables.
+ I think it's possible for the mean squared error between observation and
+ predictions to exceed the total variance of the observations because the
+ actual sample mean is not used within the belief network.
+ I also wonder how sk can approach unity unless every unique value observed
+ in the data is assigned to its own bin.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Regarding the discussion of expected value in lines 152 and 153, which is
+ used in the examples that follow? Choosing most likely or mean value will
+ obviously affect the calculation of skill.
+ I suspect most likely was used, but then wonder how most likely was chosen
+ when all the bins are equally probable-- as occurs when no comparable combinati
+on of parent node values was observed in the training set.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I found the discussion of evaluating complexity by simply varying the number
+ of bins and subsequent examples of this approach to be rather uninformative.
+ It works okay as a means to simply demonstrate software, but I wouldn't
+ recommend that approach to anyone who seriously wants to evaluate their
+ belief nets.
+ Again based on my experience, most real-world dilemmas involve which nodes
+ are included in the network and the connections among them.
+ The general rule for the number of bins is to use as few as possible that
+ can adequately describe the phenomenon of interest.
+ As the authors point out on page 6, the size of the conditional probability
+ table increases exponentially as a function of the number of parents for
+ each node.
+ Thus, the number of observations that are required to adequately train
+ the belief net has to also increase exponentially as the number of connections
+ increases.
+ The two examples given here have five and six parent nodes for the two
+ output nodes demonstrated.
+ It's not surprising that the predictive skill of the example networks decreases
+ dramatically as the number of bins increase.
+ I would be more interested in seeing how the predictive skill changes as
+ the number of connections between inputs and outputs change.
+ Does one really need each output node to be connected to every single input
+ node? Which nodes are essential to predictive success and which are not?
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+The description of the code in sections 3 and 4 is quite good and easy to
+ follow.
+\end_layout
+
+\begin_layout Standard
+Excellent! We are pleased that the code description was clear.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+The examples in section 5 are relatively easy to follow, but could be improved
+ with a couple of minor edits.
+ Specifically:
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Figure 3.
+ Two nodes are labeled, "wave height." I presume one is inshore and one is
+ offshore, so they should be labeled as such.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+It would be useful to know how many observations were used in the training
+ sets.
+ Sample size is key element of performance that is not discussed in these
+ examples.
+ It also would be useful to know how many combinations of parent node states
+ were not observed within the training or validation samples.
+ One can only guess that as the number of bins increase, the proportion
+ of non-informed cells in the conditional probability matrix increases exponenti
+ally.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Figures 4 and 5.
+ It's not apparent that there's any variation about the calibration line.
+ Given that calibration skill was calculated for each fold, some variation
+ is expected across folds.
+ Is that variation too small to be apparent or is it simply not plotted?
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Page 20, lines 396-398.
+ The final conclusion in this section seems at odds with the earlier suggestion
+ that the direction of the edges is immaterial.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+In conclusion, I found the paper to be quite interesting and it prompted
+ me to think seriously about the issue of cross validation of belief nets.
+ 
+\end_layout
+
+\begin_layout Standard
+We are glad that our main goal -- to prompt consideration of cross validation
+ in Bayesian networks -- was achieved.
+\end_layout
+
+\end_body
+\end_document

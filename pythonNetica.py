@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import re
+import sys
 import ctypes as ct
 import pythonNeticaConstants as pnC
 import pythonNeticaTools as pyT
@@ -297,6 +298,8 @@ class pynetica:
         # Now loop over each input and get the Netica predictions
         #
         for i in np.arange(N):
+            sys.stdout.write('predicting value {0} of {1}\r'.format(i,N))
+            sys.stdout.flush()
             # first have to enter the values for each node
             # retract all the findings again
             self.pyt.RetractNetFindings(cnet)

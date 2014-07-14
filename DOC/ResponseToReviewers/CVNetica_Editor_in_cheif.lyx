@@ -1,0 +1,152 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\renewcommand\[{\begin{equation}}
+\renewcommand\]{\end{equation}}
+\end_preamble
+\use_default_options true
+\begin_modules
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing double
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Response to Editor-in-Chief on Review of: 
+\emph on
+CVNetica--A cross-validation package driving Netica with Python 
+\emph default
+ 
+\end_layout
+
+\begin_layout Author
+Mike Fienen and Nathaniel Plant
+\end_layout
+
+\begin_layout Standard
+Thank you for providing the reviews from the two anonymous peer reviews
+ for our manuscript submitted to Environmental Modelling and Software.
+ We agree that many of the comments made are valuable and offer improvement
+ to the manuscript.
+ We have attached two documents addressing the reviewers' suggestions point
+ by point.
+ Additionally, your specific comments are repeated below in 
+\emph on
+italics
+\emph default
+, followed by our responses in plain type.
+\end_layout
+
+\begin_layout Subsection*
+General Comments
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I have now received reviews of the above paper.
+ They lead me to recommend that major revision and additional review is
+ necessary.
+ I think there are some good suggestions in there to help make it a very
+ good paper.
+ I would prefer it if you just deleted the name of the software from the
+ title - this is journal policy and will get you more downloads.
+\end_layout
+
+\begin_layout Standard
+We are happy to comply with this journal policy and have revised the title.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Also could you talk about the need to justify choice of evaluation metrics
+ and methods among the ones, for example, classified in the recent EMS Position
+ paper of Bennett et al (2013) on performance evaluation.
+ Preferably this should be a separate subsection that stands out.
+ One of our aims is to strengthen the credibility and relevance of the modelling
+ reported and do this whatever the environmental problem sector (as is the
+ case with CV).
+ That way your paper is even more suited to our journal, which concentrates
+ on generic methods, and not just one in your problem sector.
+ A global SA also reinforces this relevance of your paper to EMS.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Talk about adding a section on performance evaluation in a new short section
+\end_layout
+
+\end_body
+\end_document
