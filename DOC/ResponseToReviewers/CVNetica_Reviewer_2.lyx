@@ -124,12 +124,38 @@ Page 4, figure 1.
 \end_layout
 
 \begin_layout Standard
+We did not see any way to make the connections clearer graphically, but
+ instead indicated in the text the nature of these connections.
+ We disagree that there is little explanatory value -- the various configuration
+s of the inputs are exactly what has explanatory power.
+ It may be unusual that all inputs are connected to all outputs in this
+ network, but that is a reflection of the physics of the problem and the
+ underlying process model.
+ 
+\end_layout
+
+\begin_layout Standard
 
 \emph on
 Page 4, lines 67 to 70.
  My personal opinion is that imperfections in forecasts involve more than
  simply epistemic uncertainty.
  Real-life stochastic events in nature also play a role.
+\end_layout
+
+\begin_layout Standard
+In lines 70-72 (of the original version) we indicated that epistemic uncertainty
+ includes 
+\begin_inset Quotes eld
+\end_inset
+
+model imperfection, data errors, data paucity, and other sources
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The stochastic events, presumably, are considered in the variability of
+ the observation values themselves.
 \end_layout
 
 \begin_layout Standard
@@ -170,9 +196,19 @@ Pages 7-8, description of model skill (sk).
  I think it's possible for the mean squared error between observation and
  predictions to exceed the total variance of the observations because the
  actual sample mean is not used within the belief network.
- I also wonder how sk can approach unity unless every unique value observed
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I also wonder how sk can approach unity unless every unique value observed
  in the data is assigned to its own bin.
  
+\end_layout
+
+\begin_layout Standard
+That's precisely how it could happen --- we now explicitly make that point.
 \end_layout
 
 \begin_layout Standard

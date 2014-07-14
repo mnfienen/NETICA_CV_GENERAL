@@ -391,6 +391,28 @@ reference "fig:exampleBN"
 \end_inset
 
 .
+
+\change_inserted -74556787 1405377087
+ In this example, eachll input node is connected to each output node and
+ the 
+\begin_inset Quotes eld
+\end_inset
+
+Recharge
+\begin_inset Quotes erd
+\end_inset
+
+ node serves as an intermediate node between 
+\begin_inset Quotes eld
+\end_inset
+
+Transmissivity
+\begin_inset Quotes erd
+\end_inset
+
+ and all the output nodes.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -929,7 +951,11 @@ By evaluating skill over both the calibration data sets and prediction data
 \begin_inset Formula $sk$
 \end_inset
 
- approaches unity (perfection).
+ approaches unity (perfection)
+\change_inserted -74556787 1405376394
+ in the extreme case with a bin for every unique value
+\change_unchanged
+.
  However, greater descriptive value in a BN comes at a cost in predictive
  value.
  This is the classic condition of overfitting as cast in the context of

@@ -94,12 +94,127 @@ Mike Fienen and Nathaniel Plant
 \end_layout
 
 \begin_layout Standard
-In the following document, we have repeated all major comments in 
+We appreciate the positive review from Reviewer #1 and appreciate the constructi
+ve suggestions for improving the manuscript.
+ In the following document, we have repeated all major specific comments
+ in 
 \emph on
 italics 
 \emph default
 and responded to them in normal type.
  
+\end_layout
+
+\begin_layout Subsection*
+Specific Comments
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I miss in the manuscript a theoretical paragraph/section commenting the
+ influence of the bin size in the posterior probability distributions accuracy
+ and how to deal with it and quantified .When it comes to sensibility this
+ is one of the main source of variability and uncertainty.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+bin size etc.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Have the authors proposed any kind of indicator for measuring the right
+ numbers and size of bins, under different circumstances? There is a threshold
+ in the number of bins for validation (predictive) which is 4 (for both
+ studies), after which the Validation (predictive) skill value falls dramaticall
+y.
+ The most interesting thing here would be trying to extrapolate this analysis
+ to a wide range of different statistical situations, different measurement
+ from different studies..etc..
+ That would make the paper much more valuable.
+\end_layout
+
+\begin_layout Standard
+We agree that a large range of BNs would be worth evaluating.
+ We wrote the software to make this kind of evaluation possible and practical
+ for users.
+ We wanted, in this manuscript, to describe both the CV methodology and
+ the approach to developing the code.
+ We would love (as you suggest at the end) to collaborate on a larger number
+ of cases to broaden the reach of this analysis.
+ We did make the effort to use one case that emulates a process model (the
+ groundwater example) and another that is driven chiefly by data (the wave
+ height example) to get at the variability you describe.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+What if the bins are no equal probability?
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+bin size again
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Program structure: What do the authors mean when they say different hierarchical
+ level of the program? Can you please explain this a bit clearer?
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+similar to Reeves comments about levels?
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+There is not 3.1.2 section, so title 3.1.1 should be removed.
+\end_layout
+
+\begin_layout Standard
+There is not a 3.1.1 section to remove.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I haven´t gone through the python code part of the manuscript.
+ If the EMS journal considers necessary, a code programmer should revise
+ that section.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+There is a mistake in line 322 ("of the")
+\end_layout
+
+\begin_layout Standard
+This has been fixed.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I would be very interested in starting a research line (PhD) together with
+ the authors for exploring this for many case studies and trying to drawn
+ more robust and general conclusions on all of this.
+ 
+\end_layout
+
+\begin_layout Standard
+We would be interested in this as well!
 \end_layout
 
 \end_body
