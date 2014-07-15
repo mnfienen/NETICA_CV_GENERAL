@@ -292,7 +292,11 @@ I found the discussion of evaluating complexity by simply varying the number
 \begin_layout Standard
 We strongly disagree.
  As we discuss in more detail below, for the kinds of networks we are often
- working with, 
+ working with, the nodes and edges are based on the underlying physical
+ process, so the only degree of freedom in BN design is the number of bins
+ per node.
+ That said, the metrics discussed in this paper and calculated using CVNetica
+ can be applied to any range of BN structural designs.
 \end_layout
 
 \begin_layout Standard
@@ -325,8 +329,7 @@ As the authors point out on page 6, the size of the conditional probability
  dramatically as the number of bins increase.
  I would be more interested in seeing how the predictive skill changes as
  the number of connections between inputs and outputs change.
- Does one really need each output node to be connected to every single input
- node? Which nodes are essential to predictive success and which are not?
+ 
 \end_layout
 
 \begin_layout Standard
@@ -336,7 +339,22 @@ This is an interesting discussion.
  In the cases here---both data-driven in the waves example and model-emulation
  in the groundwater example---the relevance of each node and their connections
  through edges is well established based on the underlying process.
- In other words, the physics in both cases are well understood and the 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Does one really need each output node to be connected to every single input
+ node? Which nodes are essential to predictive success and which are not?
+\end_layout
+
+\begin_layout Standard
+Presumably the reviewer is now referring to the groundwater example.
+ In this case, the various combination of each of the inputs do, indeed,
+ influence the outputs.
+ Model emulation in this way can behave a bit differently than other more
+ data-driven applications.
+ So, removing edges or nodes in this example would not be defensible.
 \end_layout
 
 \begin_layout Standard
