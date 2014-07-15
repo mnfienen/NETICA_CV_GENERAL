@@ -163,7 +163,7 @@ end{linenumbers}
 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Introduction
 \end_layout
 
@@ -373,12 +373,22 @@ conditional probabilities
  learned by the BN are ambivalent with respect to direction.
 
 \change_inserted -74556787 1405363844
- Indeed, a user can interact with a BN in an inverse-modeling context by
- specifying specific outputs and evaluating which are the most likely combinatio
-ns of inputs that would result in the selected outputs.
-
+ 
+\change_deleted -74556787 1405440493
+ 
 \change_unchanged
- Nodes can also be intermediate if they act as constraints or model coefficients.
+Nodes can also be intermediate if they act as constraints or model coefficients.
+
+\change_inserted -74556787 1405440534
+ Once a BN is created and calibrated, it can be used to make predictions
+ by selecting bins corresponding to input values and noting the changes
+ in probability distributions of the output nodes.
+ A user can also interact with a BN in an inverse-modeling context by specifying
+ specific outputs and evaluating which are the most likely combinations
+ of inputs that would result in the selected outputs.
+ 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -590,8 +600,19 @@ the probability distribution represented by a node
  This results in bins of equal probability or ‘‘belief’’ although it is
  not exactly an ignorance prior because the probability mass in each bin
  may differ due to variable bin widths.
- It is possible to evaluate the contribution to all uncertainty values calculate
-d by the BN by expressing the uncertainty in the prior probabilities.
+ 
+\change_inserted -74556787 1405442585
+When the underlying problem responds to thresholds in the data, it is often
+ important to incorporate these thresholds as bin boundaries when defining
+ the structure of the BN.
+ Similarly, in some cases, specific categories even within a continuous
+ distribution have important meaning and should be incorporate into the
+ node structure.
+\end_layout
+
+\begin_layout Standard
+It is possible to evaluate the contribution to all uncertainty values calculated
+ by the BN by expressing the uncertainty in the prior probabilities.
  In Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -672,6 +693,33 @@ ation of nodes and edges.
  In this way, the BN honors the physical conditions known by the modeler
  and these are incorporated as soft knowledge.
  
+\change_inserted -74556787 1405441433
+It is possible to learn the structure of a BN from data 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "Chapter 7"
+before "e.g. "
+key "JensenNielsen2001"
+
+\end_inset
+
+ rather than expert understanding and in doing so, the resulting BN is more
+ similar to an Artificial Neural Network 
+\begin_inset CommandInset citation
+LatexCommand citep
+before "e.g. "
+key "NeuralNetworks2006"
+
+\end_inset
+
+.
+ In this work, the structure is always specified 
+\emph on
+a priori 
+\emph default
+through expert system understanding.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -684,13 +732,31 @@ reference "fig:exampleBN"
 
 , arrows on the edges indicate the direction of causal dependence.
  When all nodes are d-connected, the direction of the edge arrows serve
- no purpose.
+ no purpose
+\change_inserted -74556787 1405440083
+ in the calculations of conditional probabilities
+\change_unchanged
+.
  However, in the context of d-separation, the direction of causality has
  important ramifications on the propagation of uncertainty from observations
- to forecasts.
+ to forecasts
+\change_inserted -74556787 1405442023
+ and in either case, directionality of the edges helps users keep track
+ of causal relationships when visually interpreting a BN.
+\change_deleted -74556787 1405440044
+.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
+
+\change_inserted -74556787 1405440566
+The final step in calibrating a BN is parameter estimation.
+ In this step, conditional probabilities are learned through enumeration
+ or approximation.
+ 
+\change_unchanged
 When computational conditions and problem size permit, a conditional probability
  table (CPT) can be created that directly enumerates the conditional probabiliti
 es of all nodes in the BN.
@@ -1056,7 +1122,13 @@ begin{linenumbers}
 \end_layout
 
 \begin_layout Standard
-There are two levels at which CVNetica performs.
+There are 
+\change_deleted -74556787 1405441457
+two
+\change_inserted -74556787 1405441458
+three
+\change_unchanged
+ levels at which CVNetica performs.
  At the highest level, a script in 
 \begin_inset Formula $\mathtt{CV\_driver.py}$
 \end_inset
@@ -1069,11 +1141,39 @@ There are two levels at which CVNetica performs.
 \end_inset
 
  variable name.
- At a lower level, 
-\begin_inset Formula $\mathtt{pythonNeticaTools.py}$
+
+\change_inserted -74556787 1405441597
+ At an intermediate level, 
+\begin_inset Formula $\mathtt{pythonNetica.py}$
 \end_inset
 
  provides the 
+\begin_inset Formula $\mathtt{pynetica}$
+\end_inset
+
+ class that combines several Netica functions for tasks such as starting
+ a Netica environment, rebinning nodes, and other intermediate level tasks.
+ The intermediate level depends on 
+\change_deleted -74556787 1405441599
+ At a
+\change_inserted -74556787 1405441523
+the
+\change_unchanged
+ lowe
+\change_deleted -74556787 1405441526
+r
+\change_inserted -74556787 1405441526
+st
+\change_unchanged
+ level, 
+\begin_inset Formula $\mathtt{pythonNeticaTools.py}$
+\end_inset
+
+ 
+\change_inserted -74556787 1405441608
+, which 
+\change_unchanged
+provides the 
 \begin_inset Formula $\mathtt{pyneticaTools}$
 \end_inset
 
@@ -1087,7 +1187,12 @@ reference "sub:Accessing-the-DLL"
 \end_inset
 
 .
- At an intermediate level, 
+ 
+\change_inserted -74556787 1405441564
+Call graphs in the supplemental online material also illustrate the relationship
+s among these levels.
+\change_deleted -74556787 1405441508
+At an intermediate level, 
 \begin_inset Formula $\mathtt{pythonNetica.py}$
 \end_inset
 
@@ -1097,6 +1202,8 @@ reference "sub:Accessing-the-DLL"
 
  class that combines several Netica functions for tasks such as starting
  a Netica environment, rebinning nodes, and other intermediate level tasks.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -2244,8 +2351,11 @@ Calibration (descriptive) and Validation (predictive) skill values for various
  arrangements of bins on the wave prediction BN.
  For sets identified by a single number, that number of bins was used to
  discretize all nodes.
- The color shading indicates the 95% credible interval based on adding and
- subtracting 
+ The color shading indicates 
+\change_inserted -74556787 1405442753
+an approximation of 
+\change_unchanged
+the 95% credible interval based on adding and subtracting 
 \begin_inset Formula $2\sigma$
 \end_inset
 
@@ -2499,8 +2609,11 @@ Calibration (descriptive) and Validation (predictive) skill values for various
  For sets identified by two numbers separated by an underscore, the first
  and second numbers indicate the number of bins the input and output nodes,
  respectively, were discretized.
- The color shading indicates the 95% credible interval based on adding and
- subtracting 
+ The color shading indicates 
+\change_inserted -74556787 1405442764
+an approximation of 
+\change_unchanged
+the 95% credible interval based on adding and subtracting 
 \begin_inset Formula $2\sigma$
 \end_inset
 

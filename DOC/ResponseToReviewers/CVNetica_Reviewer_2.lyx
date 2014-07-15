@@ -170,12 +170,35 @@ Page 5, lines 76 to 79.
 \end_layout
 
 \begin_layout Standard
+This is a good point.
+ We have added language in that part of the manuscript to indicate the importanc
+e of bin boundaries.
+ This, in fact, is part of the CVNetica code in part motivated by cases
+ in which specific bin boundaries were found to be important based on the
+ underlying problem.
+\end_layout
+
+\begin_layout Standard
 
 \emph on
 Page 6, line 109-110.
  I disagree that edge arrows served no purpose, regardless of connectedness.
  They may not be essential in calculation of conditional probabilities,
  but their explanatory value should not be dismissed.
+\end_layout
+
+\begin_layout Standard
+We assume that by 
+\begin_inset Quotes eld
+\end_inset
+
+explanatory value
+\begin_inset Quotes erd
+\end_inset
+
+ the reviewer means qualitative value when one looks at the BN graphically.
+ Based on that assumption, we added language pointing out the conceptual
+ value of arrows when visually interpreting a BN.
 \end_layout
 
 \begin_layout Standard
@@ -220,6 +243,12 @@ Regarding the discussion of expected value in lines 152 and 153, which is
  I suspect most likely was used, but then wonder how most likely was chosen
  when all the bins are equally probable-- as occurs when no comparable combinati
 on of parent node values was observed in the training set.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+hmmmmmm
 \end_layout
 
 \begin_layout Standard
@@ -279,6 +308,13 @@ Figure 3.
 
 \begin_layout Standard
 
+\series bold
+This is a good point.
+ The figure has been revised accordingly.
+\end_layout
+
+\begin_layout Standard
+
 \emph on
 It would be useful to know how many observations were used in the training
  sets.
@@ -303,11 +339,30 @@ Figures 4 and 5.
 \end_layout
 
 \begin_layout Standard
+As discussed in the legend for each of figures 4 and 5, two times the standard
+ deviation was used to provide an approximation of a 95% credible interval
+ about both calibration and validation.
+ In the calibration cases, indeed, the variation is much smaller than for
+ validation, so it just does not show up in the plots.
+\end_layout
+
+\begin_layout Standard
 
 \emph on
 Page 20, lines 396-398.
  The final conclusion in this section seems at odds with the earlier suggestion
  that the direction of the edges is immaterial.
+\end_layout
+
+\begin_layout Standard
+The direction of causality is, of course, very important.
+ But....the use of directional arrows when constructing the BN does not have
+ an impact on the actual results.
+ In other words, the arrows could be arbitrarily oriented in this BN and
+ it would have no bearing on the calibration or results.
+ As a result, rather than discussing this here, we hope that the discussion
+ added above regarding the value of the arrows in visual interpretation
+ of the BN will also be sufficient in addressing this comment.
 \end_layout
 
 \begin_layout Standard

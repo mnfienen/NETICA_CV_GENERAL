@@ -99,8 +99,8 @@ In the following document, we have repeated all major comments in
 italics 
 \emph default
 and responded to them in normal type.
- In the PDF markup version, all changes were made as suggested, with a couple
- issues warranting discussion in a separate section in this document.
+ In the PDF markup version, all changes were made as suggested, with one
+ exception noted below.
 \end_layout
 
 \begin_layout Subsection*
@@ -122,6 +122,16 @@ I do not understand how Bayesian Networks are calibrated recommend more
 
 \begin_layout Standard
 This is an excellent point worthy of clarification.
+ In our cases, we assume that the structure of the BN (e.g.
+ the arrangement of nodes and edges) is known 
+\emph on
+a priori
+\emph default
+ as informed by an understanding of the underlying processes being simulated.
+ This is not the only way to proceed, however, as learning of the structure
+ is also possible.
+ We clarify this distinction and the assumptions used in our work in Section
+ 2.
 \end_layout
 
 \begin_layout Standard
@@ -139,6 +149,16 @@ This is an excellent point worthy of clarification.
 \end_layout
 
 \begin_layout Standard
+We have created a call-chart (like an object map) for the supplemental online
+ material.
+ This file is somewhat complicated to interpret but hopefully will help
+ some readers understand more about the program organization.
+ Because of the somewhat odd shape of the image file showing the call chart,
+ we propose putting two call-charts --- one somewhat abbreviated and one
+ more comprehensive --- in online material as PDF files.
+\end_layout
+
+\begin_layout Standard
 3.
  
 \emph on
@@ -150,8 +170,23 @@ Could the CV_driver.py script and associated XML file be included as an appendix
  
 \end_layout
 
+\begin_layout Standard
+We have already included a figure in the main body of the manuscript documenting
+ the XML file.
+ Nonetheless, in addition to the link to the GitHub site with all the code,
+ we have included both CV_driver.py and example.xml in supplementary online
+ material for quick access to readers.
+\end_layout
+
 \begin_layout Subsection*
-Comments from the PDF Markup
+Notes on the PDF Markup
+\end_layout
+
+\begin_layout Standard
+As noted above, all editorial suggesting made in the PDF markup were incorporate
+d.
+ However, around line 277, a suggestion for inserted text was made but we
+ could not understand exactly what was being suggested.
 \end_layout
 
 \end_body
