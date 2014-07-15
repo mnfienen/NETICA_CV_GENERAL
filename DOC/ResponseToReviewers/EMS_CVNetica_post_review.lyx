@@ -224,22 +224,7 @@ key "plant2011a,plant2011b,FienenBNWRR"
 
 .
  This builds on a history of applications in national security, economics,
- and ecology.
-\change_inserted -74556787 1405449029
-
-\end_layout
-
-\begin_layout Standard
-
-\change_inserted -74556787 1405449061
-
-\series bold
-nodes, edges, and bins all impact both ability to fit and predict.
- can overfit.
- complexity.
- 
-\change_unchanged
-
+ and ecology
 \end_layout
 
 \begin_layout Standard
@@ -256,7 +241,23 @@ key "Chen2012,Marcot2012"
 \end_inset
 
 .
- Some validation metrics are calculable by the commercial software packages,
+ 
+\change_inserted -74556787 1405455029
+BNs, as described in detail below, are made up of nodes representing variables.
+ These nodes are discretized into bins and connected by edges.
+ The arrangement of nodes, edges, and bins all impact the ability of a BN
+ to fit a dataset descriptively and the quality of predictions that can
+ be made with a BN.
+ There is always a tradeoff---better descriptive ability often is attained
+ at the expense of predictive power.
+ When descriptive ability is too high, the BN is fitting noise rather than
+ true variability and this results in the well-known result of overfitting.
+ To protect against this, it is important to evaluate both descriptive ability
+ and predictive power.
+\end_layout
+
+\begin_layout Standard
+Some validation metrics are calculable by the commercial software packages,
  but substantial gaps in capabilities remain.
  Fortunately---at least in the case of Netica---an application programming
  interface (API) exists with versions in multiple programming languages.
@@ -286,7 +287,7 @@ key "scipy"
 \end_inset
 
 
-\change_inserted -74556787 1405363567
+\change_inserted -74556787 1405455023
  and Python can access C libraries and functions
 \change_unchanged
 .
@@ -296,6 +297,22 @@ key "scipy"
 \end_layout
 
 \begin_layout Standard
+
+\change_inserted -74556787 1405457708
+There are many methods and metrics available to evaluating model performance
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "EMSPosition2013"
+
+\end_inset
+
+.
+ The choices made in this work are not meant to be applicable to every case,
+ but rather to provide a starting point within a framework that other users
+ can easily extend.
+ 
+\change_unchanged
 Building on techniques introduced by 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -309,16 +326,20 @@ on quality?; and how does the complexity of the underlying network impact
  predictive and descriptive performance? Cross-validation is used to answer
  both questions, and the number of bins per node is used as a metric of
  complexity to answer the second.
- These specific questions are evaluated in this work but our framework allows
- for consideration and analysis of other validation metrics and techniques
- beyond those presented here.
-
-\change_inserted -74556787 1405449173
  
-\series bold
-nodes edges and bins, complexity overfitting
+\change_inserted -74556787 1405454745
+The number of nodes and the nature of their connections through edges are
+ other aspects of BN design that define the complexity of a BN and impact
+ both descriptive and predictive power.
+ 
 \change_unchanged
-
+These specific questions are evaluated in this work 
+\change_inserted -74556787 1405454780
+focusing on the number of bins per node as the chief metric of complexity,
+ 
+\change_unchanged
+but our framework allows for consideration and analysis of other validation
+ metrics and techniques beyond those presented here.
 \end_layout
 
 \begin_layout Standard
@@ -374,12 +395,9 @@ key "Korb2004"
 \end_inset
 
 , composed of nodes and edges.
- Nodes represent variables whose parameter values may include
-\change_inserted -74556787 1405363595
- 
-\change_unchanged
-Boolean, discrete states, or, for continuous variables, discrete ranges
- that are discretized into bins.
+ Nodes represent variables whose parameter values may include Boolean, discrete
+ states, or, for continuous variables, discrete ranges that are discretized
+ into bins.
  Edges form the connections between nodes and represent a correlated connection
  between the properties represented by the nodes.
  The entire catalog of these correlations make up conditional probability
@@ -394,8 +412,6 @@ conditional probabilities
 \change_unchanged
  learned by the BN are ambivalent with respect to direction.
 
-\change_inserted -74556787 1405363844
- 
 \change_deleted -74556787 1405440493
  
 \change_unchanged
@@ -833,7 +849,13 @@ end{linenumbers}
 \end_layout
 
 \begin_layout Section
+
+\change_deleted -74556787 1405455713
 Cross validation tool
+\change_inserted -74556787 1405455717
+CVNetica
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -884,6 +906,15 @@ around the static functions
 would be necessary in addition to the Python function wrappers written in
  CVNetica.
  
+\change_inserted -74556787 1405455921
+In this section we first describe the metrics and methods used to evaluate
+ BNs and then describe the program structure of CVNetica.
+\end_layout
+
+\begin_layout Subsection
+
+\change_inserted -74556787 1405457582
+Metrics and Methods
 \end_layout
 
 \begin_layout Standard
@@ -896,11 +927,41 @@ key "StatLearning2009,Marcot2012,FienenBNWRR"
 \end_inset
 
  metrics to asses the quality of predictions made by a BN.
- In 
+ 
+\change_inserted -74556787 1405456177
+An accurate assessment of BN predictions requires predictions to be made
+ on data that were not included in the dataset used to calibrate the BN
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "StatLearning2009"
+
+\end_inset
+
+.
+ This can be accomplished either by reserving a single subset of available
+ data for evaluating predictions or by using cross validation.
+ 
+\change_unchanged
+In 
+\change_deleted -74556787 1405456159
+
 \begin_inset Formula $k$
 \end_inset
 
--fold cross validation used in this work, the calibration dataset is, randomly
+-fold
+\change_inserted -74556787 1405456159
+
+\emph on
+
+\begin_inset Formula $k-$
+\end_inset
+
+
+\emph default
+fold
+\change_unchanged
+ cross validation used in this work, the calibration dataset is, randomly
  without replacement, divided into 
 \begin_inset Formula $k$
 \end_inset
@@ -914,8 +975,23 @@ key "StatLearning2009,Marcot2012,FienenBNWRR"
  the fold, then the BN is used to make predictions on the left-out data.
  In this way, performance of the BN is evaluated on data not used in calibration
  to simulate performance in true future prediction.
- Several performance metrics can be used for this purpose, as discussed
- in 
+ 
+\change_inserted -74556787 1405456470
+This approach was selected both to make the most of data available (e.g.
+ every data point is used at some stage in both calibration and prediction)
+ and to smooth over any bias that may result in the random selection of
+ a single withheld subset of the data.
+ As a result, when metrics are reported over the 
+\begin_inset Formula $k-$
+\end_inset
+
+folds, the standard deviation of the metrics are also reported to acknowledge
+ the variability in selection among the fold samples.
+\end_layout
+
+\begin_layout Standard
+Several performance metrics can be used for this purpose, as discussed in
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Netica"
@@ -938,14 +1014,21 @@ key "FienenBNWRR"
 
 .
  In this work, we 
-\change_deleted -74556787 1405370034
+\change_deleted -74556787 1405456159
 will
 \change_unchanged
  focus on skill
-\change_inserted -74556787 1405450098
- 
+\change_inserted -74556787 1405456785
+.
+ Skill is evaluated based on a single representative expected value for
+ each prediction as compared to a single observation corresponding to the
+ same input values used to make the prediction.
+ In the examples considered in this work, a single representative prediction
+ is often considered as the key output of the BN in practice.
+ Additional metrics take posterior variance into more explicit consideration.
+ Skill is defined as 
 \series bold
-NATHANIEL TO ADDRESS
+NATHANIEL TO ADDRESS AND EXPLAIN HOW THE REGRESSION FITS IN AND WHY
 \change_unchanged
 
 \series default
@@ -961,8 +1044,11 @@ where
 \begin_inset Formula $\sigma_{e}^{2}$
 \end_inset
 
- is the mean squared error between observations and BN predictions, and
- 
+ is the mean squared error between observations and BN predictions
+\change_inserted -74556787 1405457216
+ (expected values)
+\change_unchanged
+, and 
 \begin_inset Formula $\sigma_{o}^{2}$
 \end_inset
 
@@ -975,38 +1061,54 @@ key "Gutierrez2011,plant2011a,Weigend1994"
 
 .
  Skill is evaluated by comparing BN predictions to observations
-\change_inserted -74556787 1405370132
+\change_inserted -74556787 1405457240
 .
- 
-\change_deleted -74556787 1405370134
+ Expected values are reported either as mean or most likely (ML).
+ For ML values, the value corresponding to the center of the bin with the
+ highest predicted probability is reported.
+ The mean values are computed as the product of the bin centers and the
+ probability in each bin, consistent with a typical expectation operation.
+
+\change_deleted -74556787 1405456159
  with a
-\change_inserted -74556787 1405370137
+\change_inserted -74556787 1405456470
 A skill
 \change_unchanged
  value of unity indicat
-\change_deleted -74556787 1405370157
+\change_deleted -74556787 1405456159
 ing
-\change_inserted -74556787 1405370157
+\change_inserted -74556787 1405456470
 es
 \change_unchanged
  perfect correspondence
-\change_inserted -74556787 1405370161
+\change_inserted -74556787 1405456470
 ,
 \change_unchanged
  
-\change_deleted -74556787 1405370165
+\change_deleted -74556787 1405456159
 and
 \change_unchanged
  a value of zero indicat
-\change_deleted -74556787 1405370168
+\change_deleted -74556787 1405456159
 ing
-\change_inserted -74556787 1405370168
+\change_inserted -74556787 1405456470
 es
 \change_unchanged
  substantial discrepancy between BN predictions and observations
-\change_inserted -74556787 1405450093
+\change_inserted -74556787 1405456470
 .
-\change_deleted -74556787 1405450089
+\change_deleted -74556787 1405456159
+.
+
+\change_inserted -74556787 1405457183
+ Skill is closely related to the Nash-Sutcliffe Model Efficiency metric
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "NS1970"
+
+\end_inset
+
 .
 \change_unchanged
 
@@ -1017,8 +1119,11 @@ es
 \change_inserted -74556787 1405370208
 In addition to skill, 
 \change_unchanged
-CVNetica also reports log loss, error rate, experience, quadratic loss,
- mutual information (entropy), 
+CVNetica also reports log loss, error rate, experience, quadratic loss
+\change_inserted -74556787 1405457007
+ (Brier score)
+\change_unchanged
+, mutual information (entropy), 
 \change_inserted -74556787 1405370256
 and 
 \change_unchanged
@@ -1030,11 +1135,27 @@ key "Netica,NeticaAPI"
 \end_inset
 
 .
- Expected values are reported either as mean or most likely (ML).
+ 
+\change_inserted -74556787 1405457429
+These additional metrics in varying degree consider the probabilistic characteri
+stics of the predictions made by a BN.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "EMSPosition2013"
+
+\end_inset
+
+ provide some guidance as to which metrics and methods are most appropriate
+ for characterizing model performance in various contexts.
+\change_deleted -74556787 1405457226
+Expected values are reported either as mean or most likely (ML).
  For ML values, the value corresponding to the center of the bin with the
  highest predicted probability is reported.
  The mean values, are computed as the product of the bin centers and the
  probability in each bin, consistent with a typical expectation operation.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -1065,7 +1186,7 @@ key "FienenBNWRR"
 
 .
 
-\change_inserted -74556787 1405370301
+\change_inserted -74556787 1405457285
  Cross validation allows users to assess the cost in predictive value imposed
  by the addition of complexity through more bins, additional nodes, or edges.
  
@@ -1078,7 +1199,12 @@ One way to systematically evaluate BN complexity is to adjust the number
  of bins for each node with more bins meaning a greater level of complexity.
  CVNetica has the capability to make this type of analysis efficient by
  allowing the user to specify an original BN and a configuration of bins
- for each node.
+ for each node
+\change_inserted -74556787 1405457322
+ and the examples in this work are evaluated using bin configuration to
+ represent complexity
+\change_unchanged
+.
  CVNetica then builds a new BN with the requested number of bins and assign
 \change_deleted -74556787 1405370328
 ing
@@ -1133,7 +1259,13 @@ end{linenumbers}
 \end_layout
 
 \begin_layout Subsection
-Details about program structure
+
+\change_deleted -74556787 1405455909
+Details about p
+\change_inserted -74556787 1405455909
+P
+\change_unchanged
+rogram structure
 \end_layout
 
 \begin_layout Standard
@@ -2188,7 +2320,7 @@ begin{center}
 
 
 \begin_inset Graphics
-	filename figures/bermPy_v3.svg
+	filename figures/bermPy_v4.pdf
 	scale 40
 
 \end_inset
@@ -2757,9 +2889,14 @@ In the model emulation case, fewer input bins were supported while maintaining
 \end_layout
 
 \begin_layout Standard
-CVNetica is available for download at (https://github.com/mnfienen/NETICA_CV_GENE
-RAL) and the authors welcome proposed contributions to code development
- going forward.
+CVNetica is available for download at (
+\change_deleted -74556787 1405460426
+https://github.com/mnfienen/NETICA_CV_GENERAL
+\change_inserted -74556787 1405460426
+http://mnfienen-usgs.github.io/CVNetica
+\change_unchanged
+) and the authors welcome proposed contributions to code development going
+ forward.
  These diagnostics and others have the potential to improve the validity
  of BNs used for prediction in natural resources and other applications.
 \end_layout
