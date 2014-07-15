@@ -213,13 +213,31 @@ Pages 7-8, description of model skill (sk).
  It seems that one would be more interested in some measure of goodness
  of fit rather than how close the expected or most likely value agreed with
  observations.
- I also wonder if the statement that skill is restricted to the range 0
- to 1 is strictly true for Bayesian networks that use discrete approximations
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+hmmmmmmmm
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+I also wonder if the statement that skill is restricted to the range 0 to
+ 1 is strictly true for Bayesian networks that use discrete approximations
  for continuous variables.
  I think it's possible for the mean squared error between observation and
  predictions to exceed the total variance of the observations because the
  actual sample mean is not used within the belief network.
  
+\end_layout
+
+\begin_layout Standard
+We now acknowledge that skill can become negative and what that means in
+ the text.
+ This was a good point.
 \end_layout
 
 \begin_layout Standard
@@ -277,6 +295,16 @@ I found the discussion of evaluating complexity by simply varying the number
  the number of connections between inputs and outputs change.
  Does one really need each output node to be connected to every single input
  node? Which nodes are essential to predictive success and which are not?
+\end_layout
+
+\begin_layout Standard
+This is an interesting discussion.
+ Of course, the nature of the structure (which nodes to include, how they
+ are connected with edges) of a BN is also key to the predictive power.
+ In the cases here---both data-driven in the waves example and model-emulation
+ in the groundwater example---the relevance of each node and their connections
+ through edges is well established based on the underlying process.
+ In other words, the physics in both cases are well understood and the 
 \end_layout
 
 \begin_layout Standard

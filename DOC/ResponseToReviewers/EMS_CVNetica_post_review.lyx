@@ -974,9 +974,11 @@ ing
 es
 \change_unchanged
  substantial discrepancy between BN predictions and observations
-\change_inserted -74556787 1405370195
-, and a negative skill value indicates less descriptive power due to the
- BN than if no description was made.
+\change_inserted -74556787 1405443698
+, and a negative skill value indicates higher mean-squared error between
+ BN outputs and observations than the variance of the observations.
+ A negative skill would suggest a poorly constructed BN that would not be
+ useful at all in prediction
 \change_unchanged
 .
 \end_layout
