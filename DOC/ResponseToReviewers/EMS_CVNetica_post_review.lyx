@@ -225,6 +225,21 @@ key "plant2011a,plant2011b,FienenBNWRR"
 .
  This builds on a history of applications in national security, economics,
  and ecology.
+\change_inserted -74556787 1405449029
+
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted -74556787 1405449061
+
+\series bold
+nodes, edges, and bins all impact both ability to fit and predict.
+ can overfit.
+ complexity.
+ 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -297,6 +312,13 @@ on quality?; and how does the complexity of the underlying network impact
  These specific questions are evaluated in this work but our framework allows
  for consideration and analysis of other validation metrics and techniques
  beyond those presented here.
+
+\change_inserted -74556787 1405449173
+ 
+\series bold
+nodes edges and bins, complexity overfitting
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -920,6 +942,14 @@ key "FienenBNWRR"
 will
 \change_unchanged
  focus on skill
+\change_inserted -74556787 1405450098
+ 
+\series bold
+NATHANIEL TO ADDRESS
+\change_unchanged
+
+\series default
+
 \begin_inset Formula 
 \begin{equation}
 sk=\left[1-\frac{\sigma_{e}^{2}}{\sigma_{o}^{2}}\right]\label{skill}
@@ -974,13 +1004,12 @@ ing
 es
 \change_unchanged
  substantial discrepancy between BN predictions and observations
-\change_inserted -74556787 1405443698
-, and a negative skill value indicates higher mean-squared error between
- BN outputs and observations than the variance of the observations.
- A negative skill would suggest a poorly constructed BN that would not be
- useful at all in prediction
-\change_unchanged
+\change_inserted -74556787 1405450093
 .
+\change_deleted -74556787 1405450089
+.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard

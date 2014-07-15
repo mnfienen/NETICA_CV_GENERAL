@@ -217,9 +217,12 @@ Pages 7-8, description of model skill (sk).
 \end_layout
 
 \begin_layout Standard
-
-\series bold
-hmmmmmmmm
+There are other metrics including log loss, quadratic loss, error rate,
+ Likelihood ratio, and others that consider the whole distribution.
+ For brevity, we focused on skill in this work, but we have added a short
+ section describing how we chose the metrics we used and we indicate these
+ as options in.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -235,9 +238,9 @@ I also wonder if the statement that skill is restricted to the range 0 to
 \end_layout
 
 \begin_layout Standard
-We now acknowledge that skill can become negative and what that means in
- the text.
- This was a good point.
+
+\series bold
+NATHANIEL TO ADDRESS
 \end_layout
 
 \begin_layout Standard
@@ -264,9 +267,15 @@ on of parent node values was observed in the training set.
 \end_layout
 
 \begin_layout Standard
-
-\series bold
-hmmmmmm
+We used mean in this work but that is a choice to be made by the user, both
+ are reported.
+ For the purposes of CVNetica---in which decisions on BN complexity are
+ being driven BN 
+\emph on
+relative
+\emph default
+ skill among BN structural choices, the decision of whether to use ML or
+ mean is largely arbitrary.
 \end_layout
 
 \begin_layout Standard
@@ -277,11 +286,34 @@ I found the discussion of evaluating complexity by simply varying the number
  It works okay as a means to simply demonstrate software, but I wouldn't
  recommend that approach to anyone who seriously wants to evaluate their
  belief nets.
- Again based on my experience, most real-world dilemmas involve which nodes
+ 
+\end_layout
+
+\begin_layout Standard
+We strongly disagree.
+ As we discuss in more detail below, for the kinds of networks we are often
+ working with, 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Again based on my experience, most real-world dilemmas involve which nodes
  are included in the network and the connections among them.
  The general rule for the number of bins is to use as few as possible that
  can adequately describe the phenomenon of interest.
- As the authors point out on page 6, the size of the conditional probability
+ 
+\end_layout
+
+\begin_layout Standard
+Exactly --- but we are trying to provide a quantitative basis for making
+ that choice.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+As the authors point out on page 6, the size of the conditional probability
  table increases exponentially as a function of the number of parents for
  each node.
  Thus, the number of observations that are required to adequately train
@@ -335,8 +367,6 @@ Figure 3.
 \end_layout
 
 \begin_layout Standard
-
-\series bold
 This is a good point.
  The figure has been revised accordingly.
 \end_layout
