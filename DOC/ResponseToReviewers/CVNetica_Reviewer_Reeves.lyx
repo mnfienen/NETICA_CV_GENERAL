@@ -153,9 +153,9 @@ We have created a call-chart (like an object map) for the supplemental online
  material.
  This file is somewhat complicated to interpret but hopefully will help
  some readers understand more about the program organization.
- Because of the somewhat odd shape of the image file showing the call chart,
- we propose putting two call-charts --- one somewhat abbreviated and one
- more comprehensive --- in online material as PDF files.
+ Because of the odd shape of the image file showing the call chart, we propose
+ putting two call-charts --- one abbreviated and one more comprehensive
+ --- in online material as PDF files.
 \end_layout
 
 \begin_layout Standard

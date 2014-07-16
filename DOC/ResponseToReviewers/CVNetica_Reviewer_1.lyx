@@ -158,8 +158,8 @@ What if the bins are no equal probability?
 
 \begin_layout Standard
 Equiprobable bins are not a requirement of CVNetica or our analysis.
- They were used as a convenience tool when external information on bins
- was not available.
+ They were used as a convenient tool when external information on bins was
+ not available.
  We have clarified that any arrangement of bin boundaries is compatible
  with this analysis.
 \end_layout
@@ -174,7 +174,7 @@ Program structure: What do the authors mean when they say different hierarchical
 \begin_layout Standard
 We have added supplementary online material that should clarify what we
  mean by the different levels.
- We also rearranged the text in this section to be much clearer.
+ We also rearranged the text in this section to be clearer.
 \end_layout
 
 \begin_layout Standard
@@ -184,7 +184,7 @@ There is not 3.1.2 section, so title 3.1.1 should be removed.
 \end_layout
 
 \begin_layout Standard
-There is not a 3.1.1 section to remove.
+We have renumbered the subsections a bit and no longer have an orphan.
 \end_layout
 
 \begin_layout Standard
@@ -193,6 +193,10 @@ There is not a 3.1.1 section to remove.
 I haven´t gone through the python code part of the manuscript.
  If the EMS journal considers necessary, a code programmer should revise
  that section.
+\end_layout
+
+\begin_layout Standard
+This is up to the journal editorial staff.
 \end_layout
 
 \begin_layout Standard
