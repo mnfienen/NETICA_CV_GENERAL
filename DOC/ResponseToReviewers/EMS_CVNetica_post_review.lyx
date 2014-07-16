@@ -72,6 +72,7 @@
 \html_css_as_file 0
 \html_be_strict false
 \author -74556787 "Michael Fienen" 
+\author 278795922 "nplant" 
 \end_header
 
 \begin_body
@@ -143,11 +144,58 @@ Bayesian networks (BNs) are powerful tools for probabilistically simulating
  CVNetica is an open-source package written in Python that extends the Netica
  software package to perform cross-validation and to read, rebuild, and
  learn BNs from data.
- Optimal BN complexity can be identified through exploration of BN complexity
- using predictive skill as a performance metric.
+ 
+\change_deleted 278795922 1405520439
+Optimal
+\change_inserted 278795922 1405521018
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1405521045
+i think we avoid optimization and focus on cv only
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_deleted 278795922 1405520439
+ BN complexity can be identified through exploration of BN complexity using
+ predictive skill as a performance metric.
+
+\change_unchanged
  Insights gained from cross-validation and implications on predictive versus
  descriptive skill are illustrated with two examples: a data-driven oceanographi
 c application; and a model-emulation application.
+
+\change_inserted 278795922 1405521324
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1405521333
+syncrhonize with the conclusion:
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+These examples show that overfitting does in fact occur when BNs become
+ more complex than is allowed by supporting data and overfitting incurrs
+ computational costs as well as causing a reduction in prediction skill.
+ CVNetica can be used to evaluate the degree of overfitting that results
+ from a wide variety of complexity metrics (we used level of descretization)
+ and its impact on a variety of performance metrics (we used skill).
+ 
+\change_unchanged
+
 \begin_inset ERT
 status open
 
@@ -246,12 +294,29 @@ key "Chen2012,Marcot2012"
 BNs, as described in detail below, are made up of nodes representing variables.
  These nodes are discretized into bins and connected by edges.
  The arrangement of nodes, edges, and bins all impact the ability of a BN
- to fit a dataset descriptively and the quality of predictions that can
- be made with a BN.
+ to fit a dataset descriptively and 
+\change_deleted 278795922 1405520724
+the
+\change_inserted 278795922 1405520725
+to
+\change_inserted -74556787 1405455029
+ 
+\change_deleted 278795922 1405520747
+quality of predictions that can be made with a BN
+\change_inserted 278795922 1405520757
+predict new data accurately
+\change_inserted -74556787 1405455029
+.
  There is always a tradeoff---better descriptive ability often is attained
  at the expense of predictive power.
  When descriptive ability is too high, the BN is fitting noise rather than
- true variability and this results in the well-known result of overfitting.
+ true variability and this 
+\change_deleted 278795922 1405520789
+results in the
+\change_inserted 278795922 1405520791
+leads to the
+\change_inserted -74556787 1405455029
+ well-known result of overfitting.
  To protect against this, it is important to evaluate both descriptive ability
  and predictive power.
 \end_layout
@@ -308,9 +373,30 @@ key "EMSPosition2013"
 \end_inset
 
 .
- The choices made in this work are not meant to be applicable to every case,
- but rather to provide a starting point within a framework that other users
- can easily extend.
+ The choices made in this work 
+\change_deleted 278795922 1405520952
+are not
+\change_inserted 278795922 1405520984
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1405521009
+I like to state positives and not through in disclaimer at start
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_deleted 278795922 1405520952
+ meant to be applicable to every case, but rather to 
+\change_inserted -74556787 1405457708
+provide a starting point within a framework that other users can easily
+ extend.
  
 \change_unchanged
 Building on techniques introduced by 
@@ -332,14 +418,32 @@ The number of nodes and the nature of their connections through edges are
  other aspects of BN design that define the complexity of a BN and impact
  both descriptive and predictive power.
  
+\change_deleted 278795922 1405521112
+These specific questions are evaluated in this work focusing on the number
+ of bins per node as the chief metr
+\change_inserted 278795922 1405521126
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1405521140
+said this alrready
 \change_unchanged
-These specific questions are evaluated in this work 
-\change_inserted -74556787 1405454780
-focusing on the number of bins per node as the chief metric of complexity,
- 
+
+\end_layout
+
+\end_inset
+
+
+\change_deleted 278795922 1405521112
+ic of complexity, but o
+\change_inserted 278795922 1405521112
+O
 \change_unchanged
-but our framework allows for consideration and analysis of other validation
- metrics and techniques beyond those presented here.
+ur framework allows for consideration and analysis of other validation metrics
+ and techniques beyond those presented here.
 \end_layout
 
 \begin_layout Standard
@@ -1027,6 +1131,8 @@ will
  is often considered as the key output of the BN in practice.
  Additional metrics take posterior variance into more explicit consideration.
  Skill is defined as 
+\change_deleted 278795922 1405518633
+
 \series bold
 NATHANIEL TO ADDRESS AND EXPLAIN HOW THE REGRESSION FITS IN AND WHY
 \change_unchanged
@@ -1044,8 +1150,14 @@ where
 \begin_inset Formula $\sigma_{e}^{2}$
 \end_inset
 
- is the mean squared error between observations and BN predictions
-\change_inserted -74556787 1405457216
+ is the mean squared error between observations and 
+\change_inserted 278795922 1405521805
+transformed 
+\change_unchanged
+BN predictions
+\change_inserted 278795922 1405518648
+ 
+\change_deleted 278795922 1405518648
  (expected values)
 \change_unchanged
 , and 
@@ -1060,28 +1172,61 @@ key "Gutierrez2011,plant2011a,Weigend1994"
 \end_inset
 
 .
- Skill is evaluated by comparing BN predictions to observations
+ 
+\change_inserted 278795922 1405518699
+Because the BN predictions are actually in the form of probabilities of
+ the output variable falling within descrete ranges (bins), these probabbilities
+ are transformed to the expected values.
+ 
+\change_deleted 278795922 1405518740
+Skill is evaluated by comparing BN predictions to observations.
+
 \change_inserted -74556787 1405457240
-.
- Expected values are reported either as mean or most likely (ML).
- For ML values, the value corresponding to the center of the bin with the
+ Expected values 
+\change_deleted 278795922 1405518850
+are reported
+\change_inserted 278795922 1405518855
+may be computed
+\change_inserted -74556787 1405457240
+ either as mean or most likely (ML).
+ 
+\change_inserted 278795922 1405518883
+The mean values are computed as the product of the bin centers and the probabili
+ty in each bin, consistent with a typical expectation operation.
+ 
+\change_inserted -74556787 1405457240
+For ML values, the value corresponding to the center of the bin with the
  highest predicted probability is reported.
- The mean values are computed as the product of the bin centers and the
- probability in each bin, consistent with a typical expectation operation.
+ 
+\change_deleted 278795922 1405518878
+The mean values are computed as the product of the bin centers and the probabili
+ty in each bin, consistent with a typical expectation operation.
 
 \change_deleted -74556787 1405456159
  with a
-\change_inserted -74556787 1405456470
+\change_inserted 278795922 1405521894
+Additionally, since the transformation to an expected value does not capture
+ all of the probabilistic information of the BN prediction, the expected
+ values are is fit to the observation via weighted linear regression, where
+ the weights are set equal to the the reciprocal of the variance of the
+ BN prediction in order to give more weight to more confident predictions
+ and 
+\begin_inset Formula $\sigma_{e}^{2}$
+\end_inset
+
+is computed as the mean-square regression error.
+ 
+\change_inserted -74556787 1405457240
 A skill
 \change_unchanged
  value of unity indicat
 \change_deleted -74556787 1405456159
 ing
-\change_inserted -74556787 1405456470
+\change_inserted -74556787 1405457240
 es
 \change_unchanged
  perfect correspondence
-\change_inserted -74556787 1405456470
+\change_inserted -74556787 1405457240
 ,
 \change_unchanged
  
@@ -1091,16 +1236,16 @@ and
  a value of zero indicat
 \change_deleted -74556787 1405456159
 ing
-\change_inserted -74556787 1405456470
+\change_inserted -74556787 1405457240
 es
 \change_unchanged
  substantial discrepancy between BN predictions and observations
-\change_inserted -74556787 1405456470
+\change_inserted -74556787 1405457240
 .
 \change_deleted -74556787 1405456159
 .
 
-\change_inserted -74556787 1405457183
+\change_inserted -74556787 1405457240
  Skill is closely related to the Nash-Sutcliffe Model Efficiency metric
  
 \begin_inset CommandInset citation
@@ -2225,7 +2370,11 @@ The CVNetica code was applied to two different applications to evaluate
  BN design.
  The two applications are (1) a data-driven prediction of ocean wave evolution
  and (2) a model emulation using a BN to make predictions trained on results
- of a groundwater flow model.
+ of a groundwater flow model
+\change_inserted 278795922 1405522290
+ shown in Figure 1
+\change_unchanged
+.
  
 \end_layout
 
@@ -2402,20 +2551,44 @@ reference "fig:BNocean"
 \end_inset
 
 ) correspond to observations from an offshore buoy (NOAA 42040) collected
- from 1996 to 2011.
- The variables are wind speed and direction and wave height, period, and
- direction.
+ from 1996 to 2011
+\change_inserted 278795922 1405522470
+ that is located far offshore of the location where predictions are needed
+\change_unchanged
+.
+ The 
+\change_inserted 278795922 1405522477
+offshore 
+\change_unchanged
+variables are wind speed and direction and wave height, period, and direction.
  The third column has just one variable--wave height--that was observed
- at a nearshore buoy between 2000 and 2008.
- The nearshore buoy was subsequently lost.
+ at 
+\change_inserted 278795922 1405522508
+an onshore
+\change_deleted 278795922 1405522506
+a nearshore
+\change_unchanged
+ buoy between 2000 and 2008.
+ The 
+\change_deleted 278795922 1405522510
+nearshore
+\change_inserted 278795922 1405522511
+onshore
+\change_unchanged
+ buoy was subsequently lost.
  The BN describing the prior probabilities of each variable and the conditional
  probabilities among variables was designed to resolve boundary conditions
  at the offshore location and the prediction at the nearshore location accuratel
 y enough to support the morphologic evolution application.
  While this BN has very good hindcast skill (about 0.8), it is not clear
  that it has equally good forecast skill and whether fewer probability bins
- could be retained to give a skillful prediction with optimal numerical
- efficiency.
+ could be retained to give a skillful prediction with 
+\change_deleted 278795922 1405522603
+optimal
+\change_inserted 278795922 1405522604
+better
+\change_unchanged
+ numerical efficiency.
  
 \end_layout
 
@@ -2448,11 +2621,47 @@ reference "fig:CVocean"
 ).
  However, the validation skill, averaged over 5 folds, reached its peak
  value at 4 bins and then decreased dramatically after 6 bins.
- The optimal bin resolution likely varied for each variable type (wind speed,
- wind and wave directions, wave period) and this may explain the flattening
- of the validation curve between 4 and 6 bins, as it is possible that increasing
- bin resolution was advantageous, adding necessary resolution, for some
- variables but a disadvantage for others.
+ 
+\change_deleted 278795922 1405522694
+The
+\change_inserted 278795922 1405522700
+It is likely that the
+\change_unchanged
+ optimal
+\change_inserted 278795922 1405522743
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1405522756
+tread carefully around 
+\begin_inset Quotes eld
+\end_inset
+
+optimal
+\begin_inset Quotes erd
+\end_inset
+
+
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+ bin resolution 
+\change_deleted 278795922 1405522712
+likely
+\change_unchanged
+ varied for each variable type (wind speed, wind and wave directions, wave
+ period) and this may explain the flattening of the validation curve between
+ 4 and 6 bins, as it is possible that increasing bin resolution was advantageous
+, adding necessary resolution, for some variables but a disadvantage for
+ others.
  The rapid decline after 6 bins suggests that none of the variables needed
  to be better resolved past this point.
  

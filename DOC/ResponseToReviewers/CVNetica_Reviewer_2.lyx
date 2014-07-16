@@ -72,11 +72,12 @@ figs-within-sections
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author 278795922 "nplant" 
 \end_header
 
 \begin_body
@@ -239,8 +240,19 @@ I also wonder if the statement that skill is restricted to the range 0 to
 
 \begin_layout Standard
 
+\change_deleted 278795922 1405519213
+
 \series bold
 NATHANIEL TO ADDRESS
+\change_inserted 278795922 1405519401
+We have updated the skill description to explain how we use the skill assessment
+ with any choice of expected value from the BN prediction (see commnet bbelow
+ on mean vs most likely values).
+ And, we clarify that the prediction error is based on linear regression
+ such that, by definition, the skill will be between 0,1.
+ 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -253,6 +265,15 @@ I also wonder how sk can approach unity unless every unique value observed
 
 \begin_layout Standard
 That's precisely how it could happen --- we now explicitly make that point.
+
+\change_inserted 278795922 1405519611
+ Note also that, since the expected value is a weighted sum of our bin values,
+ it is quite possible to exactly represent any continuous value spanned
+ by the bin values.
+ This would, of course, imply a great deal of overfitting since this outcome
+ would require fitting both signal and noise and is not a desirable outcome.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -312,6 +333,32 @@ Again based on my experience, most real-world dilemmas involve which nodes
 \begin_layout Standard
 Exactly --- but we are trying to provide a quantitative basis for making
  that choice.
+
+\change_inserted 278795922 1405523396
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 278795922 1405523407
+nathaniel gets a bit emphatic here! 
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+Perhaps the MOST IMPORTANT contribution that cvNetica can make is to allow
+ researchers to make their best guess at the appropriate number and distribution
+ of bins and then allow them to objectively demonstrate that their choice
+ is either optimal or at least not too sensitive to some simple alternatives.
+ This first step reveals a great deal of insight into the BN design, the
+ data used to train the BN, and the role that the BN could play in either
+ analyis or prediction.
+ 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard

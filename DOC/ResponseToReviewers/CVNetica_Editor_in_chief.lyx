@@ -72,11 +72,12 @@ figs-within-sections
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author 278795922 "nplant" 
 \end_header
 
 \begin_body
@@ -146,6 +147,15 @@ Also could you talk about the need to justify choice of evaluation metrics
 We appreciate the link to the Bennett et al paper and we have restructured
  Section 3 to more clearly indicate how we chose our evaluation metrics.
  This includes a subsection on model evaluation metrics and methods.
+
+\change_inserted 278795922 1405528822
+ Also, we draw out the broad applicability of the approach in the abstract's
+ final sentence to demonstrate that this is not at all a specific application.
+ This point is also made in our comment to Reviewer #2 regarding whether
+ our choice to modify the number of bins is relevant.
+ 
+\change_unchanged
+
 \end_layout
 
 \end_body
