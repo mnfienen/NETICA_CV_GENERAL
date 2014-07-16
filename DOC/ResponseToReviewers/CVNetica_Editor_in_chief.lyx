@@ -143,9 +143,9 @@ Also could you talk about the need to justify choice of evaluation metrics
 \end_layout
 
 \begin_layout Standard
-We appreciate the link to the Bennett et al paper and we have added a short
- section discussing our choices of metrics for evaluation.
- 
+We appreciate the link to the Bennett et al paper and we have restructured
+ Section 3 to more clearly indicate how we chose our evaluation metrics.
+ This includes a subsection on model evaluation metrics and methods.
 \end_layout
 
 \end_body
