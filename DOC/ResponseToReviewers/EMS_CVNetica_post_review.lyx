@@ -1354,7 +1354,7 @@ reference "sub:Accessing-the-DLL"
 \change_inserted -74556787 1405441564
 Call graphs in the supplemental online material also illustrate the relationship
 s among these levels.
-\change_deleted -74556787 1405441508
+\change_deleted -74556787 1405516940
 At an intermediate level, 
 \begin_inset Formula $\mathtt{pythonNetica.py}$
 \end_inset
@@ -1365,12 +1365,6 @@ At an intermediate level,
 
  class that combines several Netica functions for tasks such as starting
  a Netica environment, rebinning nodes, and other intermediate level tasks.
-\change_unchanged
-
-\end_layout
-
-\begin_layout Subsubsection
-Cross Validation Driver
 \end_layout
 
 \begin_layout Standard
